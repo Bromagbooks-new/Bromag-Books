@@ -19,6 +19,7 @@ const {
 const StockOut = require("../model/stock_out");
 const { generateEmployId } = require("../middleware/employ_Id");
 const feedback_model = require("../model/feedback_model");
+const path = require('path')
 
 
 exports.getAllRegisteredPos = async (req, res) => {
@@ -311,14 +312,18 @@ exports.verifyLogin = async (req, res) => {
         const dashboardLink = `${process.env.CLIENT}/link-verification/token/${encodedToken}`;
 
 
-
         const mailFormat = {
           to: employee.email,
-          subject: "Bromag India Private Limited : Open your account",
-          html:
-            "<h4>Hai dear,</h4><br><p>Welcome back to Bromag India! Use " +
-            `Click the link to access your dashboard: ${dashboardLink}`,
+          subject: "Bromag Books Private Limited : Open your account",
+          html: `<h4>Hi dear,</h4><br><p>Welcome back to Bromag Books! Use the link to access your dashboard: <a href="${dashboardLink}">${dashboardLink}</a></p>`,
         };
+        // const mailFormat = {
+        //   to: employee.email,
+        //   subject: "Bromag Book Private Limited : Open your account",
+        //   html:
+        //     "<h4>Hi dear,</h4><br><p>Welcome back to Bromag Book! Use " +
+        //     `Click the link to access your dashboard: ${dashboardLink}`,
+        // };
 
 
 
@@ -708,18 +713,20 @@ console.log(accessAs,"i am accesss");
     if (file) {
 console.log(file," i am file");      
       
-      
-      const imagePath=`access/profileImage/${restaurant}/${file.filename}`;
-      
-      
-      await helpers.uploadFile(file,imagePath);
-      
-      helpers.deleteFile(file.path);
+const dirPath = path.join('uploads', 'access', 'profileImage');
+const fileName = `${restaurant}/${file.filename}`;
+const imagePath = path.join(dirPath, fileName);
+// const imagePath = `/access/profileImage/${restaurant}/${file.filename}`;
 
-      updates.profileImage = helpers.getS3FileUrl(imagePath);
-      console.log(updates.profileImage);
-      await helpers.deleteS3File(response.profileImage);
+await helpers.uploadFileLocally(file, imagePath);
 
+const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+updates.profileImage = relativeImagePath;
+
+if (response.profileImage) {
+  const oldImagePath = path.join(__dirname, response.profileImage);
+  helpers.deleteOldFiles(oldImagePath);
+}
 
     }
 
@@ -762,19 +769,30 @@ exports.addAccess = async (req, res) => {
 
       const isRestaurant = req.restaurant;
       if (file) {
-        const imagePath = `access/profileImage/${isRestaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'access', 'profileImage');
+        const fileName = `${isRestaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // Log the image path
+        console.log("Image path: ", imagePath);
 
-        await helpers.uploadFile(file, imagePath);
+        const uploadSuccess = await helpers.uploadFileLocally(file, imagePath);
 
-        const imageURL = helpers.getS3FileUrl(imagePath);
+        if (!uploadSuccess) {
+          return res.status(500).json({ success: false, message: "Failed to upload file" });
+        }
 
-        helpers.deleteFile(file.path);
+        const imageURL = helpers.getFileUrlLocally(imagePath);
+
+        // Log the image URL
+        console.log("Image URL: ", imageURL);
+
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
 
         const newAccess = new AccessedEmployees({
           username: username,
           password: password,
           email: email,
-          profileImage: imageURL,
+          profileImage: relativeImagePath,
           accessFor: accessAs,
           employeeId: employeeId,
           restaurant: req.restaurant,
@@ -804,7 +822,8 @@ exports.deleteEmployeeAccess = async (req, res) => {
       const response = await AccessedEmployees.findOne({ _id: employId });
 
       if (response.profileImage) {
-        await helpers.deleteS3File(response.profileImage);
+        const localFilePath = response.profileImage.replace('/uploads/', ''); // Remove the leading '/uploads/' part
+        await helpers.deleteFileLocally(localFilePath);
       }
 
       await AccessedEmployees.findOneAndDelete({
@@ -851,19 +870,28 @@ exports.addEmployDetails = async (req, res) => {
       } = req.body;
       const aadharImage = req.files["aadharImage"][0];
       const pancardImage = req.files["pancardImage"][0];
-      const aadharImagePath = `employee/aadharImages/${isRestaurant}/${aadharImage.filename}`;
-      const pancardImagePath = `employee/pancardImages/${isRestaurant}/${pancardImage.filename}`;
+      const dirPath = path.join('uploads', 'employee', 'aadharImages');
+      const fileName = `${isRestaurant}/${aadharImage.filename}`;
+      const aadharImagePath = path.join(dirPath, fileName);
+      const dirPath1 = path.join('uploads', 'employee', 'pancardImages');
+      const fileName1 = `${isRestaurant}/${pancardImage.filename}`;
+      const pancardImagePath = path.join(dirPath1, fileName1);
+      // const aadharImagePath = `employee/aadharImages/${isRestaurant}/${aadharImage.filename}`;
+      // const pancardImagePath = `employee/pancardImages/${isRestaurant}/${pancardImage.filename}`;
 
-      await helpers.uploadFile(aadharImage, aadharImagePath);
-      await helpers.uploadFile(pancardImage, pancardImagePath);
+      await helpers.uploadFileLocally(aadharImage, aadharImagePath);
+      await helpers.uploadFileLocally(pancardImage, pancardImagePath);
 
-      const aadhar = helpers.getS3FileUrl(aadharImagePath);
-      const pancard = helpers.getS3FileUrl(pancardImagePath);
+      // const aadhar = helpers.getFileUrlLocally(aadharImagePath);
+      // const pancard = helpers.getFileUrlLocally(pancardImagePath);
 
-      helpers.deleteFile(pancardImage.path);
-      helpers.deleteFile(aadharImage.path);
+      // helpers.deleteFileLocally(pancardImage.path);
+      // helpers.deleteFileLocally(aadharImage.path);
 
-      const existingEmployee = await Employees.findOne({ employID });
+      const relativeImagePathadhar = `/${aadharImagePath.replace(/\\/g, '/')}`;
+      const relativeImagePathpancard = `/${pancardImagePath.replace(/\\/g, '/')}`;
+
+      const existingEmployee = await Employees.findOne({ employID })
       if (existingEmployee) {
         const updatedData = {
           staff: employ,
@@ -880,8 +908,8 @@ exports.addEmployDetails = async (req, res) => {
           permanent_address: permanentAddress,
           dob: dob,
           marital_status: maritalStatus,
-          aadhar_image: aadhar,
-          pancard_image: pancard,
+          aadhar_image: relativeImagePathadhar,
+          pancard_image: relativeImagePathpancard,
           esi_number: esiNumber,
           blood_group: bloodGroup,
           emergency_contact_person_number: emergencyContactNumber,
@@ -1025,19 +1053,21 @@ console.log(files,restaurant,"i am customer");
 
       for (const file of req.files) {
         // const imageURL = await S3uploadFile(file.originalname, file.buffer);
+        const dirPath = path.join('uploads', 'customer', 'aadharImages');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
 
-        const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
+        await helpers.uploadFileLocally(file, imagePath);
 
-        await helpers.uploadFile(file, imagePath);
+        helpers.deleteFileLocally(file.path);
 
-        helpers.deleteFile(file.path);
-
-        const imageURL = helpers.getS3FileUrl(imagePath);
+        const imageURL = helpers.getFileUrlLocally(imagePath);
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
 
         // Store the URL in the array
-        aadharImages.push(imageURL);
+        aadharImages.push(relativeImagePath);
       }
-
    
       
     } 
@@ -1152,24 +1182,21 @@ exports.updateCustomerDetail = async (req, res) => {
         console.log("entered files>0");
      
         for (const imageUrl of data.aadharImage) {
-          await helpers.deleteS3File(imageUrl);
+          await helpers.deleteFileLocally(imageUrl);
         }
 
         for (const file of files) {
           // const imageURL = await S3uploadFile(file.originalname, file.buffer);
           
 
-          const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
-  
-          await helpers.uploadFile(file, imagePath);
-  
-          helpers.deleteFile(file.path);
-  
-          const imageURL = helpers.getS3FileUrl(imagePath);
-  
-          // Store the URL in the array
-          console.log(imageURL," i am urllll");
-          aadharImages.push(imageURL);
+          const dirPath = path.join('uploads', 'customer', 'aadharImages');
+          const fileName = `${restaurant}/${file.filename}`;
+          const imagePath = path.join(dirPath, fileName);
+          // const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
+          await helpers.uploadFileLocally(file, imagePath);
+          helpers.deleteFileLocally(file.path);
+          const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+          aadharImages.push(relativeImagePath);
         }
   
       } 
@@ -1447,18 +1474,21 @@ exports.addVenderDetails = async (req, res) => {
     } = req.body;
 
     if (file) {
-      imagePath = `vender/vendorProof/${restaurant}/${file.filename}`;
-      helpers.uploadFile(file, imagePath);
-      ImageURL = helpers.getS3FileUrl(imagePath);
-
-      helpers.deleteFile(file.path);
+      const dirPath = path.join('uploads', 'vender', 'vendorProof');
+      const fileName = `${restaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // imagePath = `vender/vendorProof/${restaurant}/${file.filename}`;
+      await helpers.uploadFileLocally(file, imagePath);
+      ImageURL = helpers.getFileUrlLocally(imagePath);
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+      helpers.deleteFileLocally(file.path)
 
       const vendorData = new Venders({
         ingredient: category,
         vendorId: VendorId,
         vendorName: vendorName,
         phone: contact,
-        billImage: ImageURL,
+        billImage: relativeImagePath,
         gst: GST,
         neft: neft,
         branchCode: BranchCode,
@@ -1502,21 +1532,24 @@ exports.updateVenderDetails = async (req, res) => {
     const vendorData = await Venders.find({ _id: id });
 
     if (file) {
-      imagePath = `vender/vendorProof/${restaurant}/${file.filename}`;
+      const dirPath = path.join('uploads', 'vender', 'vendorProof');
+      const fileName = `${restaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // imagePath = `vender/vendorProof/${restaurant}/${file.filename}`;
 
-      helpers.deleteS3File(vendorData.billImage);
-      helpers.uploadFile(file, imagePath);
+      helpers.deleteFileLocally(vendorData.billImage);
+      await helpers.uploadFileLocally(file, imagePath);
 
-      ImageURL = helpers.getS3FileUrl(imagePath);
-
-      helpers.deleteFile(file.path);
+      ImageURL = helpers.getFileUrlLocally(imagePath);
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+      // helpers.deleteFileLocally(file.path);
 
       const updateData = {
         $set: {
           ingredient: category,
           vendorName: vendorName,
           phone: contact,
-          billImage: ImageURL,
+          billImage: relativeImagePath,
           gst: GST,
           neft: neft,
           branchCode: BranchCode,
@@ -1589,18 +1622,21 @@ exports.addIngredientsDetails = async (req, res) => {
       const file = req.file;
 
       let ImageURL;
+      let relativeImagePath;
 
       if (file) {
-        const imagePath = `vender/ingredients/${restaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'vender', 'ingredients');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `vender/ingredients/${restaurant}/${file.filename}`;
 
-        await helpers.uploadFile(file, imagePath);
+        await helpers.uploadFileLocally(file, imagePath);
 
-        ImageURL = helpers.getS3FileUrl(imagePath);
+        ImageURL = helpers.getFileUrlLocally(imagePath);
 
-        helpers.deleteFile(file.path);
+        relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
         console.log(ImageURL, "url");
       }
-
       const isExist = await Venders.findOne({ _id: vendor_id });
 
       if (isExist) {
@@ -1609,7 +1645,7 @@ exports.addIngredientsDetails = async (req, res) => {
           description: description,
           amount: totalAmount,
           paymentMode: paymentMode,
-          billImage: ImageURL,
+          billImage: relativeImagePath,
           restaurant: restaurant,
           vendorName: companyName,
           commodities: comoditiesArray,
@@ -1640,7 +1676,7 @@ exports.addIngredientsDetails = async (req, res) => {
             unit: stockItem.Unit,
             VendorId: new mongoose.Types.ObjectId(vendor_id),
             amount: CommodityAmount,
-            billURL: ImageURL,
+            billURL: relativeImagePath,
             restaurant: new mongoose.Types.ObjectId(restaurant),
           });
 
@@ -2129,6 +2165,7 @@ console.log(req.body,"bodyy");
 
       let aadharImages = []
       let pancard
+      let relativeImagePathpancard
       
       if (req.files && Object.keys(req.files).length > 0) {
 console.log(req.files);
@@ -2145,25 +2182,29 @@ console.log(req.files);
           for (const file of aadharImage) {
             // const imageURL = await S3uploadFile(file.originalname, file.buffer);
   
-            const imagePath = `employee/aadharImages/${restaurant}/${file.filename}`
-  
-            await helpers.uploadFile(file, imagePath);
-          
-            helpers.deleteFile(file.path);
-          
-            const imageURL = helpers.getS3FileUrl(imagePath);
-          
-            // Store the URL in the array
-            aadharImages.push(imageURL);
-          
-          }
+            const dirPath = path.join('uploads', 'employee', 'aadharImages');
+            const fileName = `${restaurant}/${file.filename}`;
+            const imagePath = path.join(dirPath, fileName);
+                  // const imagePath = `employee/aadharImages/${restaurant}/${file.filename}`
+        
+                  await helpers.uploadFileLocally(file, imagePath);
+                
+                  helpers.deleteFileLocally(file.path);
+                
+                  const imageURL = helpers.getFileUrlLocally(imagePath);
+                  console.log(imageURL);
+                  const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+                  // Store the URL in the array
+                  aadharImages.push(relativeImagePath);
+                
+                }
         
 
           if (employee.aadhar_image && employee.aadhar_image.length > 0) {
            
             for (const imageURL of employee.aadhar_image) {
 
-              await helpers.deleteS3File(imageURL);
+              await helpers.deleteFileLocally(imageURL);
            
             }
 
@@ -2174,18 +2215,22 @@ console.log(req.files);
 
         if (pancardImage) {
           
-          const pancardImagePath = `employee/pancardImages/${restaurant}/${pancardImage.filename}`;
-        
-          await helpers.uploadFile(pancardImage, pancardImagePath);
-        
-           pancard = helpers.getS3FileUrl(pancardImagePath);
-        
-          helpers.deleteFile(pancardImage.path);
-
-          const oldPanPicURL = employee.pancard_image;
-        
-          await helpers.deleteS3File(oldPanPicURL);
-
+          const dirPath = path.join('uploads', 'employee', 'pancardImages');
+          const fileName = `${restaurant}/${pancardImage.filename}`;
+          const pancardImagePath = path.join(dirPath, fileName);
+              // const pancardImagePath = `employee/pancardImages/${restaurant}/${pancardImage.filename}`;
+            
+              await helpers.uploadFileLocally(pancardImage, pancardImagePath);
+            
+               pancard = helpers.getFileUrlLocally(pancardImagePath);
+               relativeImagePathpancard = `/${pancardImagePath.replace(/\\/g, '/')}`;
+              helpers.deleteFileLocally(pancardImage.path);
+    
+              const oldPanPicURL = employee.pancard_image;
+            
+              await helpers.deleteFileLocally(oldPanPicURL);
+    
+    
 
         
         }
@@ -2237,7 +2282,7 @@ console.log(req.files);
         dob: dob,
         marital_status: maritalStatus,
         aadhar_image: aadharImages,
-        pancard_image: pancard,
+        pancard_image: relativeImagePathpancard,
         esi_number: esiNumber,
         blood_group: bloodGroup,
         emergency_contact_person_number: emergencyContactNumber,

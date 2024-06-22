@@ -2,6 +2,7 @@ const helpers = require("../utils/helpers");
 const Table = require("../model/restaurant_table_model");
 const AccessedEmployees = require("../model/access_model");
 const Order = require("../model/order_model");
+const path = require('path')
 
 exports.addTableData = async (req, res) => {
   try {
@@ -11,19 +12,23 @@ exports.addTableData = async (req, res) => {
       const { numberOfSeats, tableNum, captain } = req.body;
       const file = req.files[0];
 
-      const imagePath = `table/${isRestaurant}/${file.filename}`;
+      const dirPath = path.join('uploads', 'table');
+      const fileName = `${isRestaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+    // const imagePath = `table/${isRestaurant}/${file.filename}`;
 
-      await helpers.uploadFile(file, imagePath);
+    await helpers.uploadFileLocally(file, imagePath);
 
-      const itemImage = helpers.getS3FileUrl(imagePath);
-
-      helpers.deleteFile(file.path);
+    const itemImage = helpers.getFileUrlLocally(imagePath);
+    console.log("imagePath: ", itemImage);
+    // helpers.deleteFile(file.path);
+    const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
 
       const newTable = new Table({
         numberOfSeats,
         tableName: tableNum,
         restaurant: isRestaurant,
-        image: itemImage,
+        image: relativeImagePath,
         captainId: captain,
       });
 
@@ -127,6 +132,7 @@ exports.updateTableData = async (req, res) => {
     
     if (isRestaurant) {
       let tableImage;
+      let relativeImagePath;
 
       if (req.files && req.files.length > 0) {
         const file = req.files[0];
@@ -134,15 +140,18 @@ exports.updateTableData = async (req, res) => {
 
         const oldPicURL = table.image;
 
-        await helpers.deleteS3File(oldPicURL);
+        await helpers.deleteOldFiles(oldPicURL);
 
-        const imagePath = `table/${isRestaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'table');
+      const fileName = `${isRestaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `table/${isRestaurant}/${file.filename}`;
 
-        await helpers.uploadFile(file, imagePath);
+        await helpers.uploadFileLocally(file, imagePath);
 
-        tableImage = helpers.getS3FileUrl(imagePath);
-
-        helpers.deleteFile(file.path);
+        tableImage = helpers.getFileUrlLocally(imagePath);
+        console.log(tableImage, "tableImage");
+        relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
       }
 
       const updatedTable = await Table.updateOne(
@@ -151,7 +160,7 @@ exports.updateTableData = async (req, res) => {
           $set: {
             tableName: tableNum,
             numberOfSeats: numberOfSeats,
-            image: tableImage,
+            image: relativeImagePath,
             captainId:captain
           },
         }

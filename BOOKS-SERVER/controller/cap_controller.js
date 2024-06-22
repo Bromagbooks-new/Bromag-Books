@@ -13,6 +13,7 @@ const helpers = require("../utils/helpers");
 const { default: mongoose } = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const restaurant_menu_model = require("../model/restaurant_menu_model");
+const path = require('path')
 
 function generateOrderId() {
   const orderId = uuidv4().replace(/-/g, "").slice(0, 12);
@@ -171,13 +172,16 @@ exports.addCustomerBill = async (req, res) => {
       });
 
       if (customerdata) {
-        const imagePath = `customer/customerBill/${restaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'customer', 'customerBill');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `customer/customerBill/${restaurant}/${file.filename}`;
 
-        await helpers.uploadFile(file, imagePath);
+        await helpers.uploadFileLocally(file, imagePath);
 
-        const imageURL = helpers.getS3FileUrl(imagePath);
-
-        helpers.deleteFile(file.path);
+         helpers.getFileUrlLocally(imagePath);
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+        helpers.deleteFileLocally(file.path);
 
         if (amount <= customerdata.limit) {
           const balance = customerdata.limit - amount;
@@ -187,7 +191,7 @@ exports.addCustomerBill = async (req, res) => {
             employe: captainId,
             amount: amount,
             date: new Date(date),
-            BillImage: imageURL,
+            BillImage: relativeImagePath,
             balance: balance,
             limit: customerdata.limit,
             restaurant: restaurant,

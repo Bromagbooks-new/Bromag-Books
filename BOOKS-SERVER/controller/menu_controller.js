@@ -9,6 +9,7 @@ const others_menu_item_model = require("../model/others_menu_item_model");
 const bromag_menu_items = require("../model/bromag_menu_items");
 const restaurant_menu_model = require("../model/restaurant_menu_model");
 const mongoose = require("mongoose");
+const path = require('path')
 
 exports.addMenuCategory = async (req, res) => {
   try {
@@ -84,6 +85,12 @@ exports.deleteMenuCategory = async (req, res) => {
     const restaurant = req.restaurant;
     if (restaurant) {
       const { categoryId } = req.body;
+      // const response = await MenuCategory.findOne({ _id: categoryId });
+
+      // if (response.itemImage) {
+      //   const localFilePath = response.itemImage.replace('/uploads/', ''); 
+      //   await helpers.deleteFileLocally(localFilePath);
+      // }
       const foundedCategory = await MenuCategory.findOneAndDelete({
         _id: categoryId,
         restaurant: restaurant,
@@ -266,13 +273,17 @@ exports.addMenuData = async (req, res) => {
 
       const category = categoryArray[0].trim();
 
-      const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
+      const dirPath = path.join('uploads', 'menu', 'itemImages');
+      const fileName = `${isRestaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+    // const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
 
-      await helpers.uploadFile(file, imagePath);
+    await helpers.uploadFileLocally(file, imagePath);
 
-      const itemImage = helpers.getS3FileUrl(imagePath);
+    helpers.getFileUrlLocally(imagePath);
+    const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
 
-      helpers.deleteFile(file.path);
+    helpers.deleteFileLocally(file.path);
       const restaurantPrices = JSON.parse(restaurant);
 
       if (
@@ -294,7 +305,7 @@ exports.addMenuData = async (req, res) => {
           itemType: itemType,
           category: category,
           subCategory: subCuisine,
-          itemImage: itemImage,
+          itemImage: relativeImagePath,
           actualPrice: restaurantActualPrice,
           discountPrice: restaurantDiscountPrice,
           discountPercentage: restaurantOfferpercentage,
@@ -322,7 +333,7 @@ exports.addMenuData = async (req, res) => {
           itemType: itemType,
           category: category,
           subCategory: subCuisine,
-          itemImage: itemImage,
+          itemImage: relativeImagePath,
           actualPrice: zomatoActualPrice,
           discountPrice: zomatoDiscountPrice,
           discountPercentage: ZomatoOfferpercentage,
@@ -352,7 +363,7 @@ exports.addMenuData = async (req, res) => {
           itemType: itemType,
           category: category,
           subCategory: subCuisine,
-          itemImage: itemImage,
+          itemImage: relativeImagePath,
           actualPrice: swiggyActualPrice,
           discountPrice: swiggyDiscountPrice,
           discountPercentage: swiggyOfferpercentage,
@@ -380,7 +391,7 @@ exports.addMenuData = async (req, res) => {
           itemType: itemType,
           category: category,
           subCategory: subCuisine,
-          itemImage: itemImage,
+          itemImage: relativeImagePath,
           actualPrice: othersActualPrice,
           discountPrice: othersDiscountPrice,
           discountPercentage: othersOfferpercentage,
@@ -408,7 +419,7 @@ exports.addMenuData = async (req, res) => {
           itemType: itemType,
           category: category,
           subCategory: subCuisine,
-          itemImage: itemImage,
+          itemImage: relativeImagePath,
           actualPrice: bromagActualPrice,
           discountPrice: bromagDiscountPrice,
           discountPercentage: bromagOfferpercentage,
@@ -529,17 +540,20 @@ exports.updateMenuData = async (req, res) => {
 
         if (previousMenuItem) {
           let itemImage;
+          let relativeImagePath;
           if (req.file) {
             const file = req.file;
-            await helpers.deleteS3File(previousMenuItem.itemImage);
+            await helpers.deleteFileLocally(previousMenuItem.itemImage);
+            const dirPath = path.join('uploads', 'menu', 'itemImages');
+            const fileName = `${isRestaurant}/${file.filename}`;
+            const imagePath = path.join(dirPath, fileName);
+            // const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
 
-            const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
+            await helpers.uploadFileLocally(file, imagePath);
 
-            await helpers.uploadFile(file, imagePath);
-
-            itemImage = helpers.getS3FileUrl(imagePath);
-
-            helpers.deleteFile(file.path);
+            helpers.getFileUrlLocally(imagePath);
+            relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+            helpers.deleteFileLocally(file.path);
           }
 
           const updateDataOnlineAggregators = {
@@ -550,7 +564,7 @@ exports.updateMenuData = async (req, res) => {
               description,
               itemType,
               quantity: Quantity,
-              itemImage: itemImage,
+              itemImage: relativeImagePath,
             },
           };
 
@@ -569,7 +583,7 @@ exports.updateMenuData = async (req, res) => {
               discountPrice: parseInt(discountPrice),
 
               platformName: plateform,
-              itemImage: itemImage,
+              itemImage: relativeImagePath,
             },
           };
 
@@ -1392,6 +1406,7 @@ exports.updateMenu = async (req, res) => {
           : actualPrice;
 
       let itemImage;
+      let relativeImagePath;
 
       if (req.files && req.files.length > 0) {
         const file = req.files[0];
@@ -1399,14 +1414,16 @@ exports.updateMenu = async (req, res) => {
 
         const oldPicURL = menu.itemImage;
 
-        await helpers.deleteS3File(oldPicURL);
+        await helpers.deleteFileLocally(oldPicURL);
+        const dirPath = path.join('uploads', 'menu', 'itemImages');
+        const fileName = `${isRestaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
 
-        const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
+        await helpers.uploadFileLocally(file, imagePath);
 
-        await helpers.uploadFile(file, imagePath);
-
-        itemImage = helpers.getS3FileUrl(imagePath);
-
+        helpers.getFileUrlLocally(imagePath);
+        relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
         helpers.deleteFile(file.path);
       }
 
@@ -1422,7 +1439,7 @@ exports.updateMenu = async (req, res) => {
             category,
             description,
             price: discountedPrice,
-            itemImage,
+            relativeImagePath,
           },
         }
       );

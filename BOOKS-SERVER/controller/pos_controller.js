@@ -22,6 +22,7 @@ const zomato_menu_Items_model = require("../model/zomato_menu_Items_model");
 const bromag_menu_items = require("../model/bromag_menu_items");
 const menuCategory_model = require("../model/menuCategory_model");
 const restaurant_menu_model = require("../model/restaurant_menu_model");
+const path = require('path')
 // import posTodayClosing from "../model/posTodayClosing";
 // import posTodayExpense from "../model/posTodayExpense";
 // import PosTodayOpeningBalanceModel from "../model/posTodayOpeningBalance";
@@ -179,18 +180,22 @@ exports.addTodaysExpense = async (req, res) => {
     const Id = req.id;
     const file = req.file;
     if (file) {
-      const imagePath = `passbook/${restaurant}/${file.filename}`;
+      const dirPath = path.join('uploads', 'passbook');
+      const fileName = `${restaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // const imagePath = `passbook/${restaurant}/${file.filename}`;
 
-      await helpers.uploadFile(file, imagePath);
+      await helpers.uploadFileLocally(file, imagePath);
 
-      const imageURL = helpers.getS3FileUrl(imagePath);
-      helpers.deleteFile(file.path);
+      const imageURL = helpers.getFileUrlLocally(imagePath);
+      console.log(imageURL, "imageURL");
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
 
       const TodaysExpenseData = {
         date: new Date(date),
         amount: amount,
         description: description,
-        billURL: imageURL,
+        billURL: relativeImagePath,
         restaurant: restaurant,
         posId: Id,
       };
@@ -225,14 +230,18 @@ exports.addCustomerBill = async (req, res) => {
       });
 
       if (customerdata) {
-        const imagePath = `passbook/customerBill/${restaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'passbook', 'customerBill');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `passbook/customerBill/${restaurant}/${file.filename}`;
 
-        await helpers.uploadFile(file, imagePath);
+        await helpers.uploadFileLocally(file, imagePath);
 
-        helpers.deleteFile(file.path);
+        helpers.deleteFileLocally(file.path);
 
-        const imageURL = helpers.getS3FileUrl(imagePath);
-
+        const imageURL = helpers.getFileUrlLocally(imagePath);
+        console.log(imageURL, "imageURL");
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
         if (amount <= customerdata.limit) {
           const balance = customerdata.limit - amount;
 
@@ -240,7 +249,7 @@ exports.addCustomerBill = async (req, res) => {
             customer: customerdata._id,
             amount: amount,
             date: new Date(date),
-            BillImage: imageURL,
+            BillImage: relativeImagePath,
             balance: balance,
             limit: customerdata.limit,
             restaurant: restaurant,
@@ -307,16 +316,21 @@ console.log(req.files,"files")
       for (const file of req.files) {
 
 
-        const imagePath = `passbook/closingReport/${restaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'passbook', 'closingReport');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
 
-        await helpers.uploadFile(file, imagePath);
+        // const imagePath = `passbook/closingReport/${restaurant}/${file.filename}`;
+
+        await helpers.uploadFileLocally(file, imagePath);
 
         helpers.deleteFile(file.path);
 
-        const imageURL = helpers.getS3FileUrl(imagePath);
-
+        const imageURL = helpers.getFileUrlLocally(imagePath);
+        console.log(imageURL, "imageURL");
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
         // Store the URL in the array
-        billImages.push(imageURL);
+        billImages.push(relativeImagePath);
       }
 
       const TodaysClosingData = {
@@ -759,19 +773,22 @@ exports.updateProfileImagePos = async (req, res) => {
       const existingUser = await AccessedEmployees.findOne({ _id: id });
 
       const { profileImage } = existingUser;
-      await helpers.deleteS3File(profileImage);
+      await helpers.deleteFileLocally(profileImage);
+      const dirPath = path.join('uploads', 'passbook');
+      const fileName = `${restaurantId}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // const imagePath = `passbook/${restaurantId}/${file.filename}`;
 
-      const imagePath = `passbook/${restaurantId}/${file.filename}`;
-
-      await helpers.uploadFile(file, imagePath);
+      await helpers.uploadFileLocally(file, imagePath);
 
       helpers.deleteFile(file.path);
 
-      const imageURL = helpers.getS3FileUrl(imagePath);
-
+      const imageURL = helpers.getFileUrlLocally(imagePath);
+      console.log(imageURL);
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
       await AccessedEmployees.updateOne(
         { _id: id },
-        { $set: { profileImage: imageURL } }
+        { $set: { profileImage: relativeImagePath } }
       );
 
       res.status(200).json({

@@ -222,7 +222,7 @@ const AddVenderDetails = async ({
   GST,
   category,
   contact,
-  neft,
+  ifsc,
   image,
   vendorName,
 }) => {
@@ -236,7 +236,7 @@ const AddVenderDetails = async ({
     formData.append("category", category);
     formData.append("contact", contact);
     formData.append("vendorName", vendorName);
-    formData.append("neft", neft);
+    formData.append("ifsc", ifsc);
 
     return await restaurantOwnerAxiosInstance.post(
       "addVenderDetails",
@@ -269,7 +269,7 @@ const UpdateVenderDetails = async ({
   GST,
   category,
   contact,
-  neft,
+  ifsc,
   image,
   vendorName,
 }) => {
@@ -283,7 +283,7 @@ const UpdateVenderDetails = async ({
     formData.append("category", category);
     formData.append("contact", contact);
     formData.append("vendorName", vendorName);
-    formData.append("neft", neft);
+    formData.append("ifsc", ifsc);
     formData.append("id", id);
 
     return await restaurantOwnerAxiosInstance.post(

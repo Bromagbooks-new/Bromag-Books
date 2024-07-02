@@ -8,6 +8,7 @@ import { TableDataAtAdmin } from "../../../config/routeApi/owner";
 import { toastError } from "../../../helpers/helpers";
 import Uploading from "../../../components/loaders/Uploading";
 import ViewDineInOrdersModal from "../../../components/admindashboardcomponents/ViewDineInOrdersModal";
+import { RestaurantAdminApi } from "../../../config/global";
 const TableDetails = () => {
   // const [isUploading ,setUploading] =useState(false)
   const [tableData, setTableData] = useState([]);
@@ -21,7 +22,15 @@ const TableDetails = () => {
         const response = await TableDataAtAdmin();
         // setUploading(false)
         if (response.data.success) {
-          setTableData(response.data.tableData);
+          const tableData = response.data.tableData;
+          console.log(tableData);
+          const transformedTableData = response.data.tableData.map((table) => {
+            table.image =
+              RestaurantAdminApi.slice(0, RestaurantAdminApi.length - 1) +
+              table.image;
+            return table;
+          });
+          setTableData(transformedTableData);
         } else {
           toastError(response.data.message);
         }
@@ -39,16 +48,15 @@ const TableDetails = () => {
     setRefresh((prevRefresh) => !prevRefresh);
   };
 
-
   const handleToggleChange = (tableId, updatedIsShared) => {
     try {
       // ... (no changes here)
       const updatedMenuData = tableData.map((table) =>
         table._id === tableId
           ? {
-            ...table,
-            isShared: updatedIsShared,
-          }
+              ...table,
+              isShared: updatedIsShared,
+            }
           : table
       );
 
@@ -57,7 +65,6 @@ const TableDetails = () => {
       console.error("Table Toggle error:", error);
     }
   };
-
 
   const handleAddTable = () => {
     if (tableData.length > 10) {
@@ -104,7 +111,6 @@ const TableDetails = () => {
           </section>
         </div>
       </Wrapper>
-
     </>
   );
 };

@@ -1470,7 +1470,7 @@ exports.addVenderDetails = async (req, res) => {
       category,
       contact,
       vendorName,
-      neft,
+      ifsc,
     } = req.body;
 
     if (file) {
@@ -1490,7 +1490,7 @@ exports.addVenderDetails = async (req, res) => {
         phone: contact,
         billImage: relativeImagePath,
         gst: GST,
-        neft: neft,
+        ifsc: ifsc,
         branchCode: BranchCode,
         accountNumber: AccountNumber,
         restaurant: restaurant,
@@ -1526,7 +1526,7 @@ exports.updateVenderDetails = async (req, res) => {
       category,
       contact,
       vendorName,
-      neft,
+      ifsc,
       id,
     } = req.body;
     const vendorData = await Venders.find({ _id: id });
@@ -1551,7 +1551,7 @@ exports.updateVenderDetails = async (req, res) => {
           phone: contact,
           billImage: relativeImagePath,
           gst: GST,
-          neft: neft,
+          ifsc: ifsc,
           branchCode: BranchCode,
           accountNumber: AccountNumber,
           restaurant: restaurant,
@@ -1566,7 +1566,7 @@ exports.updateVenderDetails = async (req, res) => {
           vendorName: vendorName,
           phone: contact,
           gst: GST,
-          neft: neft,
+          ifsc: ifsc,
           branchCode: BranchCode,
           accountNumber: AccountNumber,
           restaurant: restaurant,

@@ -224,6 +224,8 @@ exports.deleteTable = async (req, res) => {
 exports.captainList = async (req, res) => {
   try {
     // Check if the request comes from a restaurant
+
+    console.log('In captain list');
     const isRestaurant = req.restaurant;
     
     // If it's from a restaurant
@@ -240,6 +242,9 @@ exports.captainList = async (req, res) => {
         billId: { $exists: true, $ne: null }, // Check if billId exists and is not null
         restaurantId: isRestaurant,
       });
+
+      console.log(TotalDineInOrders);
+      console.log("Hre");
       
       // Send successful response with captains list and total dine-in orders
       res.status(200).json({ success: true, captains, TotalDineInOrders });

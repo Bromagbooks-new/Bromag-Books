@@ -25,7 +25,7 @@ const venders = mongoose.Schema({
     type: String,
     required:true
   },
-  neft: {
+  ifsc: {
     type: String,
     required:true
   },

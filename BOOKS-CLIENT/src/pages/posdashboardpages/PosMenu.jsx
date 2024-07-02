@@ -18,6 +18,7 @@ import { IoMdPrint } from "react-icons/io";
 import { formatDate, toastError, toastSuccess } from "../../helpers/helpers";
 import Uploading from "../../components/loaders/Uploading";
 import TakeAwaySummeryModal from "../../components/poscomponents/TakeAwaySummeryModal.jsx";
+import { RestaurantAdminApi } from "../../config/global.js";
 
 const PosMenu = () => {
   const [modalKot, setModalKot] = useState(false);
@@ -181,7 +182,11 @@ const PosMenu = () => {
         }
         setSelectedCategory("All");
         console.log(data.MenuData, "i am data.menudata");
-        setCurrentMenu(data.MenuData);
+        const formattedMenuDta = data.MenuData.map(menuItem=> {
+          menuItem.itemImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1) + menuItem.itemImage;
+          return menuItem;
+        })
+        setCurrentMenu(formattedMenuDta);
       } else {
         // Display error toast
         toastError(data.message);

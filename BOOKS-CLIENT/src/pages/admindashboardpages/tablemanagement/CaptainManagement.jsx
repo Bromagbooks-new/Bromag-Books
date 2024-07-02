@@ -140,6 +140,7 @@ const CaptainManagement = () => {
     const handleLeadsData = async () => {
       try {
         const response = await CaptainList();
+        console.log(response.data.captains)
         setCaptain(response.data.captains);
         // setSelectedCaptainData(response.data.TotalDineInOrders);
       } catch (error) {

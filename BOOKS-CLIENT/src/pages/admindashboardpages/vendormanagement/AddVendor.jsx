@@ -256,7 +256,7 @@ console.log(data);
                   <input
                  {...register("BranchCode", {
                   required: true,
-                  pattern: /^[A-Z]{4}\d{7}$/
+                  pattern: /^[A-Z,\d]{6}$/
                 })}
                     type="text"
                     id="BranchCode"
@@ -279,24 +279,30 @@ console.log(data);
 
               <div className="form-input-row">
                 <div className="form-input-full">
-                  <label htmlFor="neft" className="text-left">
-                    NEFT Number<span className="text-danger">*</span>
+                  <label htmlFor="ifsc" className="text-left">
+                    IFSC Number<span className="text-danger">*</span>
                   </label>
                   <br />
                   <input
-                    {...register("neft", {
+                    {...register("ifsc", {
                       required: true,
-                      pattern: /^[A-Za-z0-9]{6,20}$/,
+                      pattern: /^[A-Z]{4}0[A-Z,\d]{6}$/,
                     })}
                     type="text"
-                    id="neft"
-                    placeholder="Enter NEFT number"
+                    id="ifsc"
+                    placeholder="Enter IFSC number"
                   />
-                  {errors.neft && errors.neft.type === "required" && (
+                  {errors.ifsc && errors.ifsc.type === "required" && (
                     <label className="error-msg">
-                      Please enter the  NEFT Number
+                      Please enter the  IFSC Code
                     </label>
                   )}
+                  {errors.ifsc &&
+                    errors.ifsc.type === "pattern" && (
+                      <label className="error-msg">
+                        Please enter a valid IFSC Code
+                      </label>
+                    )}
                 </div>
               </div>
 

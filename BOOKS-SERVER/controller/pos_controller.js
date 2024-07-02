@@ -918,6 +918,7 @@ exports.printBill = async (req, res) => {
   try {
     const isRestaurant = req.restaurant;
     const isPosManager = req.id;
+    console.log("Pos ID: ", isPosManager);
     console.log(req.body, "body data");
     const {userId,amount,tableId} = req.body;
     // const { orderMode } = req.body.orderData;
@@ -936,15 +937,18 @@ exports.printBill = async (req, res) => {
         //       message: "Check your network connection",
         //     });
         //   }
-        const order = await Order.updateOne(
+        const order = await Order.findOneAndUpdate(
           { _id: userId },
           {
             billId: billId,
             Amount: Amount,
-            orderStatus:"Success"
+            orderStatus:"Success",
+            posManagerId: isPosManager
 
           }
         );
+        console.log("Order----------------------------------------------");
+        console.log(order);
 
         await RestaurantTable.findOneAndUpdate(
           {
@@ -2489,6 +2493,12 @@ exports.getTodaysOpeningData = async (req, res) => {
           },
         },
       ]);
+
+      const testFloatingData = await Order.aggregate([
+        { $match: query },
+      ])
+      console.log("Floating Data--------------------------------------");
+      console.log(testFloatingData);
 
       const OpeningAmount = Openingdata && Openingdata.totalAmount ? Openingdata.totalAmount : 0;
       // const ClosingAmount = Closingdata && Closingdata.totalAmount ? Closingdata.totalAmount : 0;

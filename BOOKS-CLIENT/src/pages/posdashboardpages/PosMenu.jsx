@@ -288,6 +288,8 @@ const PosMenu = () => {
       setUploading(false);
       setKotId(response.data.orderId);
       if (response.data.success) {
+        window.print();
+
         setModalKot(false);
 
         toastSuccess(response.data.message);

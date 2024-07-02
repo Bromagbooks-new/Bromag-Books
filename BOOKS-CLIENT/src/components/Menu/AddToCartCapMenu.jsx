@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import { GetMenuDataAtCap } from "../../config/routeApi/cap";
 import Uploading from "../loaders/Uploading";
 import { toastError } from "../../helpers/helpers";
+import { RestaurantAdminApi } from "../../config/global";
 
 const AddToCartCapMenu = ({
   onTotalPriceChange,
@@ -27,10 +28,14 @@ const AddToCartCapMenu = ({
       setUploading(false);
 
       if (response.data.success) {
-        setMenu(response.data.MenuData);
+        const transformedMenuData = response.data.MenuData.map(item=> {
+          item.itemImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+item.itemImage;
+          return item;
+        })
+        setMenu(transformedMenuData);
         const initialQuantities = {};
         response.data.MenuData.forEach((menuItem) => {
-         
+          
           initialQuantities[menuItem._id] = {
             quantity: 1,
             item: menuItem.item,
@@ -162,12 +167,19 @@ const AddToCartCapMenu = ({
 
   // Increase quantity handler
   const setIncrease = (itemId, productStock) => {
+    console.log(productStock);
 
     if (selectedItems.includes(itemId)) {
      return toastError("Uncheck to Change Quantity")
     }
 
-    setQuantities((prevQuantities) => ({
+    setQuantities((prevQuantities) => {
+      
+      if(prevQuantities[itemId].quantity === productStock) {
+        toastError("You can only select upto "+productStock+ " of this item");
+      }
+      
+      return {
       ...prevQuantities,
       [itemId]: {
         ...prevQuantities[itemId],
@@ -176,7 +188,7 @@ const AddToCartCapMenu = ({
             ? prevQuantities[itemId].quantity + 1
             : productStock,
       },
-    }));
+    }});
 
 
 
@@ -228,7 +240,10 @@ const AddToCartCapMenu = ({
                 {menuItem.discountPrice ? menuItem.discountPrice : null}
               </p>
               </div>
-
+              <div className="count-div">
+                <div className="quantity">Maximum</div>
+                <div className="count">{menuItem.quantity}</div>
+              </div>
               <div className="count-div">
                 <div className="quantity">quantity </div>
                 <div className="increase-decrease-div">
@@ -243,7 +258,7 @@ const AddToCartCapMenu = ({
                   </div>
                   <button
                     className="increase"
-                    onClick={() => setIncrease(menuItem._id, productStock)}
+                    onClick={() => setIncrease(menuItem._id, menuItem.quantity)}
                   >
                     <FaPlus />
                   </button>

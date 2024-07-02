@@ -23,6 +23,7 @@ const TableOrderSummeryModal = (props) => {
 
   useEffect(() => {
     if (ordered && ordered[0]) {
+      // console.log(ordered[0]);
       const { gstAmount, grandTotal } = calculateGST(ordered[0].Amount);
 
       setGST(gstAmount);

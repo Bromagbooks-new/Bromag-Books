@@ -326,6 +326,10 @@ return   toastError("Uncheck to change quantity")
               </p>
             </div>
             <div className="count-div">
+              <div className="quanitiy">Maximum</div>
+              <div className="count">{stock}</div>
+            </div>
+            <div className="count-div">
               <div className="quantity">quantity</div>
               <div className="increase-decrease-div">
                 <button className="decrease" onClick={() => setDecrease()}>

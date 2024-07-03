@@ -241,11 +241,11 @@ const AddToCartCapMenu = ({
               </p>
               </div>
               <div className="count-div">
-                <div className="quantity">Maximum</div>
+                <div className="quantity">Available Quantity</div>
                 <div className="count">{menuItem.quantity}</div>
               </div>
               <div className="count-div">
-                <div className="quantity">quantity </div>
+                <div className="quantity">Order Quantity</div>
                 <div className="increase-decrease-div">
                   <button
                     className="decrease"

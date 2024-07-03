@@ -364,7 +364,8 @@ const DineInPerDay = await Order.aggregate([
           },
         ]);
       
-     const TotalOnlineSales = TotalOnlineAggregatorSalesAmount?TotalOnlineAggregatorSalesAmount[0].totalAmount:0
+        console.log(TotalOnlineAggregatorSalesAmount);
+     const TotalOnlineSales = (TotalOnlineAggregatorSalesAmount && TotalOnlineAggregatorSalesAmount.length > 0)?TotalOnlineAggregatorSalesAmount[0].totalAmount:0
       
       res.json({
         success: true,
@@ -385,6 +386,7 @@ const DineInPerDay = await Order.aggregate([
     }
   } catch (error) {
     console.log(error);
+    res.status(500).json({success: false, message: "Internal Server Error"});
   }
 };
 

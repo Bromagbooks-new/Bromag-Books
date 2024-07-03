@@ -88,7 +88,8 @@ exports.getAllRegisteredPosCap = async (req, res) => {
 
 exports.tableBooking = async (req, res) => {
   try {
-    const { customerName, phone, orderMode, tableId } = req.body;
+    const { customerName, phone, orderMode, tableId, paymentMethod } = req.body;
+    console.log(req.body);
     const restaurant = req.restaurant;
     const validCap = req.id;
 
@@ -108,6 +109,7 @@ exports.tableBooking = async (req, res) => {
         phone: phone,
         status: "booked",
         orderMode: orderMode,
+        paymentMethod: paymentMethod
       },
       { new: true }
     );
@@ -725,6 +727,9 @@ exports.getTableDetails = async (req, res) => {
       _id: tableId,
     });
     if (tableData) {
+      console.log("-----------------------------------------------------");
+      console.log(tableData);
+      console.log("-----------------------------------------------------");
       return res
         .status(200)
         .json({ success: true, message: "Successfully fetched", tableData });

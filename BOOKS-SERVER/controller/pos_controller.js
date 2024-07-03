@@ -1706,7 +1706,7 @@ const gettodaysSalesAmountSum = async (restaurantId) => {
             $gte: currentDate,
             $lt: new Date(currentDate.getTime() + 24 * 60 * 60 * 1000),
           },
-          orderMode: { $ne: "dineIn" },
+          // orderMode: { $ne: "dineIn" },
         },
       },
       {
@@ -1716,6 +1716,7 @@ const gettodaysSalesAmountSum = async (restaurantId) => {
         },
       },
     ]);
+    console.log(orderAmountSum);
 
     if (orderAmountSum.length > 0) {
       return orderAmountSum[0].totalAmount;

@@ -777,6 +777,7 @@ const SalesDashboard = async (dates) => {
       "getSalesDashboardData",
       { params: dates }
     );
+    console.log(response);
     return response;
   } catch (error) {
     console.log(error);

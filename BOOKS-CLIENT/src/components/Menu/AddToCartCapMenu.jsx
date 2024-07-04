@@ -37,7 +37,7 @@ const AddToCartCapMenu = ({
         response.data.MenuData.forEach((menuItem) => {
           
           initialQuantities[menuItem._id] = {
-            quantity: 1,
+            quantity: 0,
             item: menuItem.item,
             price: menuItem.discountPrice? menuItem.discountPrice:actualPrice,
           };
@@ -154,9 +154,9 @@ const AddToCartCapMenu = ({
       [itemId]: {
         ...prevQuantities[itemId],
         quantity:
-          prevQuantities[itemId].quantity > 1
+          prevQuantities[itemId].quantity > 0
             ? prevQuantities[itemId].quantity - 1
-            : 1,
+            : 0,
       },
     }));
 

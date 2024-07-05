@@ -15,6 +15,7 @@ import { useEffect, useState } from "react";
 //backend imports here
 import moment from "moment";
 import { toastError, toastSuccess } from "../../../helpers/helpers";
+import { RestaurantAdminApi } from "../../../config/global";
 
 const UpdateBasicDetails = () => {
   const [isUploading, setUploading] = useState(false);
@@ -74,9 +75,9 @@ const UpdateBasicDetails = () => {
         }
 
 
-        setPanImagePreview(employmentData.pancard_image)
+        setPanImagePreview(RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+employmentData.pancard_image)
 
-        setAadharImagePreview(employmentData.aadhar_image)
+        setAadharImagePreview(employmentData.aadhar_image.map((image)=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+image))
         setValue("employeeType", employmentData.employeeType);
         setValue("designation", employmentData.designation);
         setValue("employ", employmentData.staff);
@@ -89,8 +90,8 @@ const UpdateBasicDetails = () => {
         setValue("maritalStatus", employmentData.marital_status);
         setValue("aadharNumber", employmentData.aadhar_number);
         setValue("pancardNumber", employmentData.pan_number);
-        setValue("aadharImage", employmentData.aadhar_image);
-        setValue("pancardImage", employmentData.pancard_image);
+        setValue("aadharImage", employmentData.aadhar_image.map((image)=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+image));
+        setValue("pancardImage", RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+employmentData.pancard_image);
 
         // setValue("employID", employmentData.employID);
         setValue("pfNumber", employmentData.pf_number);
@@ -666,7 +667,7 @@ const UpdateBasicDetails = () => {
 
                 <input
                   {...register("pfNumber", {
-                    required: true,
+                    // required: true,
                     pattern: /^[A-Za-z0-9]*$/,
                   })}
                   type="text"
@@ -696,7 +697,7 @@ const UpdateBasicDetails = () => {
 
                 <input
                   {...register("esiNumber", {
-                    required: true,
+                    // required: true,
                     pattern: /^[A-Za-z0-9]*$/,
                   })}
                   type="text"
@@ -755,7 +756,7 @@ const UpdateBasicDetails = () => {
 
                 <input
                   {...register("uanNumber", {
-                    required: true,
+                    // required: true,
                     pattern: /^[A-Za-z0-9]*$/,
                   })}
                   type="text"

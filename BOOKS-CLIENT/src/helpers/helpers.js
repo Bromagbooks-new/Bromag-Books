@@ -1,4 +1,5 @@
 import toast from "react-hot-toast";
+import { RestaurantAdminApi } from "../config/global";
 
 export function formatCurrency(amount, currencyCode = 'INR') {
     const formatter = new Intl.NumberFormat('en-IN', {
@@ -90,4 +91,7 @@ export function toastSuccess(message) {
     }, toastDuration);
   }
   }
+
+
+export const formatImageUrl = (url)=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1) + url;
 

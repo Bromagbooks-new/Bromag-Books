@@ -15,6 +15,7 @@ import {
   getEmployeesData,
 } from "../../../config/routeApi/owner";
 import Uploading from "../../../components/loaders/Uploading";
+import { formatImageUrl } from "../../../helpers/helpers";
 const Customers = () => {
   //modal useState start
   const [modalShow, setModalShow] = useState(false);
@@ -53,7 +54,12 @@ const Customers = () => {
     const handleEmployData = async () => {
       try {
         const response = await getEmployeesData();
-        setCustomerDetails(response.data.customerData);
+        const formattedData = response.data.customerData.map((customer)=> {
+         const transformedAvatarImage = customer.aadharImage.map(image=> formatImageUrl(image));
+         return {...customer, aadharImage: transformedAvatarImage}
+        });
+        console.log(formattedData);
+        setCustomerDetails(formattedData);
       } catch (error) {
         console.log(error);
       }

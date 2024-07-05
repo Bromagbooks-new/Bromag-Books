@@ -54,6 +54,7 @@ const CaptainMenu = () => {
   };
 
   const clearItems = ()=> setSelectedItems([]);
+  // console.log(clearItems);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -347,9 +348,9 @@ const CaptainMenu = () => {
 
             <TableKotSummaryModal
               open={modalKot}
-              clearItems={clearItems}
               onCancel={() => setModalKot(false)}
               cancelButtonProps={{ style: { display: "none" } }}
+              clearItems={clearItems}
               okButtonProps={{ style: { display: "none" } }}
               kotData={selectedItems}
               TotalPrice={totalPrice}

@@ -3552,7 +3552,8 @@ exports.GetDineInSuccesData = async (req, res) => {
         const DineInDetails = await Order.find({
           restaurantId: isRestaurant,
           orderMode: "dineIn",
-          orderStatus: 'Success' 
+          orderStatus: 'Success',
+          posManagerId: isPosManager,
 
         }).populate("tableId").sort({ _id: -1 });
 

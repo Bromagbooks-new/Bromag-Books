@@ -15,6 +15,7 @@ import ViewModal from "../../../components/poscomponents/ViewModal";
 import { useForm } from "react-hook-form";
 import { toastError } from "../../../helpers/helpers";
 import { restaurantPosAxiosInstance } from "../../../config/apiInterceptor";
+import { RestaurantAdminApi } from "../../../config/global";
 
 const TodaysExpense = () => {
   const {
@@ -53,7 +54,12 @@ const TodaysExpense = () => {
     (async function fetchExpense() {
       const response = await fetchExpenseData();
       if (response.data.success) {
-        setexpenseData(response.data.data);
+        const transformedResponeData = response.data.data.map((expense)=> {
+          console.log(expense);
+          expense.billURL = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1) + expense.billURL;
+          return expense;
+        })
+        setexpenseData(transformedResponeData);
       } else {
         toastError(response.data.message);
       }

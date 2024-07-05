@@ -14,7 +14,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import "../../../assets/css/UpdateCustomers.css";
 import { getCustomerDetailByID } from "../../../config/routeApi/owner";
 import Uploading from "../../../components/loaders/Uploading";
-import { toastError, toastSuccess } from "../../../helpers/helpers";
+import { formatImageUrl, toastError, toastSuccess } from "../../../helpers/helpers";
 import { restaurantOwnerAxiosInstance } from "../../../config/apiInterceptor";
 
 const UpdateCustomer = () => {
@@ -73,6 +73,7 @@ const UpdateCustomer = () => {
     handleSubmit,
     setValue,
     formState: { errors },
+    watch
   } = useForm();
 
   const { Id } = useParams();
@@ -96,9 +97,9 @@ console.log(response," i am response");
         } = response.data.customerData;
 
         
-        setAadharImagePreview(aadharImage)
+        setAadharImagePreview(aadharImage.map(image=> formatImageUrl(image)))
         // setImagePreview(aadharImage);
-        setValue("aadharImage", aadharImage);
+        setValue("aadharImage", aadharImage.map(image=> formatImageUrl(image)));
         setValue("customer", customer);
         setValue("phone", phone);
         setValue("email", email);
@@ -310,7 +311,7 @@ console.log(response," i am response");
                   <input
                     {...register("address", {
                       required: true,
-                      pattern: /^[a-zA-Z-', ]+$/,
+                      // pattern: /^[a-zA-Z-', ]+$/,
                     })}
                     type="text"
                     placeholder="Enter street address"
@@ -318,14 +319,14 @@ console.log(response," i am response");
 
                   {errors.address &&
                     errors.address.type === "required" &&
-                    !address && (
+                   (
                       <label className="error-msg">
                         Please enter the address
                       </label>
                     )}
                   {errors.address &&
                     errors.address.type === "pattern" &&
-                    !address && (
+                     (
                       <label className="error-msg">
                         Please enter a valid address
                       </label>

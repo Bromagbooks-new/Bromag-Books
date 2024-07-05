@@ -151,6 +151,8 @@ const PosPassbook = () => {
           "/pos/fetchPassbookData"
         );
 
+        console.log(response.data.data);
+
         if (response.data.success) {
           setPassbookData(response.data.data);
         }

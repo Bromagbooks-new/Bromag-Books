@@ -108,19 +108,19 @@ const EmployeeBasicDetailsModal = (props) => {
           {props.pf_number && (
             <div className="items">
               <p className="left-item">PF Number</p>
-              <p className="right-item">{props.pf_number}</p>
+              <p className="right-item">{props.pf_number==='undefined'?  "" : props.pf_number}</p>
             </div>
           )}
           {props.esi_number && (
             <div className="items">
               <p className="left-item">ESI Number</p>
-              <p className="right-item">{props.esi_number}</p>
+              <p className="right-item">{props.esi_number ==='undefined'?  "" : props.esi_number}</p>
             </div>
           )}
           {props.uan_number && (
             <div className="items">
               <p className="left-item">UAN Number</p>
-              <p className="right-item">{props.uan_number}</p>
+              <p className="right-item">{props.uan_number ==='undefined'?  "" : props.uan_number}</p>
             </div>
           )}
           {props.blood_group && (

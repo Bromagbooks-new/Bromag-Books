@@ -661,7 +661,7 @@ const UpdateBasicDetails = () => {
               <div className="form-input">
                 <label htmlFor="pfNumber">
                   PF Number{" "}
-                  <span className="mandatory text-danger  text-danger ">*</span>
+                  {/* <span className="mandatory text-danger  text-danger ">*</span> */}
                 </label>
                 <br />
 
@@ -691,7 +691,7 @@ const UpdateBasicDetails = () => {
               <div className="form-input">
                 <label htmlFor="esiNumber">
                   ESI Number{" "}
-                  <span className="mandatory text-danger  text-danger ">*</span>
+                  {/* <span className="mandatory text-danger  text-danger ">*</span> */}
                 </label>
                 <br />
 
@@ -750,7 +750,7 @@ const UpdateBasicDetails = () => {
               <div className="form-input">
                 <label htmlFor="uanNumber">
                   UAN Number{" "}
-                  <span className="mandatory text-danger  text-danger ">*</span>
+                  {/* <span className="mandatory text-danger  text-danger ">*</span> */}
                 </label>
                 <br />
 

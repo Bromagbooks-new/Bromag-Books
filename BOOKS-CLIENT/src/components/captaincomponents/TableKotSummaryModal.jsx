@@ -5,7 +5,7 @@ import { IoMdPrint } from "react-icons/io";
 import { KotOrder, capDashboard } from "../../config/routeApi/cap";
 import { useEffect, useState } from "react";
 import Uploading from "../loaders/Uploading";
-import { calculateGST, formatDate, toastError, toastSuccess } from "../../helpers/helpers";
+import { calculateGST, formatDate, printKOT, toastError, toastSuccess } from "../../helpers/helpers";
 
 const TableKotSummaryModal = (props) => {
   console.log(props);
@@ -51,8 +51,13 @@ const TableKotSummaryModal = (props) => {
       toastSuccess(response.data.message);
       // setSelectedItems([]);
       console.log(props);
-      props.clearItems([]);
-      window.print();
+      props.clearItems();
+      console.log(props.clearItems);
+      console.log(orderData);
+      console.log(kotData);
+      const modifiedKotData = kotData.map((item)=> ({...item, orderedQuantity: item.quantity}));
+      printKOT(restaurant, manager, modifiedKotData, orderData);
+      // window.print();
     } else {
       toastError(response.data.message);
     }

@@ -53,7 +53,8 @@ const CaptainMenu = () => {
     setTotalPrice(total);
   };
 
-  const clearItems = ()=> setSelectedItems([]);
+  const clearItems = ()=> {
+    setSelectedItems([]);}
   // console.log(clearItems);
 
   const handleSearchChange = (event) => {

@@ -681,11 +681,11 @@ exports.generateNextEmployeeId = async (restaurantId) => {
     console.log("lastEmployee", lastEmployee);
 
     if (lastEmployee.length === 0) {
-      nextEmployeeId = `${restaurantCode}EMP000001`;
+      nextEmployeeId = `${restaurantCode}EMP001`;
     } else {
       const lastEmployeeIdNumber = parseInt(lastEmployee[0].employeeId.slice(6), 10);
       const nextEmployeeIdNumber = lastEmployeeIdNumber + 1;
-      const paddedNextEmployeeIdNumber = String(nextEmployeeIdNumber).padStart(6, "0");
+      const paddedNextEmployeeIdNumber = String(nextEmployeeIdNumber).padStart(3, "0");
       nextEmployeeId = `${restaurantCode}EMP${paddedNextEmployeeIdNumber}`;
     }
 

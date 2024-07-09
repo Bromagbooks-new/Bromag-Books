@@ -34,7 +34,7 @@ const DominationModal = ({ filteredDenominations, ...props }) => {
       centered
     >
       <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter " >Domination</Modal.Title>
+        <Modal.Title id="contained-modal-title-vcenter " >Denomination</Modal.Title>
       </Modal.Header>
       <Modal.Body>
 

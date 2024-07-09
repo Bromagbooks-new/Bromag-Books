@@ -326,7 +326,7 @@ console.log(req.files,"files")
 
         await helpers.uploadFileLocally(file, imagePath);
 
-        helpers.deleteFile(file.path);
+        // helpers.deleteFile(file.path);
 
         const imageURL = helpers.getFileUrlLocally(imagePath);
         console.log(imageURL, "imageURL");

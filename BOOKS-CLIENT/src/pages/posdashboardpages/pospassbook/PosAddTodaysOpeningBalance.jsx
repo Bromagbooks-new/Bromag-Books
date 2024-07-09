@@ -14,7 +14,6 @@ const PosAddTodaysOpeningBalance = () => {
   const [denominationCounts, setDenominationCounts] = useState({});
   
   // Define completeDenominationState and initialize it
-  const [completeDenominationState, setCompleteDenominationState] = useState([]);
 
   // Define denominations array within the component scope
   const denominations = [
@@ -29,6 +28,12 @@ const PosAddTodaysOpeningBalance = () => {
     { value: 2, label: "Rs 2" },
     { value: 1, label: "Rs 1" },
   ];
+  const completeDenomination = () => {
+    return denominations.map((denomination) => ({
+      label: denomination.label,
+      count: denominationCounts[denomination.label] || 0,
+    }));
+  };
 
   // Calculate total amount based on denomination counts
   const totalAmount = Object.keys(denominationCounts).reduce(
@@ -44,7 +49,8 @@ const PosAddTodaysOpeningBalance = () => {
       totalAmount: totalAmount // Include total amount in the data object
     };
   
-    data.cashDenomination = completeDenominationState;
+    data.cashDenomination = completeDenomination();
+    // console.log(data.cashDenomination);
   
     try {
       const response = await restaurantPosAxiosInstance.post(

@@ -305,9 +305,10 @@ exports.addMenuData = async (req, res) => {
       console.log(Item);
 
       const foundItem = await restaurant_menu_model.find({
-        restaurant: restaurant,
+        restaurant: isRestaurant,
         item: Item,
       });
+      console.log("Found ITEMSSS.....................................")
       console.log(foundItem);
 
       if(foundItem.length > 0) {

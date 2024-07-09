@@ -8,7 +8,8 @@ import { IoMdPrint } from "react-icons/io";
 import { calculateGST, formatDate, printPOSBill, toastError, toastSuccess } from "../../helpers/helpers";
 
 const PrintBillModal = (props) => {
-  const { printBillData, TotalPrice, onCancel, kotId } = props;
+  const { printBillData, TotalPrice, onCancel, kotId, billId } = props;
+  console.log(billId);
   console.log(printBillData, "printBillData");
 
   const [isUploading, setUploading] = useState(false);
@@ -84,7 +85,6 @@ const PrintBillModal = (props) => {
       //         .join("")
       //     : "";
 
-      printPOSBill(restaurant, manager, printBillData, TotalPrice, gstAmount, grandTotal);
 
       // const printWindow = window.open("", "_blank");
       // printWindow.document.write(
@@ -335,8 +335,10 @@ const PrintBillModal = (props) => {
       setUploading(false);
 
       if (response.data.success) {
+        console.log(response.data);
         // navigate("/pos-dashboard");
         // toastSuccess(response.data.message);
+      printPOSBill(restaurant, manager, printBillData, TotalPrice, gstAmount, grandTotal, billId);
 
         toastSuccess("Order saved");
 
@@ -384,6 +386,7 @@ const PrintBillModal = (props) => {
               </div>
 
               <div className="header-info">
+                <p>Bill No.: {billId || ""}</p>
                 <p>POS ID: {manager && manager.employeeId}</p>
                 {/* <p>Table : {selectedOrder && selectedOrder.tableNumber}</p> */}
               </div>

@@ -63,7 +63,7 @@ const DineInOrderSummaryModal = (props) => {
     try {
       console.log(KotItems);
       const formattedData = KotItems.map(item=> ({...item, orderedQuantity: item.quantity, discountPrice: item.price}));
-      printPOSBill(restaurant, manager, formattedData, Amount, gstAmount, grandTotal);
+      printPOSBill(restaurant, manager, formattedData, Amount, gstAmount, grandTotal, billId);
      
 
       const data = {
@@ -76,7 +76,7 @@ const DineInOrderSummaryModal = (props) => {
       const response = await PrintBill(data);
 
       if (response.data.success) {
-        toastSuccess("Order saved");pos-dinein
+        toastSuccess("Order saved");
 
         navigate("/pos-dashboard");
         props.onCancel();

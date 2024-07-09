@@ -57,6 +57,7 @@ const TableKotSummaryModal = (props) => {
       console.log(kotData);
       const modifiedKotData = kotData.map((item)=> ({...item, orderedQuantity: item.quantity}));
       printKOT(restaurant, manager, modifiedKotData, orderData);
+      props.sendClearMenuSignal();
       // window.print();
     } else {
       toastError(response.data.message);

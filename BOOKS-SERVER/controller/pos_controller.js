@@ -22,7 +22,9 @@ const zomato_menu_Items_model = require("../model/zomato_menu_Items_model");
 const bromag_menu_items = require("../model/bromag_menu_items");
 const menuCategory_model = require("../model/menuCategory_model");
 const restaurant_menu_model = require("../model/restaurant_menu_model");
-const path = require('path')
+const path = require('path');
+const restaurant_table_model = require("../model/restaurant_table_model");
+const restaurant_model = require("../model/restaurant_model");
 // import posTodayClosing from "../model/posTodayClosing";
 // import posTodayExpense from "../model/posTodayExpense";
 // import PosTodayOpeningBalanceModel from "../model/posTodayOpeningBalance";
@@ -546,9 +548,17 @@ console.log(req.body,"boooody")
     console.log(KotItemsArray, "KotItems");
 
 
-    const billId = generateBillId();
+    // const billId = generateBillId();
 
     if (isRestaurant) {
+
+      const restaurant = await restaurant_model.findById(isRestaurant);
+      // console.log(restaurant);
+      if(!restaurant) {
+        res.status(500).json({success: false, message: "Order Failed"});
+        return;
+      } 
+      const billId = await Order.generateBillId(restaurant.username, isRestaurant);
 
       if (isPosManager) {
 
@@ -696,6 +706,7 @@ console.log(updatedOrder,"i am updated order");
             phone,
             orderMode: orderMode,
             KotItems:KotItemsArray,
+            billId: billId,
             paymentMethod,
             restaurantId: isRestaurant,
             posManagerId: req.id,
@@ -703,6 +714,7 @@ console.log(updatedOrder,"i am updated order");
           const savedOrder = await order.save();
 
           console.log(KotItemsArray,"Kot at takewayy");
+          console.log(order);
 
           KotItemsArray.map((item,index) => {
             decrementMenuItemQuantity('Bromag', isRestaurant, item.item, item.quantity);
@@ -719,6 +731,7 @@ console.log(updatedOrder,"i am updated order");
           return res.status(200).json({
             success: true,
             message: "Kitchen to order recorded!",
+            billId,
             orderId: Order_Id,
           });
 
@@ -927,9 +940,17 @@ exports.printBill = async (req, res) => {
     // const KotItems = req.body.kotData;
     // const kotId = req.body.kotId;
 
-    const billId = generateBillId();
+    
+    // const billId = generateBillId();
     if (isRestaurant) {
       if (isPosManager) {
+        // const restaurant = await restaurant_model.findById(isRestaurant);
+        // // console.log(restaurant);
+        // if(!restaurant) {
+        //   res.status(500).json({success: false, message: "Order Failed"});
+        //   return;
+        // } 
+        // const billId = await Order.generateBillId(restaurant.username, isRestaurant);
         // if (orderMode == "takeaway") {
         //   if (!kotId) {
         //     return res.status(400).json({
@@ -940,7 +961,7 @@ exports.printBill = async (req, res) => {
         const order = await Order.findOneAndUpdate(
           { _id: userId },
           {
-            billId: billId,
+            // billId: billId,
             Amount: Amount,
             orderStatus:"Success",
             posManagerId: isPosManager
@@ -3518,6 +3539,7 @@ exports.getDineIn = async (req, res) => {
         const DineInDetails = await Order.find({
           restaurantId: isRestaurant,
           orderMode: "dineIn",
+          posManagerId: isPosManager,
           orderStatus: { $ne: 'Success' } 
       }).populate("tableId")
         .sort({ _id: -1 });

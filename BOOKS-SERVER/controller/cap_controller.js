@@ -363,7 +363,10 @@ exports.printBillAtCap = async (req, res) => {
     const orderData = req.body;
     const tableId = orderData._id;
     const orderId = orderData.orderId;
-    const isPosManager = req.posManagerId;
+    const isPosManager = req.body.posManagerId;
+    console.log("----------------------------------");
+    console.log("POS Manager",isPosManager);
+    console.log("----------------------------------");
     if (isRestaurant && isCapManager) {
       // Check if the order with the given orderId already exists
       const existingOrder = await Order.findOne({ orderId });
@@ -397,7 +400,17 @@ exports.printBillAtCap = async (req, res) => {
             .json({ success: true, message: "Bill successfully sent to POS" });
         }
       } else {
-        const billId = generateBillId();
+        const restaurant = await Restaurant.findById(isRestaurant);
+        // console.log(restaurant);
+        if(!restaurant) {
+          res.status(500).json({success: false, message: "Order Failed"});
+          return;
+        } 
+        const billId = await Order.generateBillId(restaurant.username, isRestaurant);
+
+        console.log('----------------------------------------------');
+        console.log("Heree at new order", isPosManager);
+        console.log('----------------------------------------------');
 
         const newOrder = new Order({
           customerName: orderData.customerName,

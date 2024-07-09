@@ -108,6 +108,8 @@ const PosMenu = () => {
   const [manager, setManager] = useState({});
   const [restaurant, setRestaurant] = useState({});
 
+  const [billId, setBillId] = useState(null);
+
   useEffect(() => {
     const handleManagerData = async () => {
       try {
@@ -285,11 +287,13 @@ const PosMenu = () => {
       });
 
       const response = await KotOrder(data);
-      console.log(response, orderData, "i ma response from kot submit");
+      console.log(response.data, orderData, "i ma response from kot submit");
       setUploading(false);
       setKotId(response.data.orderId);
       if (response.data.success) {
         console.log(data.kotData);
+        setBillId(response.data.billId);
+        console.log(response.data.billId);
         printKOT(restaurant, manager, data.kotData, orderData);
 
         setModalKot(false);
@@ -557,7 +561,7 @@ okButtonProps={{ style: { display: "none" } }}
             okButtonProps={{ style: { display: "none" } }}
             printBillData={selectedItems}
             TotalPrice={totalPrice}
-            billid={selectedItems?._id}
+            billId={billId}
             kotId={kotId}
             // orderData={orderData}
           />

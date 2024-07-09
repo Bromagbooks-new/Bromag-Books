@@ -655,37 +655,45 @@ exports.accessedEmployees = async (req, res) => {
   }
 };
 
-exports.generateNextEmployeeId = async (req, res) => {
+exports.generateNextEmployeeId = async (restaurantId) => {
   try {
+    // Fetch the restaurant name using the restaurant ID
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      throw new Error('Restaurant not found');
+    }
+
+    const restaurantName = restaurant.username;
+    if (!restaurantName || restaurantName.length < 3) {
+      throw new Error('Invalid restaurant name');
+    }
+
+    const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
     let nextEmployeeId;
-    const lastEmployee = await AccessedEmployees.find()
+
+    // Find the last employee whose employeeId starts with the restaurant code followed by "EMP"
+    const lastEmployee = await AccessedEmployees.find({
+      employeeId: { $regex: `^${restaurantCode}EMP` }
+    })
       .sort({ employeeId: -1 })
       .limit(1);
-console.log("lastEmployee",lastEmployee)
-      if(lastEmployee === null){
-    nextEmployeeId = "BIPL000001"  ;
 
-   } else {
+    console.log("lastEmployee", lastEmployee);
 
-    const lastEmployeeIdNumber =
-      lastEmployee.length > 0
-        ? parseInt(lastEmployee[0].employeeId.slice(4), 10)
-        : 0;
+    if (lastEmployee.length === 0) {
+      nextEmployeeId = `${restaurantCode}EMP000001`;
+    } else {
+      const lastEmployeeIdNumber = parseInt(lastEmployee[0].employeeId.slice(6), 10);
+      const nextEmployeeIdNumber = lastEmployeeIdNumber + 1;
+      const paddedNextEmployeeIdNumber = String(nextEmployeeIdNumber).padStart(6, "0");
+      nextEmployeeId = `${restaurantCode}EMP${paddedNextEmployeeIdNumber}`;
+    }
 
-    const nextEmployeeIdNumber = lastEmployeeIdNumber + 1;
-
-    const paddedNextEmployeeIdNumber = String(nextEmployeeIdNumber).padStart(
-      3,
-      "0"
-    );
-
-    nextEmployeeId = `BIPL${paddedNextEmployeeIdNumber}`;
-  }
-  console.log("its next",nextEmployeeId)
-
+    console.log("Next Employee ID:", nextEmployeeId);
     return nextEmployeeId;
   } catch (err) {
     console.log(err);
+    throw err; // Re-throw the error to be handled by the caller
   }
 };
 
@@ -749,7 +757,7 @@ exports.addAccess = async (req, res) => {
     
     const { username, password, email, accessAs } = req.body;
     const file = req.files[0];
-    const employeeId = await this.generateNextEmployeeId();
+    const employeeId = await this.generateNextEmployeeId(req.restaurant);
    console.log("emplueeID",employeeId)
     if (username) {
       const existingUsername = await AccessedEmployees.findOne({ username });

@@ -85,16 +85,54 @@ exports.deleteMenuCategory = async (req, res) => {
     const restaurant = req.restaurant;
     if (restaurant) {
       const { categoryId } = req.body;
-      // const response = await MenuCategory.findOne({ _id: categoryId });
+      const category = await MenuCategory.findOne({ _id: categoryId });
 
       // if (response.itemImage) {
       //   const localFilePath = response.itemImage.replace('/uploads/', ''); 
       //   await helpers.deleteFileLocally(localFilePath);
       // }
+
+      const activeMenuItemExists = await restaurant_menu_model.exists({restaurant: restaurant, category: category.category, isShared: true});
+
+      console.log(activeMenuItemExists);
+
+      if(activeMenuItemExists) {
+        console.log("Active menu exists", activeMenuItemExists);
+        res.json({success: false, status: "ACTIVE_MENU_EXISITS", message: "Active menu items exists for this cusine."});
+        return;
+      }
+
       const foundedCategory = await MenuCategory.findOneAndDelete({
         _id: categoryId,
         restaurant: restaurant,
       });
+
+      foundedMenu = await restaurant_menu_model.deleteMany({
+        restaurant: restaurant,
+        category: category.category
+      });
+      await swiggy_menu_item_model.deleteMany({
+        restaurant: restaurant,
+        category: category.category
+      });
+      await swiggy_menu_item_model.deleteMany({
+        restaurant: restaurant,
+        category: category.category
+      });
+      await bromag_menu_items.deleteMany({
+        restaurant: restaurant,
+        category: category.category
+      });
+      await others_menu_item_model.deleteMany({
+        restaurant: restaurant,
+        category: category.category
+      });
+      await zomato_menu_Items_model.deleteMany({
+        restaurant: restaurant,
+        category: category.category
+      });
+
+
       res.status(200).json({
         success: true,
         message: `${foundedCategory.category} category is deleted!`,
@@ -264,6 +302,18 @@ exports.addMenuData = async (req, res) => {
       } = req.body;
 
       const file = req.file;
+      console.log(Item);
+
+      const foundItem = await restaurant_menu_model.find({
+        restaurant: restaurant,
+        item: Item,
+      });
+      console.log(foundItem);
+
+      if(foundItem.length > 0) {
+        res.json({ success: false, message: `Item already in the menu!`, status: "ITEM_EXISTS" });
+        return;
+      }
 
       const convertedQuantity = parseInt(Quantity, 10);
 
@@ -1096,6 +1146,28 @@ exports.deleteMenu = async (req, res) => {
           _id: menuId,
           restaurant: restaurant,
         });
+        await swiggy_menu_item_model.findOneAndDelete({
+          restaurant: restaurant,
+          item: foundedMenu.item,
+        });
+        await swiggy_menu_item_model.findOneAndDelete({
+          restaurant: restaurant,
+          item: foundedMenu.item,
+        });
+        await bromag_menu_items.findOneAndDelete({
+          restaurant: restaurant,
+          item: foundedMenu.item,
+        });
+        await others_menu_item_model.findOneAndDelete({
+          restaurant: restaurant,
+          item: foundedMenu.item,
+        });
+        await zomato_menu_Items_model.findOneAndDelete({
+          restaurant: restaurant,
+          item: foundedMenu.item,
+        });
+
+        
       }
       if (plateform === "Swiggy") {
         foundedMenu = await swiggy_menu_item_model.findOneAndDelete({

@@ -96,7 +96,7 @@ export function toastSuccess(message) {
 export const formatImageUrl = (url)=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1) + url;
 
 
-export const printPOSBill = (restaurant, manager, printBillData, TotalPrice, gstAmount, grandTotal) => {
+export const printPOSBill = (restaurant, manager, printBillData, TotalPrice, gstAmount, grandTotal, billId) => {
   const htmlContent = `
   <!DOCTYPE html>
   <html lang="en">
@@ -255,6 +255,7 @@ export const printPOSBill = (restaurant, manager, printBillData, TotalPrice, gst
               
               </div>
               <p>POS ID: ${manager && manager.employeeId}</p>
+              <p>Bill No.: ${billId}</p>
             </div>
         </div>
       </div>

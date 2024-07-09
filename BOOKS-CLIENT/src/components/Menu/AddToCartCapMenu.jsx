@@ -13,6 +13,7 @@ const AddToCartCapMenu = ({
   sortingOption,
   selectedCategory,
   searchTerm,
+  clearMenuSignal
 }) => {
   const [menu, setMenu] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -105,8 +106,10 @@ const AddToCartCapMenu = ({
 
   useEffect(() => {
     console.log("Fetching menu data");
+    setSelectedItems([]);
     handleMenuData();
-  }, [selectedCategory]);
+    console.log(clearMenuSignal);
+  }, [selectedCategory, clearMenuSignal]);
 
   useEffect(() => {
     let totalPrice = 0;

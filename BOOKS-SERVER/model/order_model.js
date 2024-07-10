@@ -79,7 +79,7 @@ orderSchema.statics.generateBillId = async function(restaurantName, restrauntId)
   if (lastOrder && lastOrder.billId) {
     // Extract the count from the last bill ID
     const lastBillId = lastOrder.billId;
-    const lastCount = lastBillId ? parseInt(lastOrder.billId?.substring(3), 10) :  0;
+    const lastCount = lastBillId ? parseInt(lastOrder.billId?.substring(3), 10) :  1;
     count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999 range
   }
 

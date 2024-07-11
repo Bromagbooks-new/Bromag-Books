@@ -17,7 +17,8 @@ module.exports = {
       },
     },
     fontFamily: {
-      'roboto': ['Roboto']
+      'roboto': ['Roboto'],
+      'space-grotesk': ["Space Grotesk"]
     },
     extend: {
       colors: {
@@ -54,6 +55,8 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        'landing-primary': '#1D5798',
+        'landing-secondary': '#1B3A6C' 
       },
       borderRadius: {
         lg: "var(--radius)",

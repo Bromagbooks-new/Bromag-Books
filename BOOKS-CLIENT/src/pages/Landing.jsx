@@ -15,16 +15,21 @@ import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 //data imports from utils 
 import landingData from '../utils/LandingPageData';
 //component imports
-import Footer from '../components/Footer';
 //image imports
 import { BgVector, LandingImg } from '../assets/images/landing-images';
 import Hero from '@/components/Landing/Hero';
+import LandingFeatures from '@/components/Landing/LandingFeatures';
+import Upgrades from '@/components/Landing/Upgrades';
+import Footer from '@/components/Landing/Footer';
 
 const Landing = () => {
     return (
-       <div>
+       <div className=''>
             <Navbar />
             <Hero />
+            <LandingFeatures />
+            <Upgrades />
+            <Footer />
        </div>
     )
 }

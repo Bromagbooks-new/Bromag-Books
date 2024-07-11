@@ -15,8 +15,8 @@ const Hero = () => {
           Experience outstanding efficiency and growth with{" "}
         </p>
         <p className="text-9xl uppercase">BromagBooks</p>
-        <p className="uppercase text-[42px]">Restaurant POS and billing SOFTWARE</p>
-        <Button className="bg-blue-950 w-52 p-6 text-2xl">Get Started</Button>
+        <p className="uppercase text-[42px] font-space-grotesk">Restaurant POS and billing SOFTWARE</p>
+        <Button className="bg-landing-secondary w-52 p-6 text-2xl font-space-grotesk">Get Started</Button>
       </div>
     </>
   );

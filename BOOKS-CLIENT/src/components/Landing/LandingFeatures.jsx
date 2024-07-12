@@ -11,11 +11,11 @@ import InventoryManagement from "@/assets/images/Bromag Dashboard Features/Inven
 
 const LandingFeatures = () => {
   return (
-    <div className="-mt-80 flex flex-col items-center">
+    <div className="-mt-56 lg:-mt-80 flex flex-col items-center">
       <p className="text-5xl uppercase font-semibold font-roboto text-landing-primary">
         Features
       </p>
-      <div className="grid grid-cols-4 gap-20 pt-20">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-20 pt-20">
         {landingFeatures.map((feature) => (
           <FeatureCard
             key={feature.id}

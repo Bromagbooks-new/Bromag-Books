@@ -11,7 +11,7 @@ const Upgrades = () => {
       <p className="text-5xl uppercase font-semibold font-roboto text-landing-primary">
         Upgrade
       </p>
-      <div className="grid grid-cols-4 gap-20 pt-20">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-20 pt-20">
         {upgrades.map((feature) => (
           <FeatureCard
             key={feature.id}

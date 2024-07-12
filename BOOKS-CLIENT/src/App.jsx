@@ -108,6 +108,7 @@ import PosTodaysClosing from "./pages/posdashboardpages/pospassbook/PosTodaysClo
 import StockManagement from "./pages/admindashboardpages/stockmanagement/StockManagemnet";
 import StockIn from "./pages/admindashboardpages/stockmanagement/StockIn";
 import StockOut from "./pages/admindashboardpages/stockmanagement/StockOut";
+import Features from "./pages/Features";
 
 
 const router = createBrowserRouter([
@@ -119,6 +120,14 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Landing />,
+      },
+      {
+        path: "features",
+        element: <Features />
+      },
+      {
+        path: "login",
+        element: <Login />,
       },
       {
         path: "login",

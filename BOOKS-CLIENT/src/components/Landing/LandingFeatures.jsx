@@ -11,7 +11,7 @@ import InventoryManagement from "@/assets/images/Bromag Dashboard Features/Inven
 
 const LandingFeatures = () => {
   return (
-    <div className="-mt-56 lg:-mt-80 flex flex-col items-center">
+    <div className="-mt-56 lg:-mt-42 flex flex-col items-center">
       <p className="text-5xl uppercase font-semibold font-roboto text-landing-primary">
         Features
       </p>

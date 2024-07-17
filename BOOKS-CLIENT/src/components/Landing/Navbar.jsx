@@ -14,7 +14,7 @@ const Navbar = () => {
   return (
     <nav className="h-0 relative top-20 -mt-12 w-screen px-10 lg:px-10 py-4 flex items-center justify-between z-50">
       <div className="">
-        <img src={logo} className="w-36 h-40 md:w-52 md:h-52" />
+        <img src={logo} className="w-36 h-36" />
       </div>
       <div className="hidden lg:flex gap-10 items-center text-lg font-space-grotesk">
         <NavLink
@@ -47,12 +47,19 @@ const Navbar = () => {
           }
           to="/login"
         >
+          Book a Demo
+        </NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            `flex gap-1 ${isActive && "underline text-blue-600"}`
+          }
+          to="/login"
+        >
+        <Button className="bg-landing-secondary p-4 text-lg font-extrabold">
           <User />
           Login
-        </NavLink>
-        <Button className="bg-landing-secondary p-4 text-lg font-extrabold">
-          Book a Demo
         </Button>
+        </NavLink>
       </div>
       <Drawer>
 

@@ -1,22 +1,26 @@
-import landingHero from "@/assets/images/landing-images/landing-hero.png";
+import landingHero from "@/assets/images/landing-images/HeroBackground.png";
+import heroEffect from '@/assets/images/landing-images/HeroEffect.svg';
 import { Button } from "../ui/button";
+import HeroSection from "./HeroSection";
 
 const Hero = () => {
   return (
     <>
       <div
-        className="h-[40rem] md:h-[42rem] bg-center bg-cover"
+        className="h-[40rem] md:h-[55rem] bg-center bg-cover"
         style={{ backgroundImage: `url("${landingHero}")` }}
       >
-        <div className="w-full h-full bg-white opacity-45"></div>
+        <div className="relative ">
+          <img className="relative h-[50rem] w-[50rem] left-[47%] top-[9rem]" src={heroEffect} />
+        </div>
+        {/* <div className="w-full h-full bg-white opacity-45"></div> */}
       </div>
-      <div className="relative bottom-[30rem] text-[#1D5798] font-bold text-center flex flex-col items-center gap-4 font-roboto">
-        <p className="uppercase text-2xl lg:text-4xl ">
-          Experience outstanding efficiency and growth with{" "}
-        </p>
-        <p className="text-5xl md:text-8xl lg:text-9xl uppercase">BromagBooks</p>
-        <p className="uppercase text-4xl lg:text-[42px] font-space-grotesk">Restaurant POS and billing SOFTWARE</p>
-        <Button className="bg-landing-secondary w-52 p-6 text-2xl font-space-grotesk">Get Started</Button>
+      <div className="relative bottom-[36rem] font-bold w-[60%] h-0  pl-20 flex flex-col gap-4 font-roboto">
+
+        <p className="font-bold text-black text-5xl md:text-8xl lg:text-8xl uppercase">Bromag <span className="text-landing-primary">BOOKS</span></p>
+        <p className="uppercase text-4xl lg:text-xl text-gray-500 ">A platform that provides a comprehensive accounting system for businesses that are growing</p>
+        <Button className="bg-landing-secondary w-52 p-6 text-2xl font-space-grotesk">Explore Now</Button>
+      <HeroSection />
       </div>
     </>
   );

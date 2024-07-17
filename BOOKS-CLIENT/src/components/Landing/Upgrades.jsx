@@ -7,11 +7,11 @@ import IntegrationManagement from "@/assets/images/Bromag Dashboard Features/Sal
 
 const Upgrades = () => {
   return (
-    <div className="pt-16 flex flex-col items-center">
-      <p className="text-5xl uppercase font-semibold font-roboto text-landing-primary">
-        Upgrade
+    <div className="pt-24 flex flex-col items-center bg-[#1F303C]">
+      <p className="text-5xl uppercase font-semibold font-roboto  text-white py-10">
+        Upgrades
       </p>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-20 pt-20">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 ">
         {upgrades.map((feature) => (
           <FeatureCard
             key={feature.id}

@@ -21,14 +21,16 @@ import Hero from '@/components/Landing/Hero';
 import LandingFeatures from '@/components/Landing/LandingFeatures';
 import Upgrades from '@/components/Landing/Upgrades';
 import Footer from '@/components/Landing/Footer';
+import QueryForm from '@/components/Landing/QueryForm';
 
 const Landing = () => {
     return (
-       <div className=''>
+       <div className='w-screen'>
             <Navbar />
             <Hero />
             <LandingFeatures />
             <Upgrades />
+            <QueryForm />
             <Footer />
        </div>
     )

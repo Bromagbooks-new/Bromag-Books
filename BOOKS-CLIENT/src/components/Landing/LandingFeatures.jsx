@@ -9,13 +9,28 @@ import StockManagement from "@/assets/images/Bromag Dashboard Features/StockMana
 import VendorManagement from "@/assets/images/Bromag Dashboard Features/VendorManagement.svg";
 import InventoryManagement from "@/assets/images/Bromag Dashboard Features/InventoryManagement.svg";
 
+import subtract from '@/assets/images/landing-images/Subtract.svg';
+import ellipse542 from '@/assets/images/landing-images/Ellipse 542.svg'
+import ellipse543 from '@/assets/images/landing-images/Ellipse 543.svg'
+import group212 from '@/assets/images/landing-images/Group 212.svg'
+
 const LandingFeatures = () => {
   return (
-    <div className="pt-[30rem] flex flex-col items-center bg-[#1F303C]">
-      <p className="text-5xl uppercase font-semibold font-roboto text-white">
+    <div className=" flex flex-col items-center bg-[#1F303C]">
+      <div className="relative h-0">
+        <img className="relative z-10 left-[20%] opacity-50" src={subtract} />
+      </div>
+     
+      <div className="relative h-0">
+        <img className="relative z-0 left-[70%] top-[10rem]" src={ellipse542} />
+      </div>
+      <div className="relative h-0">
+        <img className="relative z-0 right-[42rem] top-[10rem]" src={ellipse543} />
+      </div>
+      <p className="text-5xl mt-[28rem] uppercase font-semibold font-roboto text-white">
         OUR FEATURES
       </p>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 pt-20">
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 pt-10">
         {landingFeatures.map((feature) => (
           <FeatureCard
             key={feature.id}
@@ -24,6 +39,9 @@ const LandingFeatures = () => {
             exploreUrl={feature.exploreUrl}
           />
         ))}
+      </div>
+      <div className="relative h-0">
+        <img className="relative z-0 right-[21%] bottom-[43rem]" src={group212} />
       </div>
     </div>
   );

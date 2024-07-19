@@ -18,7 +18,8 @@ module.exports = {
     },
     fontFamily: {
       'roboto': ['Roboto'],
-      'space-grotesk': ["Space Grotesk"]
+      'space-grotesk': ["Space Grotesk"],
+      'roboto-condensed': ["Roboto Condensed"]
     },
     extend: {
       colors: {

@@ -19,7 +19,7 @@ import group216 from '@/assets/images/landing-images/Group 216.svg';
 const Footer = ()=> {
 
 
-    return <footer className="flex flex-col items-center pt-24 gap-12 bg-[#182732]" style={{ background: "linear-gradient(90deg, #0D171E 0%, #0D171E 100%)" }}>
+    return <footer className="flex flex-col items-center pt-24 gap-12 bg-[#182732] font-roboto-condensed" style={{ background: "linear-gradient(90deg, #0D171E 0%, #0D171E 100%)" }}>
         <div className='flex flex-col lg:flex-row justify-center gap-32 w-full'>
             <div className='flex items-center'>
             <img src={logo} className=' w-48 h-48 z-10'/>

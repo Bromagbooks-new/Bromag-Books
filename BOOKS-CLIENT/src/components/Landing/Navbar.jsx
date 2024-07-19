@@ -16,34 +16,34 @@ const Navbar = () => {
       <div className="">
         <img src={logo} className="w-36 h-36" />
       </div>
-      <div className="hidden lg:flex gap-10 items-center text-lg font-space-grotesk">
+      <div className="hidden lg:flex gap-10 items-center text-lg font-roboto text-muted">
         <NavLink
-          className={({ isActive }) => isActive && "underline text-blue-600"}
+          className={({ isActive }) => isActive && "font-bold text-black"}
           to="/"
         >
           Home
         </NavLink>
         <NavLink
-          className={({ isActive }) => isActive && "underline text-blue-600"}
+          className={({ isActive }) => isActive && "font-bold text-black"}
           to="/features"
         >
           Features
         </NavLink>
         <NavLink
-          className={({ isActive }) => isActive && "underline text-blue-600"}
+          className={({ isActive }) => isActive && "font-bold text-black"}
           to="/upgrade"
         >
           Upgrade
         </NavLink>
         <NavLink
-          className={({ isActive }) => isActive && "underline text-blue-600"}
+          className={({ isActive }) => isActive && "font-bold text-black"}
           to="/who-we-are"
         >
           Who We Are
         </NavLink>
         <NavLink
           className={({ isActive }) =>
-            `flex gap-1 ${isActive && "underline text-blue-600"}`
+            `flex gap-1 ${isActive && "font-bold text-black"}`
           }
           to="/login"
         >

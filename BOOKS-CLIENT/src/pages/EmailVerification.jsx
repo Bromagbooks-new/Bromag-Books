@@ -1,89 +1,77 @@
-import { BgBlob, SemiCircle, BgBoy } from "../assets/images"
-import Styled from 'styled-components'
+import Vector from "@/assets/images/login/Vector.svg";
+import Ellipse from "@/assets/images/login/Ellipse.svg";
+import Ellipse1 from "@/assets/images/login/Ellipse 1.svg";
+import Star from "@/assets/images/login/Star.svg";
+import square1 from "@/assets/images/login/square-1.svg";
+import square2 from "@/assets/images/login/square-2.svg";
+import verify from '@/assets/images/login/verify.gif';
 
-const Wrapper = Styled.div`
-width: 100vw;
-height: 100vh;
-display: flex;
-.left-div{
-    width: 50%;
-    background-image: url(${SemiCircle});
-    background-repeat: no-repeat;
-    background-size: 90% 130%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    img{
-        width: 65%;
-        height: 70%;
-        margin-left: 120px;
-    }
-}
+import {Button} from '@/components/ui/button';
+import { Link } from "react-router-dom";
 
-.right-div{
-    width: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column; 
-    position:relative;
-}
-.bg-blob{
-    position: absolute;
-    height: 90%;
-}
-.right-div-content{
-    z-index: 5;
-    text-align: center;
-    margin-top: 120px;
-    p{
-        font-size: 18px;
-    }
-    h3{
-        font-weight: 700;
-    }
-}
-
-
-
-/* 768px >= Medium <= 1024 start */
-
-@media screen and (min-width: 768px) and (max-width: 1024px){
-.left-div{
-    display: none;
-}
-
-.right-div{
- width: 100%;
- padding: 0px 0px;
- img{
-    width: 90%;
-    height: 70%;
- }
- .right-div-content{
-    margin-top: 150px;
- }
-}
-/* 768px >= Medium <= 1024 end */
-`;
 
 const EmailVerification = () => {
     return (
-        <Wrapper>
+        <div className="bg-[#1F303C] h-screen">
+        <div className="relative h-0">
+          <img className="relative z-10 left-[42%] w-[56rem] " src={Vector} />
+        </div>
+        <div className="relative h-0">
+          <img
+            className="relative z-10 right-[0%] w-[28rem] top-[18.8rem] "
+            src={Ellipse}
+          />
+        </div>
+        <div className="relative h-0">
+          <img
+            className="relative z-10 right-[0%] w-[23rem] top-[23.8rem] "
+            src={Ellipse1}
+          />
+        </div>
+        <div className="relative h-0">
+          <img
+            className="relative z-10 right-[0%]  w-[17rem] top-[29.8rem]"
+            src={Ellipse}
+          />
+        </div>
+        <div className="relative h-0">
+          <img
+            className="relative z-10 left-[66%]  w-[22rem] top-[27rem]"
+            src={square1}
+          />
+        </div>
+        <div className="relative h-0">
+          <img
+            className="relative z-10 left-[10%]  w-[13rem] top-[2.8rem]"
+            src={square2}
+          />
+        </div>
+        <div className="relative h-0">
+          <img
+            className="relative z-10 left-[24%]  w-[3rem] top-[38.8rem]"
+            src={Star}
+          />
+        </div>
+        <div className="relative h-0">
+          <img
+            className="relative z-10 left-[76%]  w-[3rem] top-[16rem]"
+            src={Star}
+          />
+        </div>
 
-            <div className="left-div">
-                <img src={BgBoy} alt="" />
-            </div>
-            <div className="right-div">
-                <img className='bg-blob' src={BgBlob} alt="" />
-                <div className='right-div-content'>
-                    <p>
-                        We have sent an e-mail link
-                    </p>
-                    <h3>check you e-mail to login</h3>
-                </div>
-            </div>
-        </Wrapper>
+        {/* <Container> */}
+        {/* <Logo className="logo" /> */}
+        <div className="flex flex-col gap-10 items-center justify-center h-full text-white font-roboto z-40">
+          <img src={verify} className="w-56 h-56" />
+        <p className="text-xl text-white">We have sent an Email link to you, kindly check your Email to login.</p>
+        <Link to="/admin-login" className="z-40">
+
+        <Button className="bg-[#56DDE8] w-80 p-4 text-xl uppercase text-black z-40">Login</Button>
+        </Link>
+        </div>
+
+        {/* </Container> */}
+      </div>
     )
 }
 export default EmailVerification

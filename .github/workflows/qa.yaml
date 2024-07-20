@@ -1,0 +1,55 @@
+name: bromagbooks development 
+
+on:
+  push:
+    branches:
+      - Qa
+jobs:
+  bromagbooks:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+      - name: Build frontend
+        run: |
+          cd BOOKS-CLIENT
+          echo "${{ secrets.QACLIENT }}" >> .env
+          pwd
+          npm ci
+          npm run build 
+      # - name: Build backend
+      #   run: |
+      #     cd BOOKS-SERVER
+      #     echo "${{ secrets.BACKENDCLIENT }}" >> .env
+      #     echo "${{ secrets.EMAIL }}" >> .env
+      #     echo "${{ secrets.EMAILPASS }}" >> .env
+      #     echo "${{ secrets.MONGODB }}" >> .env
+      #     echo "${{ secrets.PORT }}" >> .env
+      #     echo "${{ secrets.SECRET }}" >> .env
+      - name: Produce backend tar
+        run: tar -cvf server.tar BOOKS-SERVER
+      - name: install ssh
+        run: sudo apt update && sudo apt install -y sshpass
+      - name: copy client
+        run: |
+          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no -r BOOKS-CLIENT/dist ${{ secrets.USER }}@${{ secrets.HOST }}:/home/cicd/qa
+
+      - name: copy backend
+        run: |
+          sshpass -p ${{ secrets.PASSWORD }} scp -o StrictHostKeyChecking=no server.tar ${{ secrets.USER }}@${{ secrets.HOST }}:/home/cicd/server/qa
+      - name: Start the backend
+        run: |
+          sshpass -p ${{ secrets.PASSWORD }} ssh -o StrictHostKeyChecking=no ${{ secrets.USER }}@${{ secrets.HOST }} << 'EOF'
+          cd /home/cicd/qa
+          tar -xvf server.tar
+          cp /home/cicd/qa/.env /home/cicd/qa/BOOKS-SERVER
+          cd /home/cicd/qa/BOOKS-SERVER
+          export PATH=$PATH:/root/.nvm/versions/node/v20.13.1/bin
+          export PATH=$PATH:/root/.nvm/versions/node/v20.13.1/bin/pm2
+          npm install
+          pm2 restart qa
+          EOF

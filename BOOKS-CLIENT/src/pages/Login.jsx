@@ -124,6 +124,7 @@ const Login = () => {
                 type="username"
                 id="username"
                 placeholder="Enter your username"
+                className="text-black"
               />
             </div>
             {errors.username && errors.username.type === "required" && (
@@ -136,6 +137,7 @@ const Login = () => {
                 type={show ? "text" : "password"}
                 id="password"
                 placeholder="Enter Password"
+                className="text-black"
               />
               {/* <button type="button" className="eye-btn" onClick={handleShow}>
                 {show ? <IoEyeOff /> : <IoEye />}

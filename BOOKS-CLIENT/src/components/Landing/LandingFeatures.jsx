@@ -17,14 +17,14 @@ import group212 from '@/assets/images/landing-images/Group 212.svg'
 const LandingFeatures = () => {
   return (
     <div className=" flex flex-col items-center bg-[#1F303C] font-roboto-condensed">
-      <div className="relative h-0">
+      <div className="relative h-0 hidden md:block">
         <img className="relative z-10 left-[20%] opacity-50" src={subtract} />
       </div>
      
-      <div className="relative h-0">
+      <div className="relative h-0 hidden md:block">
         <img className="relative z-0 left-[70%] top-[10rem]" src={ellipse542} />
       </div>
-      <div className="relative h-0">
+      <div className="relative h-0 hidden md:block">
         <img className="relative z-0 right-[42rem] top-[10rem]" src={ellipse543} />
       </div>
       <p className="text-5xl mt-[28rem] uppercase font-semibold text-white">
@@ -40,7 +40,7 @@ const LandingFeatures = () => {
           />
         ))}
       </div>
-      <div className="relative h-0">
+      <div className="relative h-0 hidden md:block">
         <img className="relative z-0 right-[21%] bottom-[43rem]" src={group212} />
       </div>
     </div>

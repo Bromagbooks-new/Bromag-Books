@@ -20,7 +20,7 @@ const Footer = ()=> {
 
 
     return <footer className="flex flex-col items-center pt-24 gap-12 bg-[#182732] font-roboto-condensed" style={{ background: "linear-gradient(90deg, #0D171E 0%, #0D171E 100%)" }}>
-        <div className='flex flex-col lg:flex-row justify-center gap-32 w-full'>
+        <div className='flex flex-col lg:flex-row items-center justify-center gap-16 md:gap-32 w-full'>
             <div className='flex items-center'>
             <img src={logo} className=' w-48 h-48 z-10'/>
 
@@ -81,10 +81,10 @@ const Footer = ()=> {
         </div>
             <p className='text-gray-500 text-xl'>Copyrights reserved Bromag india PVT LTD</p>
             <div className="relative h-0">
-        <img className="relative z-0 h-[22rem] opacity-60 bottom-[19rem] right-[110%]" src={ellipse546} />
+        <img className="relative z-0 h-[22rem] opacity-60 bottom-[19rem] right-[110%] hidden md:block" src={ellipse546} />
       </div>
             <div className="relative h-0">
-        <img className="relative z-0 h-[28rem] opacity-60 bottom-[28rem] left-[55%]" src={group216} />
+        <img className="relative z-0 h-[28rem] opacity-60 bottom-[28rem] left-[55%] hidden md:block" src={group216} />
       </div>
         
     </footer>

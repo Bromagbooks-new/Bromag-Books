@@ -60,42 +60,42 @@ const Login = () => {
       {/* <Wrapper> */}
 
       <div className="bg-[#1F303C] h-screen">
-        <div className="relative h-0">
+        <div className="relative h-0 hidden md:block">
           <img className="relative z-10 left-[42%] w-[56rem] " src={Vector} />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 right-[0%] w-[28rem] top-[18.8rem] "
+            className="relative z-10 right-[0%] w-[28rem] top-[18.8rem] hidden md:block "
             src={Ellipse}
           />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 right-[0%] w-[23rem] top-[23.8rem] "
+            className="relative z-10 right-[0%] w-[23rem] top-[23.8rem] hidden md:block "
             src={Ellipse1}
           />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 right-[0%]  w-[17rem] top-[29.8rem]"
+            className="relative z-10 right-[0%]  w-[17rem] top-[29.8rem] hidden md:block"
             src={Ellipse}
           />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 left-[66%]  w-[22rem] top-[27rem]"
+            className="relative z-10 md:left-[66%]  w-[22rem] top-[27rem]"
             src={square1}
           />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 left-[10%]  w-[13rem] top-[2.8rem]"
+            className="relative z-10 left-[10%]  w-[13rem] top-[2.8rem] "
             src={square2}
           />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 left-[24%]  w-[3rem] top-[38.8rem]"
+            className="relative z-10 left-[24%]  w-[3rem] top-[38.8rem] "
             src={Star}
           />
         </div>
@@ -109,7 +109,7 @@ const Login = () => {
         {/* <Container> */}
         {/* <Logo className="logo" /> */}
         <div className="flex items-center justify-center h-full text-white font-roboto z-40">
-          <form onSubmit={handleSubmit(handleLoginSubmit)} className="w-1/4 flex flex-col gap-4 z-40">
+          <form onSubmit={handleSubmit(handleLoginSubmit)} className="md:w-1/4 flex flex-col gap-4 z-40">
             <p className=" text-white text-5xl font-semibold text-center">
               Login
             </p>

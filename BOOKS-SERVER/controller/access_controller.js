@@ -19,7 +19,8 @@ const {
 const StockOut = require("../model/stock_out");
 const { generateEmployId } = require("../middleware/employ_Id");
 const feedback_model = require("../model/feedback_model");
-const path = require('path')
+const path = require('path');
+const { DemoRequestModel } = require("../model/demo_request");
 
 
 exports.getAllRegisteredPos = async (req, res) => {
@@ -502,6 +503,25 @@ exports.verifyLogin = async (req, res) => {
     res
       .status(500)
       .json({ success: false, serverMessage: "Internal Server Error" });
+  }
+};
+
+
+exports.storeDemoRequest = async (req, res)=> {
+
+  try {
+    const {name, email, phone, location, type, designation, purpose} = req.body;
+
+    const demoRequest = new DemoRequestModel({ name, email, phone, location, type, designation, purpose });
+    await demoRequest.save();
+
+    res.json({ success: true, message: "Request Saved" });
+
+  }
+  catch (error) {
+    res
+    .status(500)
+    .json({ success: false, serverMessage: "Internal Server Error" });
   }
 };
 

@@ -109,6 +109,8 @@ import StockManagement from "./pages/admindashboardpages/stockmanagement/StockMa
 import StockIn from "./pages/admindashboardpages/stockmanagement/StockIn";
 import StockOut from "./pages/admindashboardpages/stockmanagement/StockOut";
 import Features from "./pages/Features";
+import BookADemo from "./pages/BookADemo";
+import DemoBooked from "./pages/DemoBooked";
 
 
 const router = createBrowserRouter([
@@ -144,6 +146,14 @@ const router = createBrowserRouter([
       {
         path: "email-verification",
         element: <EmailVerification />,
+      },
+      {
+        path: "book-a-demo",
+        element: <BookADemo />,
+      },
+      {
+        path: "demo-booked",
+        element: <DemoBooked />,
       },
       {
         path: "admin-login",

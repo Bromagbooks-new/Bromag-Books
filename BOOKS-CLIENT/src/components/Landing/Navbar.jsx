@@ -45,7 +45,7 @@ const Navbar = () => {
           className={({ isActive }) =>
             `flex gap-1 ${isActive && "font-bold text-black"}`
           }
-          to="/login"
+          to="/book-a-demo"
         >
           Book a Demo
         </NavLink>

@@ -38,7 +38,7 @@ const Footer = ()=> {
                     </li>
                     <li className='flex gap-2'>
                         <MapPin />
-                        <p className=''>Velachery, Chennai</p>
+                        <p className=''>Chennai, Tamil Nadu</p>
                     </li>
                 </ul>
             </div>

@@ -64,10 +64,10 @@ const EmailVerification = () => {
         <div className="flex flex-col gap-10 items-center justify-center h-full text-white font-roboto z-40">
           <img src={verify} className="w-56 h-56" />
         <p className="text-xl text-white p-10 text-center">We have sent an Email link to you, kindly check your Email to login.</p>
-        <Link to="/admin-login" className="z-40">
+        {/* <Link to="/admin-login" className="z-40">
 
         <Button className="bg-[#56DDE8] w-80 p-4 text-xl uppercase text-black z-40">Login</Button>
-        </Link>
+        </Link> */}
         </div>
 
         {/* </Container> */}

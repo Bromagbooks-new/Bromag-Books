@@ -8,6 +8,8 @@ import SalesManagement from "@/assets/images/Bromag Dashboard Features/SalesMana
 import StockManagement from "@/assets/images/Bromag Dashboard Features/StockManagement.svg";
 import VendorManagement from "@/assets/images/Bromag Dashboard Features/VendorManagement.svg";
 import InventoryManagement from "@/assets/images/Bromag Dashboard Features/InventoryManagement.svg";
+import TableManagement from "@/assets/images/Bromag Dashboard Features/TableManagement.svg";
+import EmployeeManagement from "@/assets/images/Bromag Dashboard Features/EmployeeManagement.svg";
 
 import subtract from '@/assets/images/landing-images/Subtract.svg';
 import ellipse542 from '@/assets/images/landing-images/Ellipse 542.svg'
@@ -75,12 +77,6 @@ const landingFeatures = [
     exploreUrl: "/features/#dominent",
   },
   {
-    id: 5,
-    title: "Menu Management",
-    imgSrc: MenuManagement,
-    exploreUrl: "/features/#menu",
-  },
-  {
     id: 6,
     title: "Inventory Management",
     imgSrc: InventoryManagement,
@@ -93,6 +89,18 @@ const landingFeatures = [
     exploreUrl: "/features/#stock",
   },
   {
+    id: 5,
+    title: "Menu Management",
+    imgSrc: MenuManagement,
+    exploreUrl: "/features/#menu",
+  },
+  {
+    id: 11,
+    title: "Employee Management",
+    imgSrc: EmployeeManagement,
+    exploreUrl: "/features/#employee",
+  },
+  {
     id: 8,
     title: "Vendor Management",
     imgSrc: VendorManagement,
@@ -100,6 +108,12 @@ const landingFeatures = [
   },
   {
     id: 9,
+    title: "Table Management",
+    imgSrc: TableManagement,
+    exploreUrl: "/features/#table",
+  },
+  {
+    id: 10,
     title: "CRM Management",
     imgSrc: CRMManagement,
     exploreUrl: "/features/#crm",

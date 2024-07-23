@@ -15,6 +15,7 @@ const upload = require("../utils/uploaders");
 /* restaurant */
 userRouter.get("/accessRestaurantHome", controller.accessRestaurantHome);
 userRouter.post("/login", controller.verifyLogin);
+userRouter.post("/demo-request", controller.storeDemoRequest);
 
 
 /* restaurant owner */

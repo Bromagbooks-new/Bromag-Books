@@ -18,7 +18,7 @@ import group212 from '@/assets/images/landing-images/Group 212.svg'
 
 const LandingFeatures = () => {
   return (
-    <div className=" flex flex-col items-center bg-[#1F303C] font-roboto-condensed">
+    <div className=" flex flex-col items-center bg-[#1F303C] font-roboto-condensed -mt-52">
       <div className="relative h-0 hidden md:block">
         <img className="relative z-10 left-[20%] opacity-50" src={subtract} />
       </div>
@@ -29,10 +29,10 @@ const LandingFeatures = () => {
       <div className="relative h-0 hidden md:block">
         <img className="relative z-0 right-[42rem] top-[10rem]" src={ellipse543} />
       </div>
-      <p className="text-5xl mt-[28rem] uppercase font-semibold text-white">
+      <p className="text-3xl md:text-5xl mt-[14rem] md:mt-[28rem] uppercase font-semibold text-white">
         OUR FEATURES
       </p>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 pt-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 pt-10">
         {landingFeatures.map((feature) => (
           <FeatureCard
             key={feature.id}

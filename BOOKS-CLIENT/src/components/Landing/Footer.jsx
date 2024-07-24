@@ -20,7 +20,7 @@ const Footer = ()=> {
 
 
     return <footer className="flex flex-col items-center pt-24 gap-12 bg-[#182732] font-roboto-condensed" style={{ background: "linear-gradient(90deg, #0D171E 0%, #0D171E 100%)" }}>
-        <div className='flex flex-col lg:flex-row items-center justify-center gap-16 md:gap-32 w-full'>
+        <div className='flex flex-col lg:flex-row pl-32 md:items-center justify-center gap-16 md:gap-32 w-full'>
             <div className='flex items-center'>
             <img src={logo} className=' w-48 h-48 z-10'/>
 
@@ -59,10 +59,10 @@ const Footer = ()=> {
                     </li>
                 </ul>
             </div>
-            <div className='z-10 '>
+            <div className='z-10 flex md:block flex-col'>
                 < p className='text-3xl text-white font-bold'>Connect Us</p>
                 
-                <div className='flex gap-4 justify-end pt-4'>
+                <div className='flex gap-4 md:justify-end pt-4'>
                    
                     <div className='rounded-full border-2 border-gray-400  text-gray-500 flex items-center justify-center p-2'>
                         <Instagram className='w-8 h-8'/>

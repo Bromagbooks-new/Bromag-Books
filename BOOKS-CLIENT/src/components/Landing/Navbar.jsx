@@ -12,9 +12,9 @@ import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 
 const Navbar = () => {
   return (
-    <nav className="h-0 relative top-20 -mt-12 w-screen px-10 lg:px-10 py-4 flex items-center justify-between z-50">
+    <nav className="h-0 relative top-20 -mt-12 w-screen pr-4 lg:px-10 py-4 flex items-center justify-between z-50">
       <div className="">
-        <img src={logo} className="w-36 h-36" />
+        <img src={logo} className="w-28 h-28 md:w-36 md:h-36" />
       </div>
       <div className="hidden lg:flex gap-10 items-center text-lg font-roboto text-muted">
         <NavLink

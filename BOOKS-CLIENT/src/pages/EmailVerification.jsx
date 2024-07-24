@@ -14,29 +14,29 @@ const EmailVerification = () => {
     return (
         <div className="bg-[#1F303C] h-screen">
         <div className="relative h-0">
-          <img className="relative z-10 left-[42%] w-[56rem] " src={Vector} />
+          <img className="relative z-10 left-[42%] w-[56rem] hidden md:block" src={Vector} />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 right-[0%] w-[28rem] top-[18.8rem] "
+            className="relative z-10 right-[0%] w-[28rem] top-[18.8rem] hidden md:block"
             src={Ellipse}
           />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 right-[0%] w-[23rem] top-[23.8rem] "
+            className="relative z-10 right-[0%] w-[23rem] top-[23.8rem]  hidden md:block"
             src={Ellipse1}
           />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 right-[0%]  w-[17rem] top-[29.8rem]"
+            className="relative z-10 right-[0%]  w-[17rem] top-[29.8rem]  hidden md:block"
             src={Ellipse}
           />
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 left-[66%]  w-[22rem] top-[27rem]"
+            className="relative z-10 left-[66%]  w-[22rem] top-[27rem] hidden md:block"
             src={square1}
           />
         </div>
@@ -63,11 +63,11 @@ const EmailVerification = () => {
         {/* <Logo className="logo" /> */}
         <div className="flex flex-col gap-10 items-center justify-center h-full text-white font-roboto z-40">
           <img src={verify} className="w-56 h-56" />
-        <p className="text-xl text-white">We have sent an Email link to you, kindly check your Email to login.</p>
-        <Link to="/admin-login" className="z-40">
+        <p className="text-xl text-white p-10 text-center">We have sent an Email link to you, kindly check your Email to login.</p>
+        {/* <Link to="/admin-login" className="z-40">
 
         <Button className="bg-[#56DDE8] w-80 p-4 text-xl uppercase text-black z-40">Login</Button>
-        </Link>
+        </Link> */}
         </div>
 
         {/* </Container> */}

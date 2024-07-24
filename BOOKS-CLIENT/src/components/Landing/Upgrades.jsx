@@ -12,10 +12,10 @@ import ellipse544 from '@/assets/images/landing-images/Ellipse 544.svg'
 const Upgrades = () => {
   return (
     <div className="pt-24 flex flex-col items-center bg-[#1F303C] font-roboto-condensed">
-       <div className="relative h-0">
+       <div className="relative h-0 hidden md:block">
         <img className="relative z-0 left-[100%] top-10" src={ellipse545} />
       </div>
-      <div className="relative h-0">
+      <div className="relative h-0 hidden md:block">
         <img className="relative z-10 right-[33rem] top-20" src={ellipse544} />
       </div>
       <p className="text-5xl uppercase font-semibold mt-36  text-white py-10">

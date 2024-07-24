@@ -101,9 +101,12 @@ const Navbar = () => {
           <User />
           Login
         </NavLink>
+        <Link to="/book-a-demo">
+
         <Button className="bg-landing-secondary p-4 text-lg font-extrabold">
           Book a Demo
         </Button>
+        </Link>
       </div>
 
       </DrawerContent>

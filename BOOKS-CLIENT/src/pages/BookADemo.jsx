@@ -125,7 +125,7 @@ const BookADemo = () => {
 
         {/* <Container> */}
         {/* <Logo className="logo" /> */}
-        <div className="flex flex-col gap-10 items-center justify-center h-full text-[#486072] font-roboto z-40">
+        <div className="pt:36 md:pt-0 flex flex-col gap-10 items-center justify-center h-full text-[#486072] font-roboto z-40">
           <div className="flex items-center justify-center h-full font-roboto z-40">
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 z-40">

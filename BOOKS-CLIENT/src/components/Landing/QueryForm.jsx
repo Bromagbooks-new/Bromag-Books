@@ -78,7 +78,7 @@ const QueryForm = () => {
 
   return (
     <div
-      className="w-screen h-[80rem] md:-mb-[32rem] bg-cover relative  bottom-[32rem] z-0 flex flex-col overflow-hidden items-center justify-center font-roboto pb-20 -mb-[32rem]"
+      className="w-screen h-[70rem] md:-mb-[32rem] bg-cover bg-center relative  bottom-[32rem] z-0 flex flex-col overflow-hidden items-center justify-center font-roboto pb-20 -mb-[32rem]"
       style={{ backgroundImage: `url("${QueryFormBG}")` }}
     >
       <div className="w-full h-full bg-gradient-to-b from-[#1F303C] to-transparent" />

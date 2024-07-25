@@ -493,6 +493,9 @@ exports.verifyLogin = async (req, res) => {
           token,
           message: `Welcome ${employee.username}!`,
         });
+
+        
+
       } else {
         console.log("!password");
         res.json({ success: false, message: "Incorrect password!" });
@@ -516,6 +519,8 @@ exports.storeDemoRequest = async (req, res)=> {
     const demoRequest = new DemoRequestModel({ name, email, phone, location, type, designation, purpose });
     await demoRequest.save();
 
+    sendEmail("mag@bromagindia.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose));
+
     res.json({ success: true, message: "Request Saved" });
 
   }
@@ -530,8 +535,10 @@ exports.storeUserRequest = async (req, res)=> {
   try {
     const {name, email, phone, query} = req.body;
 
-    const demoRequest = new UserQuery({ name, email, phone, query });
-    await demoRequest.save();
+    const userQuery = new UserQuery({ name, email, phone, query });
+    await userQuery.save();
+
+    sendEmail("mag@bromagindia.com", "User Feedback", helpers.feedbackEmailTemplate(name, email, phone, query));
 
     res.json({ success: true, message: "Request Saved" });
 

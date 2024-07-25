@@ -68,7 +68,7 @@ const BookADemo = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-white h-screen">
+      <div className="bg-white h-screen mt-64 md:mt-0">
         <div className="relative h-0">
           <img
             className="relative z-10 left-[42%] w-[56rem] hidden md:block"
@@ -269,7 +269,7 @@ const BookADemo = () => {
                     />
                   </div>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex justify-center pb-10 md:pb-0">
                   <Button
                     type="submit"
                     className="w-1/3 h-12  bg-[#486072]"

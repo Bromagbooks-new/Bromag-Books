@@ -59,7 +59,7 @@ const Login = () => {
       {isUploading ? <Uploading isUploading={isUploading} /> : null}
       {/* <Wrapper> */}
 
-      <div className="bg-[#1F303C] h-screen">
+      <div className="bg-[#1F303C] h-screen overflow-hidden">
         <div className="relative h-0 hidden md:block">
           <img className="relative z-10 left-[42%] w-[56rem] " src={Vector} />
         </div>

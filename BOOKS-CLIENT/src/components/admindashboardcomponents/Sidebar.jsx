@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import { ownerLogout } from "../../store/slices/owner";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "@/assets/images/landing-images/bromag_books_white_BGLESS.png";
-import group from "@/assets/images/landing-images/Grup.png";
+// import group from "@/assets/images/landing-images/Grup.png";
 
 import billingManagement from "@/assets/images/dashboard/billing.svg";
 import salesManagement from "@/assets/images/dashboard/sales.svg";

@@ -120,7 +120,7 @@ const BookADemo = () => {
 
         {/* <Container> */}
         {/* <Logo className="logo" /> */}
-        <div className="pt-96 md:pt-32 flex flex-col gap-10 items-center justify-center h-full text-[#486072] font-roboto z-40">
+        <div className="pt-72 md:pt-32 flex flex-col gap-10 items-center justify-center h-full text-[#486072] font-roboto z-40">
           <div className="flex items-center justify-center h-full font-roboto z-40">
             <Form {...form}>
               <form
@@ -129,7 +129,7 @@ const BookADemo = () => {
               >
                 <p className=" text-5xl font-semibold text-center">Book Demo</p>
                 <p className=" text-gray-500 text-xl text-center">
-                  Please enter the following details
+                PLEASE ENTER THE DETAILS TO LOGIN
                 </p>
                 <Separator className="bg-[#0E69AC]" />
                 <div className="flex flex-col items-center md:flex-row gap-8">
@@ -172,7 +172,7 @@ const BookADemo = () => {
                       control={form.control}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Location/Address*</FormLabel>
+                          <FormLabel>Location*</FormLabel>
                           <Textarea {...field} className="border-2" />
                           <FormMessage />
                         </FormItem>
@@ -197,7 +197,7 @@ const BookADemo = () => {
                                   <RadioGroupItem value="restraunt" />
                                 </FormControl>
                                 <FormLabel className="font-normal">
-                                  Restraunt
+                                Restaurant
                                 </FormLabel>
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2 w-32 md:w-auto">

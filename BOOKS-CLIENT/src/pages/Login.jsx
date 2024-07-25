@@ -101,7 +101,7 @@ const Login = () => {
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 left-[76%]  w-[3rem] top-[16rem]"
+            className="relative z-10 left-[76%]  w-[3rem] top-[6rem] md:top-[16rem]"
             src={Star}
           />
         </div>

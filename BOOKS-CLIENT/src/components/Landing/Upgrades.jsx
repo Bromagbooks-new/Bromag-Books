@@ -11,17 +11,17 @@ import ellipse544 from '@/assets/images/landing-images/Ellipse 544.svg'
 
 const Upgrades = () => {
   return (
-    <div className="md:pt-24 flex flex-col items-center bg-[#1F303C] font-roboto-condensed">
-       <div className="relative h-0 hidden md:block">
-        <img className="relative z-0 left-[100%] top-10" src={ellipse545} />
+    <div className="-mt-[18rem] md:-mt-20 flex flex-col items-center bg-[#1F303C] font-roboto-condensed overflow-hidden">
+       <div className="relative h-0">
+        <img className="relative z-0 w-[9rem]  md:w-auto left-[70%] md:left-[100%] top-[10rem] md:top-10" src={ellipse545} />
       </div>
-      <div className="relative h-0 hidden md:block">
-        <img className="relative z-10 right-[33rem] top-20" src={ellipse544} />
+      <div className="relative h-0">
+        <img className="relative z-10 w-[20rem] md:w-auto right-[11rem] md:right-[33rem] top-32 md:top-20" src={ellipse544} />
       </div>
-      <p className="text-2xl md:text-5xl uppercase font-semibold mt-36  text-white py-10">
+      <p className="z-10 text-2xl md:text-5xl uppercase font-semibold mt-36  text-white py-10">
         Upgrades
       </p>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 ">
+      <div className="flex flex-wrap justify-center gap-4 -mt-4">
         {upgrades.map((feature) => (
           <FeatureCard
             key={feature.id}

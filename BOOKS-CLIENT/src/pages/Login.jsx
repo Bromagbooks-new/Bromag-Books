@@ -114,7 +114,7 @@ const Login = () => {
               Login
             </p>
             <p className=" text-gray-500 text-xl text-center">
-              Please enter the following details to login
+            ENTER THE DETAILS TO LOGIN
             </p>
             <Separator className="bg-[#0E69AC]" />
             <div className="flex flex-col gap-2">

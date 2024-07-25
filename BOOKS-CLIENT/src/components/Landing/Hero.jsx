@@ -1,5 +1,5 @@
 import landingHero from "@/assets/images/landing-images/HeroBackground.png";
-import heroEffect from '@/assets/images/landing-images/HeroEffect.svg';
+import heroEffect from '@/assets/images/landing-images/Group (1).svg';
 import { Button } from "../ui/button";
 import HeroSection from "./HeroSection";
 

@@ -73,8 +73,8 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <p className="text-gray-500 text-xl">
-        Copyrights reserved Bromag india PVT LTD
+      <p className="text-gray-500 text-base">
+        Copyrights © Reserved Bromag India Private Limited
       </p>
       <div className="relative h-0 hidden md:block">
         <img

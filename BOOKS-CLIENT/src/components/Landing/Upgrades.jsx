@@ -19,9 +19,9 @@ const Upgrades = () => {
         <img className="relative z-10 w-[20rem] md:w-auto right-[11rem] md:right-[33rem] top-32 md:top-20" src={ellipse544} />
       </div>
       <p className="z-10 text-2xl md:text-5xl uppercase font-semibold mt-36  text-white py-10">
-        Upgrades
+       Our Upgrades
       </p>
-      <div className="flex flex-wrap justify-center gap-4 -mt-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 -mt-4">
         {upgrades.map((feature) => (
           <FeatureCard
             key={feature.id}

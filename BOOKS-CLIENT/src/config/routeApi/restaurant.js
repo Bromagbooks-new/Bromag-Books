@@ -37,6 +37,14 @@ const storeDemoRequest = async (data)=>{
     console.log(error);
   }
 }
+const storeUserQuery = async (data)=>{
+  try {
+    const response = await restaurantAxiosInstance.post("user-query",data);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
-export { adminLogin,employeeLogin,sendFeedback, storeDemoRequest };
+export { adminLogin,employeeLogin,sendFeedback, storeDemoRequest, storeUserQuery };

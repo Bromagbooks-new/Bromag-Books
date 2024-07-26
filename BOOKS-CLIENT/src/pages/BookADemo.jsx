@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {Button} from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { storeDemoRequest } from "@/config/routeApi/restaurant";
 
@@ -32,7 +32,7 @@ const bookADemoFormSchema = z.object({
   location: z.string().min(1, { message: "Kindly Enter your Location" }),
   type: z.string().min(1, { message: "Kindly Select one option" }),
   designation: z.string().min(1, { message: "Kindly select one option" }),
-  purpose: z.string().min(1, { message: "Kindly enter your purpose" }),
+  purpose: z.string(),
 });
 
 const BookADemo = () => {
@@ -49,31 +49,26 @@ const BookADemo = () => {
     },
   });
 
-
   const navigate = useNavigate();
-  const onSubmit = async (data)=> {
+  const onSubmit = async (data) => {
     console.log(data);
 
     try {
-        const response = await storeDemoRequest(data);
+      const response = await storeDemoRequest(data);
 
-        if(response.status == 200) {
-            console.log(response.data.message);
-            navigate('/demo-booked');
-        }
-
-    } catch(error) {
-        console.error(error);
-
+      if (response.status == 200) {
+        console.log(response.data.message);
+        navigate("/demo-booked");
+      }
+    } catch (error) {
+      console.error(error);
     }
-
-
   };
 
   return (
     <>
       <Navbar />
-      <div className="bg-white h-screen">
+      <div className="bg-white h-screen mt-16 md:mt-0">
         <div className="relative h-0">
           <img
             className="relative z-10 left-[42%] w-[56rem] hidden md:block"
@@ -125,17 +120,20 @@ const BookADemo = () => {
 
         {/* <Container> */}
         {/* <Logo className="logo" /> */}
-        <div className="pt:36 md:pt-0 flex flex-col gap-10 items-center justify-center h-full text-[#486072] font-roboto z-40">
+        <div className="pt-72 md:pt-32 flex flex-col gap-10 items-center justify-center h-full text-[#486072] font-roboto z-40">
           <div className="flex items-center justify-center h-full font-roboto z-40">
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap-4 z-40">
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="flex flex-col gap-4 z-40"
+              >
                 <p className=" text-5xl font-semibold text-center">Book Demo</p>
                 <p className=" text-gray-500 text-xl text-center">
-                  Please enter the following details to login
+                PLEASE ENTER THE DETAILS TO LOGIN
                 </p>
                 <Separator className="bg-[#0E69AC]" />
                 <div className="flex flex-col items-center md:flex-row gap-8">
-                  <div className="flex w-2/3 md:w-1/2 flex-col gap-2">
+                  <div className="flex w-full md:w-1/2 flex-col gap-2">
                     <FormField
                       name="name"
                       control={form.control}
@@ -153,7 +151,7 @@ const BookADemo = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Email Id*</FormLabel>
-                          <Input {...field} className="border-2"/>
+                          <Input {...field} className="border-2" />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -164,7 +162,7 @@ const BookADemo = () => {
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Phone Number*</FormLabel>
-                          <Input {...field} className="border-2"/>
+                          <Input {...field} className="border-2" />
                           <FormMessage />
                         </FormItem>
                       )}
@@ -174,14 +172,14 @@ const BookADemo = () => {
                       control={form.control}
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Location/Address*</FormLabel>
-                          <Textarea {...field} className="border-2"/>
+                          <FormLabel>Location*</FormLabel>
+                          <Textarea {...field} className="border-2" />
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </div>
-                  <div className="flex w-2/3 md:w-1/2 flex-col gap-4">
+                  <div className="flex w-full md:w-1/2 flex-row md:flex-col gap-4">
                     <FormField
                       control={form.control}
                       name="type"
@@ -192,17 +190,17 @@ const BookADemo = () => {
                             <RadioGroup
                               onValueChange={field.onChange}
                               defaultValue={field.value}
-                              className="flex gap-4"
+                              className="flex md:gap-4 flex-col md:flex-row"
                             >
-                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2">
+                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2 w-32 md:w-auto">
                                 <FormControl>
                                   <RadioGroupItem value="restraunt" />
                                 </FormControl>
                                 <FormLabel className="font-normal">
-                                  Restraunt
+                                Restaurant
                                 </FormLabel>
                               </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2">
+                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2 w-32 md:w-auto">
                                 <FormControl>
                                   <RadioGroupItem value="company" />
                                 </FormControl>
@@ -226,9 +224,9 @@ const BookADemo = () => {
                             <RadioGroup
                               onValueChange={field.onChange}
                               defaultValue={field.value}
-                              className="flex gap-4"
+                              className="flex md:gap-4 flex-col md:flex-row"
                             >
-                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2">
+                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2 w-36 md:w-auto">
                                 <FormControl>
                                   <RadioGroupItem value="representive" />
                                 </FormControl>
@@ -236,15 +234,15 @@ const BookADemo = () => {
                                   Representive
                                 </FormLabel>
                               </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2">
+                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2 w-32 md:w-auto">
                                 <FormControl>
-                                  <RadioGroupItem value="vendor" />
+                                  <RadioGroupItem value="manager" />
                                 </FormControl>
                                 <FormLabel className="font-normal">
-                                  Vendor
+                                  Manager
                                 </FormLabel>
                               </FormItem>
-                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2">
+                              <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2 w-40 md:w-auto">
                                 <FormControl>
                                   <RadioGroupItem value="business-owner" />
                                 </FormControl>
@@ -258,22 +256,34 @@ const BookADemo = () => {
                         </FormItem>
                       )}
                     />
-                    <FormField
+                    {/* <FormField
                       name="purpose"
                       control={form.control}
                       render={({ field }) => (
                         <FormItem>
                           <FormLabel>Your Purpose*</FormLabel>
-                          <Textarea {...field} className="h-28 border-2"/>
+                          <Textarea {...field} className="h-28 border-2" />
                           <FormMessage />
                         </FormItem>
                       )}
-                    />
+                    /> */}
                   </div>
                 </div>
-                <div className='flex justify-center'>
-
-                    <Button className="w-1/3 h-12  bg-[#486072]">Submit</Button>
+                <div className="flex justify-center pb-10 md:pb-0">
+                  <Button
+                    type="submit"
+                    className="w-full md:w-1/3 h-12  bg-[#486072]"
+                    disabled={
+                      form.formState.isSubmitting ||
+                      form.formState.isSubmitSuccessful
+                    }
+                  >
+                    {form.formState.isSubmitting
+                      ? "Submitting..."
+                      : form.formState.isSubmitSuccessful
+                      ? "Submited"
+                      : "Submit"}
+                  </Button>
                 </div>
               </form>
             </Form>

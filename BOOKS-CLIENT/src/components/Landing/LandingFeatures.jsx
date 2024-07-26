@@ -18,21 +18,24 @@ import group212 from '@/assets/images/landing-images/Group 212.svg'
 
 const LandingFeatures = () => {
   return (
-    <div className=" flex flex-col items-center bg-[#1F303C] font-roboto-condensed">
-      <div className="relative h-0 hidden md:block">
-        <img className="relative z-10 left-[20%] opacity-50" src={subtract} />
+    <div className=" flex flex-col items-center bg-[#1F303C] font-roboto-condensedpb pb-[10rem] -mt-52 overflow-hidden">
+      <div className="relative h-0 ">
+        <img className="relative z-10 w-[23rem] md:w-auto top-[1rem] left-[8%] md:left-[20%] opacity-50" src={subtract} />
       </div>
      
-      <div className="relative h-0 hidden md:block">
-        <img className="relative z-0 left-[70%] top-[10rem]" src={ellipse542} />
+      <div className="relative h-0 ">
+        <img className="relative z-0 w-[18rem] md:w-auto  left-[50%] md:left-[70%] top-[5rem] md:top-[10rem]" src={ellipse542} />
       </div>
-      <div className="relative h-0 hidden md:block">
-        <img className="relative z-0 right-[42rem] top-[10rem]" src={ellipse543} />
+      <div className="relative h-0 block md:hidden">
+        <img className="relative z-0 w-[18rem] md:w-auto  left-[50%] md:left-[70%] top-[55rem] md:top-[10rem]" src={ellipse542} />
       </div>
-      <p className="text-5xl mt-[28rem] uppercase font-semibold text-white">
+      <div className="relative h-0 ">
+        <img className="relative z-0 w-[6rem] md:w-auto right-[12rem] top-[5rem] md:right-[42rem] md:top-[10rem]" src={ellipse543} />
+      </div>
+      <p className="z-10 text-3xl md:text-5xl mt-[10rem] md:mt-[28rem] uppercase font-semibold text-white">
         OUR FEATURES
       </p>
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 pt-10">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 p-4 pt-10 md:mt-10">
         {landingFeatures.map((feature) => (
           <FeatureCard
             key={feature.id}
@@ -42,8 +45,8 @@ const LandingFeatures = () => {
           />
         ))}
       </div>
-      <div className="relative h-0 hidden md:block">
-        <img className="relative z-0 right-[21%] bottom-[43rem]" src={group212} />
+      <div className="relative h-0 ">
+        <img className="relative z-0 w-[20rem]  md:w-auto right-[16%] md:right-[21%] bottom-[13rem] md:bottom-[43rem]" src={group212} />
       </div>
     </div>
   );

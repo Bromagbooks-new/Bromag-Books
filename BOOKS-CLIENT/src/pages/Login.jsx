@@ -59,7 +59,7 @@ const Login = () => {
       {isUploading ? <Uploading isUploading={isUploading} /> : null}
       {/* <Wrapper> */}
 
-      <div className="bg-[#1F303C] h-screen">
+      <div className="bg-[#1F303C] h-screen overflow-hidden">
         <div className="relative h-0 hidden md:block">
           <img className="relative z-10 left-[42%] w-[56rem] " src={Vector} />
         </div>
@@ -101,7 +101,7 @@ const Login = () => {
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 left-[76%]  w-[3rem] top-[16rem]"
+            className="relative z-10 left-[76%]  w-[3rem] top-[6rem] md:top-[16rem]"
             src={Star}
           />
         </div>
@@ -114,7 +114,7 @@ const Login = () => {
               Login
             </p>
             <p className=" text-gray-500 text-xl text-center">
-              Please enter the following details to login
+            ENTER THE DETAILS TO LOGIN
             </p>
             <Separator className="bg-[#0E69AC]" />
             <div className="flex flex-col gap-2">

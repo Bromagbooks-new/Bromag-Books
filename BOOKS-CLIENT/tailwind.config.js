@@ -22,6 +22,9 @@ module.exports = {
       'roboto-condensed': ["Roboto Condensed"]
     },
     extend: {
+      scale: {
+        '-100': '-1'
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

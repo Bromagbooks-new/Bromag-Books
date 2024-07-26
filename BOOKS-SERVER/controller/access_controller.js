@@ -21,6 +21,7 @@ const { generateEmployId } = require("../middleware/employ_Id");
 const feedback_model = require("../model/feedback_model");
 const path = require('path');
 const { DemoRequestModel } = require("../model/demo_request");
+const {UserQuery} = require('../model/userQuery');
 
 
 exports.getAllRegisteredPos = async (req, res) => {
@@ -492,6 +493,9 @@ exports.verifyLogin = async (req, res) => {
           token,
           message: `Welcome ${employee.username}!`,
         });
+
+        
+
       } else {
         console.log("!password");
         res.json({ success: false, message: "Incorrect password!" });
@@ -514,6 +518,27 @@ exports.storeDemoRequest = async (req, res)=> {
 
     const demoRequest = new DemoRequestModel({ name, email, phone, location, type, designation, purpose });
     await demoRequest.save();
+
+    sendEmail("mag@bromagindia.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose));
+
+    res.json({ success: true, message: "Request Saved" });
+
+  }
+  catch (error) {
+    res
+    .status(500)
+    .json({ success: false, serverMessage: "Internal Server Error" });
+  }
+};
+exports.storeUserRequest = async (req, res)=> {
+
+  try {
+    const {name, email, phone, query} = req.body;
+
+    const userQuery = new UserQuery({ name, email, phone, query });
+    await userQuery.save();
+
+    sendEmail("mag@bromagindia.com", "User Feedback", helpers.feedbackEmailTemplate(name, email, phone, query));
 
     res.json({ success: true, message: "Request Saved" });
 

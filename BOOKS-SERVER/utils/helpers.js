@@ -186,11 +186,161 @@ function deleteOldFiles(directory = 'uploads', maxAgeInMinutes = 5) {
 		}
 	}
 
+
+	const feedbackEmailTemplate = (userName, userEmail, userPhoneNumber, feedbackMessage) => `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+	  <meta charset="UTF-8">
+	  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	  <title>User Feedback</title>
+	  <style>
+		body {
+		  font-family: Arial, sans-serif;
+		  background-color: #f4f4f4;
+		  color: #333;
+		  margin: 0;
+		  padding: 0;
+		}
+		.container {
+		  max-width: 600px;
+		  margin: 20px auto;
+		  background-color: #fff;
+		  padding: 20px;
+		  border-radius: 8px;
+		  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		}
+		.header {
+		  text-align: center;
+		  border-bottom: 1px solid #ddd;
+		  padding-bottom: 10px;
+		  margin-bottom: 20px;
+		}
+		.header h1 {
+		  margin: 0;
+		  font-size: 24px;
+		  color: #007BFF;
+		}
+		.content {
+		  line-height: 1.6;
+		}
+		.content p {
+		  margin: 10px 0;
+		}
+		.footer {
+		  text-align: center;
+		  margin-top: 20px;
+		  padding-top: 10px;
+		  border-top: 1px solid #ddd;
+		}
+		.footer p {
+		  margin: 0;
+		  color: #777;
+		}
+	  </style>
+	</head>
+	<body>
+	  <div class="container">
+		<div class="header">
+		  <h1>User Feedback</h1>
+		</div>
+		<div class="content">
+		  <p><strong>Name:</strong> ${userName}</p>
+		  <p><strong>Email:</strong> ${userEmail}</p>
+		  <p><strong>Phone Numeber:</strong> ${userPhoneNumber}</p>
+		  <p><strong>Feedback:</strong></p>
+		  <p>${feedbackMessage}</p>
+		</div>
+		<div class="footer">
+		  <p>Thank you for your feedback!</p>
+		</div>
+	  </div>
+	</body>
+	</html>
+	`;
+
+	const demoRequestEmailTemplate = (userName, userEmail, userPhone, userAddress, userType, employeeType, demoPurpose) => `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demo Request</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .header {
+      text-align: center;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 10px;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+      color: #007BFF;
+    }
+    .content {
+      line-height: 1.6;
+    }
+    .content p {
+      margin: 10px 0;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 20px;
+      padding-top: 10px;
+      border-top: 1px solid #ddd;
+    }
+    .footer p {
+      margin: 0;
+      color: #777;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Demo Request</h1>
+    </div>
+    <div class="content">
+      <p><strong>Name:</strong> ${userName}</p>
+      <p><strong>Email:</strong> ${userEmail}</p>
+      <p><strong>Phone Number:</strong> ${userPhone}</p>
+      <p><strong>Address:</strong> ${userAddress}</p>
+      <p><strong>Type:</strong> ${userType}</p>
+      <p><strong>Employee Type:</strong> ${employeeType}</p>
+      <p><strong>Purpose:</strong></p>
+      <p>${demoPurpose}</p>
+    </div>
+    <div class="footer">
+      <p>Thank you for requesting a demo. We will get back to you soon!</p>
+    </div>
+  </div>
+</body>
+</html>
+`;
+
 const helpers = {
 	uploadFileLocally,
 	deleteFileLocally,
 	getFileUrlLocally,
-	  deleteOldFiles
+	  deleteOldFiles,
+	  feedbackEmailTemplate,
+	  demoRequestEmailTemplate
   }
   
   module.exports = helpers

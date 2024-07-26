@@ -148,7 +148,7 @@ const Login = () => {
             )}
             {/* <Link to="/forgot-password">Forgot password?</Link> */}
             <div>
-              <Button type="submit" className="bg-[#56DDE8] w-full rounded-xl p-3 text-xl uppercase text-black">Login</Button>
+              <Button type="submit" variant="default" className="bg-[#56DDE8] hover:bg-cyan-300 w-full rounded-xl p-3 text-xl uppercase text-black">Login</Button>
             </div>
           </form>
         </div>

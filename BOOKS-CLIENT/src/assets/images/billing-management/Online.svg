@@ -1,0 +1,12 @@
+<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path opacity="0.24" fill-rule="evenodd" clip-rule="evenodd" d="M0 30V37C0 49.7025 10.2975 60 23 60H30H37C49.7025 60 60 49.7025 60 37V30V23C60 10.2975 49.7025 0 37 0H30H23C10.2975 0 0 10.2975 0 23V30Z" fill="#FEC53D"/>
+<rect x="17.167" y="13.5" width="25.6667" height="33" rx="3.66667" fill="#FEC53D"/>
+<path d="M25.417 21.75L34.5837 21.75" stroke="white" stroke-width="1.83333" stroke-linecap="round"/>
+<path d="M25.417 27.25L30.917 27.25" stroke="white" stroke-width="1.83333" stroke-linecap="round"/>
+<path d="M25.417 32.75L32.7503 32.75" stroke="white" stroke-width="1.83333" stroke-linecap="round"/>
+<path d="M25.417 38.25L30.917 38.25" stroke="white" stroke-width="1.83333" stroke-linecap="round"/>
+<rect x="20.833" y="20.8333" width="1.83333" height="1.83333" rx="0.916667" fill="white"/>
+<rect x="20.833" y="26.3333" width="1.83333" height="1.83333" rx="0.916667" fill="white"/>
+<rect x="20.833" y="31.8333" width="1.83333" height="1.83333" rx="0.916667" fill="white"/>
+<rect x="20.833" y="37.3333" width="1.83333" height="1.83333" rx="0.916667" fill="white"/>
+</svg>

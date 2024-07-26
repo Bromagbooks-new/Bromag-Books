@@ -111,6 +111,11 @@ import StockOut from "./pages/admindashboardpages/stockmanagement/StockOut";
 import Features from "./pages/Features";
 import BookADemo from "./pages/BookADemo";
 import DemoBooked from "./pages/DemoBooked";
+import BillingManagement from "./pages/admindashboardpages/billingmanagement/BillingManagement";
+import OnlineOrder from "./pages/admindashboardpages/billingmanagement/OnlineOrder";
+import TakeawayOrder from "./pages/admindashboardpages/billingmanagement/TakeawayOrder";
+import DineinOrder from "./pages/admindashboardpages/billingmanagement/DineinOrder";
+import OrderCharts from "./components/billingmanagement/OrderCharts";
 
 
 const router = createBrowserRouter([
@@ -198,6 +203,28 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <Dashboard />,
+          },
+          {
+            path: 'billing-management',
+            element: <BillingManagement />,
+            children: [
+              {
+                index: true,
+                element: <OrderCharts />,
+              },
+              {
+                path: 'online-order',
+                element: <OnlineOrder />
+              },
+              {
+                path: 'takeaway-order',
+                element: <TakeawayOrder />
+              },
+              {
+                path: 'dinein-order',
+                element: <DineinOrder />
+              }
+            ]
           },
           {
             path: "pos-management",

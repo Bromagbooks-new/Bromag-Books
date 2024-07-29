@@ -116,6 +116,7 @@ import OnlineOrder from "./pages/admindashboardpages/billingmanagement/OnlineOrd
 import TakeawayOrder from "./pages/admindashboardpages/billingmanagement/TakeawayOrder";
 import DineinOrder from "./pages/admindashboardpages/billingmanagement/DineinOrder";
 import OrderCharts from "./components/billingmanagement/OrderCharts";
+import Order from "./pages/admindashboardpages/billingmanagement/Order";
 
 
 const router = createBrowserRouter([
@@ -223,6 +224,10 @@ const router = createBrowserRouter([
               {
                 path: 'dinein-order',
                 element: <DineinOrder />
+              },
+              {
+                path: 'order',
+                element: <Order />
               }
             ]
           },

@@ -14,6 +14,18 @@ import { Outlet } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 
 const BillingManagement = () => {
+
+  const currentLocationArray = window.location.pathname.split('/');
+  const currentPath = currentLocationArray[currentLocationArray.length-1];
+  console.log(currentPath);
+
+  if(currentPath === 'order') {
+    return <div className="w-full h-full">
+      <Outlet />
+    </div>;
+  }
+
+
   return (
     <div className="w-full h-full border py-4 flex flex-col gap-4">
         <div className="flex gap-4">

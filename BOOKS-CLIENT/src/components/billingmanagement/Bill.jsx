@@ -1,28 +1,142 @@
+import { DownloadIcon, EyeIcon, Share2Icon } from "lucide-react";
+
 const Bill = () => {
   return (
-    <div className="rounded-xl w-[24rem] px-2 py-8 flex flex-col justify-between gap-3 bg-white">
-      <div className="flex flex-col justify-center items-center">
-        <p className="text-xl font-semibold">BROMAG RESTRO</p>
-        <p className="text-xs text-gray-500">
-          No.17, Vallal paari nagar, Pallikaranai 600100
-        </p>
-        <p className="text-sm text-gray-500">9150289762</p>
+    <div className="rounded-2xl w-[24rem] px-0 py-4 flex flex-col justify-between gap-3 bg-white shadow">
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col justify-center items-center">
+          <p className="text-xl font-semibold">BROMAG RESTRO</p>
+          <p className="text-xs text-gray-500 w-1/2 text-center">
+            No.17, Vallal paari nagar, Pallikaranai 600100
+          </p>
+          <p className="text-sm text-gray-500">9150289762</p>
+        </div>
+        <div className="flex items-end gap-1 px-3 justify-between">
+          <div className="flex gap-1 text-[10px] w-1/3">
+            <div className="flex flex-col">
+              <p className="">Date</p>
+              <p className="">Time</p>
+              <p className="">Bill No</p>
+            </div>
+            <div className="flex flex-col">
+              <p className="">: 08.07.2024</p>
+              <p className="">: 07:40 AM</p>
+              <p className="">: 0000</p>
+            </div>
+          </div>
+          <p className="text-2xl text-center font-semibold">INVOICE</p>
+          <div className="w-1/3 flex gap-2 p-2 justify-end text-gray-600">
+            <EyeIcon className="w-5 h- cursor-pointer" />
+            <DownloadIcon className="w-5 h-5 cursor-pointer" />
+            <Share2Icon className="w-5 h-5 cursor-pointer" />
+          </div>
+        </div>
+        <div>
+          <div className="grid grid-cols-5 text-xs border-gray-500">
+            <div className="border-dashed border-1 border-r-0 h-6 uppercase text-center flex items-center justify-center">
+              S.NO
+            </div>
+            <div className="border-dashed border-1 border-x-0 h-6 uppercase col-span-2 text-center flex items-center justify-center">
+              Menu Name
+            </div>
+            <div className="border-dashed border-1 flex items-center justify-center border-x-0 h-6 uppercase text-center">
+              Quantity
+            </div>
+            <div className="border-dashed border-1 border-l-0 h-6 uppercase flex items-center justify-center text-center">
+              Price
+            </div>
+          </div>
+          <div className="grid grid-cols-5 text-xs ">
+            <div className="border-dashed border-1 border-r-0 py-2 text-center flex items-center justify-center">
+              1.
+            </div>
+            <div className="border-dashed border-1 border-x-0 py-2 col-span-2 text-center flex items-center justify-center">
+              Hyedrabadi Chicken Biriyani
+            </div>
+            <div className="border-dashed border-1 flex py-2 items-center justify-center border-x-0  text-center gap-2">
+              <span className="text-base cursor-pointer">-</span>02
+              <span className="cursor-pointer text-base">+</span>
+            </div>
+            <div className="border-dashed border-1 border-l-0 py-2  flex items-center justify-center text-center">
+              200
+            </div>
+          </div>
+        </div>
       </div>
-      <p className="text-2xl text-center font-semibold">INVOICE</p>
+
+      <div className="flex justify-between px-3 uppercase text-xs">
+        <div className="flex flex-col gap-1">
+          <p>Gross Value</p>
+          <p>Discount</p>
+          <p>Net Value</p>
+          <p>Taxes</p>
+          <p>Round Off</p>
+        </div>
+        <div className="flex flex-col gap-1">
+          <p>400.00</p>
+          <p>20.00</p>
+          <p>440.00</p>
+          <p>22.00</p>
+          <p>00</p>
+        </div>
+      </div>
+      <div className="flex justify-between px-3 uppercase text-sm font-bold border-dashed border-y border-gray-500">
+        <div className="flex flex-col gap-1 py-2">
+          <p>Total Amount</p>
+        </div>
+        <div className="flex flex-col gap-1 py-2">
+          <p>400.00</p>
+        </div>
+      </div>
+
+      <div className="text-sm px-3 border-dashed border-b pb-2 border-gray-500">
+        <p className="uppercase">Instructions</p>
+        <ul className="list-disc text-xs px-3">
+          <li>Add spicy chicken</li>
+          <li>Add extra salad</li>
+        </ul>
+      </div>
+
+      <div className="flex items-end gap-10 border-gray-500 pb-2 border-dashed border-b text-sm px-3 justify-between">
+        <div className="flex gap-2 ">
+          <div className="flex flex-col">
+            <p className="">Customer Name</p>
+            <p className="">Customer Number</p>
+            <p className="">Order Status</p>
+          </div>
+          <div className="flex flex-col">
+            <p className="">: TOM HOLLAND</p>
+            <p className="">: 9999999999</p>
+            <p className="">: DINE IN</p>
+          </div>
+        </div>
+      </div>
+      <div className="text-sm px-3 pb-2">
+        <p className="uppercase">Mode of Payment</p>
+        <ul className="list-disc text-xs px-3">
+          <li>Credit/Debit Card</li>
+          <li>UPI Payment</li>
+          <li>Cash</li>
+        </ul>
+      </div>
+
       <div className="flex flex-col gap-3">
-        <div className="flex gap-1">
-          <div className="text-center px-4 h-8 flex text-xs justify-center items-center rounded-3xl border-2">
+        <div className="flex gap-0 justify-between text-sm border-dashed border-b pb-2 border-gray-500 p-2">
+          <div className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2">
             KOT
           </div>
-          <div className="text-center px-4 h-8 flex text-xs justify-center items-center rounded-3xl border-2">
+          <div className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2">
             VIEW BILL
           </div>
-          <div className="text-center px-4 h-8 flex text-xs justify-center items-center rounded-3xl border-2">
+          <div className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2">
             HOLD ORDER
           </div>
         </div>
-        <div className="bg-[#486072] rounded-3xl w-full flex justify-center items-center text-white py-1">
+        <div className="flex justify-center">
+
+        <div className="bg-[#486072] rounded-3xl w-5/6  flex justify-center items-center text-white py-1 ">
           PRINT BILL
+        </div>
         </div>
       </div>
     </div>

@@ -22,10 +22,10 @@ const Order = () => {
         </div>
         <p>Select Dishes</p>
       </div>
-      <ScrollArea className="w-full flex gap-4">
+      <ScrollArea className="w-full flex gap-4" type="scroll">
         <div className="h-[60rem]">
-          {/* <ScrollArea className="w-full"> */}
-          <div className="flex gap-2 py-6 flex-wrap ">
+          <ScrollArea className="w-[70rem]">
+          <div className="flex gap-2 py-3 ">
             {cusines.map((cusine, index) => (
               <div
                 key={index}
@@ -41,11 +41,11 @@ const Order = () => {
               </div>
             ))}
           </div>
-          {/* </ScrollArea> */}
+          </ScrollArea>
 
-            <div className="flex gap-4">
+            <div className="flex gap-4 ">
 
-          <div className="flex flex-wrap gap-3 w-4/5">
+          <div className="flex flex-wrap gap-3 content-start w-4/5">
             <ItemCard />
             <ItemCard />
             <ItemCard />

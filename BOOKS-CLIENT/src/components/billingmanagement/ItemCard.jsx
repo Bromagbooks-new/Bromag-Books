@@ -19,8 +19,8 @@ const ItemCard = () => {
   const decrementCount = () => count > 0 && setCount((prev) => prev - 1);
 
   return (
-    <div className="flex gap-1 w-[24rem] h-[11rem] rounded-2xl shadow bg-white p-2">
-      <div className="w-1/3 border">
+    <div className="flex gap-1 items-center w-[24rem] h-[11rem] rounded-xl shadow bg-white p-2">
+      <div className="w-36 rounded-xl h-36">
         <img src={chickenTandoori} className="w-full" />
       </div>
       <div className="flex flex-col gap-2 py-2 pl-4">
@@ -37,9 +37,9 @@ const ItemCard = () => {
               <SelectItem value="weekly">Weekly</SelectItem>
             </SelectContent>
           </Select>
-          <p className="text-xl">₹200</p>
-          <div className="flex items-center gap-2 justify-between">
-            <div className="border rounded-full flex w-32 items-center px-2 justify-between">
+          <p className="text-lg">₹200</p>
+          <div className="flex items-center gap-4 justify-between">
+            <div className="border rounded-full flex w-24 items-center px-2 justify-between">
               <div className="text-2xl cursor-pointer" onClick={decrementCount}>
                 -
               </div>

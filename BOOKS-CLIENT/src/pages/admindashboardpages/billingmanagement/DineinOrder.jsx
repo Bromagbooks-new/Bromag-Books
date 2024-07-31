@@ -30,6 +30,7 @@ const onlineOrderSchema = z.object({
     .min(1, { message: "Please enter the customer name" }),
   customerContact: z.string(),
   customerEmail: z.string(),
+  tableNo: z.string(),
 });
 
 const DineinOrder = () => {
@@ -39,6 +40,7 @@ const DineinOrder = () => {
       customerName: "",
       customerContact: "",
       customerEmail: "",
+      tableNo: "",
     },
   });
 
@@ -86,7 +88,7 @@ const DineinOrder = () => {
               )}
             />
           </div>
-          <div className="w-full">
+          <div className="flex gap-4 w-full">
             <FormField
               name="customerEmail"
               control={form.control}
@@ -97,6 +99,21 @@ const DineinOrder = () => {
                     {...field}
                     className="border-[#758D9F] border-1 bg-[#F4FAFF]"
                     placeholder="Enter email here..."
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              name="tableNo"
+              control={form.control}
+              render={({ field }) => (
+                <FormItem className="w-[48.5%]">
+                  <FormLabel>Table Number</FormLabel>
+                  <Input
+                    {...field}
+                    className="border-[#758D9F] border-1 bg-[#F4FAFF]"
+                    placeholder="Enter Table Number here..."
                   />
                   <FormMessage />
                 </FormItem>

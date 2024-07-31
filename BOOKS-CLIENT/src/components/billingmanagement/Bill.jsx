@@ -1,4 +1,7 @@
 import { DownloadIcon, EyeIcon, Share2Icon } from "lucide-react";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "../ui/label";
+import { Button } from "../ui/button";
 
 const Bill = () => {
   return (
@@ -111,32 +114,40 @@ const Bill = () => {
           </div>
         </div>
       </div>
-      <div className="text-sm px-3 pb-2">
+      <div className="text-sm px-3 pb-2 flex flex-col gap-2">
         <p className="uppercase">Mode of Payment</p>
-        <ul className="list-disc text-xs px-3">
-          <li>Credit/Debit Card</li>
-          <li>UPI Payment</li>
-          <li>Cash</li>
-        </ul>
+        <RadioGroup className="flex flex-col gap-1" defaultValue="card">
+          <div className="flex gap-1">
+            <RadioGroupItem value="card" />
+            <Label className="">Credit/Debit Card</Label>
+          </div>
+          <div className="flex gap-1">
+            <RadioGroupItem value="upi" />
+            <Label className="">UPI Payment</Label>
+          </div>
+          <div className="flex gap-1">
+            <RadioGroupItem value="cash" />
+            <Label className="">Cash</Label>
+          </div>
+        </RadioGroup>
       </div>
 
       <div className="flex flex-col gap-3">
         <div className="flex gap-0 justify-between text-sm border-dashed border-b pb-2 border-gray-500 p-2">
-          <div className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2">
+          <Button className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
             KOT
-          </div>
-          <div className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2">
+          </Button>
+          <Button className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
             VIEW BILL
-          </div>
-          <div className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2">
+          </Button>
+          <Button className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
             HOLD ORDER
-          </div>
+          </Button>
         </div>
         <div className="flex justify-center">
-
-        <div className="bg-[#486072] rounded-3xl w-5/6  flex justify-center items-center text-white py-1 ">
-          PRINT BILL
-        </div>
+          <Button className="bg-[#486072] rounded-3xl w-5/6  flex justify-center items-center text-white py-1 h-8 ">
+            PRINT BILL
+          </Button>
         </div>
       </div>
     </div>

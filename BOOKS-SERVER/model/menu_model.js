@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-const menu = mongoose.Schema({
+export const menu = mongoose.Schema({
   item: {
     type: String,
     required: true,

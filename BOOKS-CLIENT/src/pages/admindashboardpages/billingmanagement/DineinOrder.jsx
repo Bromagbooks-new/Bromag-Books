@@ -17,12 +17,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { toastError } from "@/helpers/helpers";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Icon2 from '@/assets/images/billing-management/Icon-2.svg'
 import Icon from '@/assets/images/billing-management/Icon.svg'
 import Icon1 from '@/assets/images/billing-management/Icon-1.svg'
+import { useNavigate } from "react-router-dom";
+import { GenerateBill } from "@/config/routeApi/owner";
 
 const onlineOrderSchema = z.object({
   customerName: z
@@ -44,9 +47,32 @@ const DineinOrder = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const navigate = useNavigate();
+
+  const onSubmit = async (data) => {
     console.log(data);
+    try {
+
+      const response = await GenerateBill({...data, mode: "dinein"});
+      
+      // console.log(response.data);
+      if(response.data.status === "BILL_GENERATED") {
+        
+        const billId = response.data.billId;
+        console.log(billId);
+
+        navigate(`/dashboard/billing-management/order?id=${billId}`);
+        return;
+      } else {
+        toastError(response.data.error);
+        return;
+      }
+    } catch(error) {
+      console.error(error);
+      toastError("Internal Server Eerror");
+    }
   };
+
 
   return (
     <div className="flex flex-col gap-3">

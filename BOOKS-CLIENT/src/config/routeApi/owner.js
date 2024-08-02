@@ -380,9 +380,29 @@ export const StockDashboard = async () => {
   }
 };
 
+
+const GenerateBill = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("generateBill", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const FetchBill = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("fetchBill", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
 const MenuCategory = async () => {
   try {
+    console.log("Here");
     const response = await restaurantOwnerAxiosInstance.get("getMenuCategory");
+    console.log(response);
     return response;
   } catch (error) {
     console.log(error);
@@ -1014,4 +1034,6 @@ export {
   updateEmploymentDetails,
   updateEmploymentData,
   getAllRegisteredPos,
+  GenerateBill,
+  FetchBill
 };

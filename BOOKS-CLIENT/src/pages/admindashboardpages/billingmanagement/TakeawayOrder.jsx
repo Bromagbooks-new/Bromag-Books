@@ -21,6 +21,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import Icon2 from '@/assets/images/billing-management/Icon-2.svg'
+import { GenerateBill } from "@/config/routeApi/owner";
+import { useNavigate, useNavigation } from "react-router-dom";
+import { toastError } from "@/helpers/helpers";
 
 const onlineOrderSchema = z.object({
   customerName: z
@@ -40,8 +43,30 @@ const TakeawayOrder = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const navigate = useNavigate();
+
+  const onSubmit = async (data) => {
     console.log(data);
+    try {
+
+      const response = await GenerateBill({...data, mode: "takeaway"});
+      
+      // console.log(response.data);
+      if(response.data.status === "BILL_GENERATED") {
+        
+        const billId = response.data.billId;
+        console.log(billId);
+
+        navigate(`/dashboard/billing-management/order?id=${billId}`);
+        return;
+      } else {
+        toastError(response.data.error);
+        return;
+      }
+    } catch(error) {
+      console.error(error);
+      toastError("Internal Server Eerror");
+    }
   };
 
   return (

@@ -8,6 +8,9 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import { toastError } from "@/helpers/helpers";
+import { useNavigate } from "react-router-dom";
+import { GenerateBill } from "@/config/routeApi/owner";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,8 +33,30 @@ const OnlineOrder = () => {
     },
   });
 
-  const onSubmit = (data) => {
+  const navigate = useNavigate();
+
+  const onSubmit = async (data) => {
     console.log(data);
+    try {
+
+      const response = await GenerateBill({...data, mode: "online"});
+      
+      // console.log(response.data);
+      if(response.data.status === "BILL_GENERATED") {
+        
+        const billId = response.data.billId;
+        console.log(billId);
+
+        navigate(`/dashboard/billing-management/order?id=${billId}`);
+        return;
+      } else {
+        toastError(response.data.error);
+        return;
+      }
+    } catch(error) {
+      console.error(error);
+      toastError("Internal Server Eerror");
+    }
   };
 
   return (

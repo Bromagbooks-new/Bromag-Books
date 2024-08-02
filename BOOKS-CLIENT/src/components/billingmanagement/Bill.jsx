@@ -1,20 +1,73 @@
-import { DownloadIcon, EyeIcon, Share2Icon } from "lucide-react";
+import {
+  CheckIcon,
+  CrossIcon,
+  DownloadIcon,
+  EyeIcon,
+  Share2Icon,
+  X,
+} from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
+import { useState } from "react";
+import { Input } from "../ui/input";
 
-const Bill = () => {
+const Bill = ({ bill, billItems, addItem, subtractItem }) => {
+  // console.log(bill);
+
+  const [instructions, setInstructions] = useState([]);
+
+  const [inputInstruction, setInputInstruction] = useState("");
+  const [showInstruction, setShowIntruction] = useState(false);
+
+  const handleInstructionInput = (instruction) =>
+    setInputInstruction(instruction);
+
+  const addInstruction = () => {
+    setInstructions((prev) => [...prev, inputInstruction]);
+    setInputInstruction("");
+    setShowIntruction(false);
+  };
+  const removeInstruction = (index) =>
+    setInstructions((prev) => prev.filter((instruct, idx) => index !== idx));
+
+  const grossValue = billItems.reduce(
+    (total, item) => (total += item.quantity * item.actualPrice),
+    0
+  );
+  const discount = billItems.reduce(
+    (total, item) =>
+      (total += (item.actualPrice - item.discountPrice) * item.quantity),
+    0
+  );
+  // console.log(discount);
+
+  const netValue = billItems.reduce(
+    (total, item) => (total += item.quantity * item.discountPrice),
+    0
+  );
+
+  const taxRate = 5;
+  const tax = (taxRate / 100) * netValue;
+
+  const totalValue = netValue + tax;
+
+  const address = bill.restrauntAddress[0];
+  // console.log(address);
+
+  const printAddress = `${address.building}, ${address.district}, ${address.city}, ${address.state}`;
+
   return (
     <div className="rounded-2xl w-[24rem] px-0 py-4 flex flex-col justify-between gap-3 bg-white shadow">
       <div className="flex flex-col gap-6">
         <div className="flex flex-col justify-center items-center">
-          <p className="text-xl font-semibold">BROMAG RESTRO</p>
+          <p className="text-xl font-semibold">{bill.restrauntName}</p>
           <p className="text-xs text-gray-500 w-1/2 text-center">
-            No.17, Vallal paari nagar, Pallikaranai 600100
+            {printAddress}
           </p>
-          <p className="text-sm text-gray-500">9150289762</p>
+          <p className="text-sm text-gray-500">{address.phone}</p>
         </div>
-        <div className="flex items-end gap-1 px-3 justify-between">
+        <div className="flex items-end gap-0 px-3 justify-between">
           <div className="flex gap-1 text-[10px] w-1/3">
             <div className="flex flex-col">
               <p className="">Date</p>
@@ -22,9 +75,9 @@ const Bill = () => {
               <p className="">Bill No</p>
             </div>
             <div className="flex flex-col">
-              <p className="">: 08.07.2024</p>
-              <p className="">: 07:40 AM</p>
-              <p className="">: 0000</p>
+              <p className="">: {new Date(bill.date).toLocaleDateString()}</p>
+              <p className="">: {new Date(bill.date).toLocaleTimeString()}</p>
+              <p className="">: {bill.billNo}</p>
             </div>
           </div>
           <p className="text-2xl text-center font-semibold">INVOICE</p>
@@ -49,20 +102,36 @@ const Bill = () => {
               Price
             </div>
           </div>
+
           <div className="grid grid-cols-5 text-xs ">
-            <div className="border-dashed border-1 border-r-0 py-2 text-center flex items-center justify-center">
-              1.
-            </div>
-            <div className="border-dashed border-1 border-x-0 py-2 col-span-2 text-center flex items-center justify-center">
-              Hyedrabadi Chicken Biriyani
-            </div>
-            <div className="border-dashed border-1 flex py-2 items-center justify-center border-x-0  text-center gap-2">
-              <span className="text-base cursor-pointer">-</span>02
-              <span className="cursor-pointer text-base">+</span>
-            </div>
-            <div className="border-dashed border-1 border-l-0 py-2  flex items-center justify-center text-center">
-              200
-            </div>
+            {billItems.map((item, index) => (
+              <>
+                <div className="border-dashed border-1 border-r-0 py-2 text-center flex items-center justify-center">
+                  {index + 1}
+                </div>
+                <div className="border-dashed border-1 border-x-0 py-2 col-span-2 text-center flex items-center justify-center">
+                  {item.name}
+                </div>
+                <div className="border-dashed border-1 flex py-2 items-center justify-center border-x-0  text-center gap-2">
+                  <span
+                    className="text-base cursor-pointer"
+                    onClick={() => subtractItem(item._id)}
+                  >
+                    -
+                  </span>
+                  {item.quantity}
+                  <span
+                    className="cursor-pointer text-base"
+                    onClick={() => addItem(item._id)}
+                  >
+                    +
+                  </span>
+                </div>
+                <div className="border-dashed border-1 border-l-0 py-2  flex items-center justify-center text-center">
+                  {item.actualPrice * item.quantity}
+                </div>
+              </>
+            ))}
           </div>
         </div>
       </div>
@@ -76,11 +145,11 @@ const Bill = () => {
           <p>Round Off</p>
         </div>
         <div className="flex flex-col gap-1">
-          <p>400.00</p>
-          <p>20.00</p>
-          <p>440.00</p>
-          <p>22.00</p>
-          <p>00</p>
+          <p>{grossValue}</p>
+          <p>{discount}</p>
+          <p>{netValue}</p>
+          <p>{tax}</p>
+          <p>{0}</p>
         </div>
       </div>
       <div className="flex justify-between px-3 uppercase text-sm font-bold border-dashed border-y border-gray-500">
@@ -88,31 +157,78 @@ const Bill = () => {
           <p>Total Amount</p>
         </div>
         <div className="flex flex-col gap-1 py-2">
-          <p>400.00</p>
+          <p>{totalValue}</p>
         </div>
       </div>
 
       <div className="text-sm px-3 border-dashed border-b pb-2 border-gray-500">
-        <p className="uppercase">Instructions</p>
+        <p className="uppercase">
+          Instructions{" "}
+          <span
+            className="text-xl cursor-pointer"
+            onClick={() => setShowIntruction(true)}
+          >
+            +
+          </span>
+        </p>
         <ul className="list-disc text-xs px-3">
-          <li>Add spicy chicken</li>
-          <li>Add extra salad</li>
+          {instructions.map((instruction, index) => (
+            <li
+              className="group flex gap-2 items-center h-4 cursor-pointer"
+              onClick={()=>removeInstruction(index)}
+              key={index}
+            >
+              <span className="hidden group-hover:block text-2xl cursor-pointer -ml-5">
+                <X className="h-3 w-3" />
+              </span>
+              {instruction}
+            </li>
+          ))}
+          {showInstruction && (
+            <div className="flex gap-1 mt-1 items-center">
+              <Input
+                className="text-sm h-6"
+                onChange={(e) => handleInstructionInput(e.target.value)}
+              />
+              <Button
+                onClick={() => addInstruction()}
+                className="h-6 w-auto px-2"
+              >
+                <CheckIcon />
+              </Button>
+            </div>
+          )}
         </ul>
       </div>
 
       <div className="flex items-end gap-10 border-gray-500 pb-2 border-dashed border-b text-sm px-3 justify-between">
-        <div className="flex gap-2 ">
-          <div className="flex flex-col">
-            <p className="">Customer Name</p>
-            <p className="">Customer Number</p>
-            <p className="">Order Status</p>
+        {bill.mode === "online" ? (
+          <div className="flex gap-2 ">
+            <div className="flex flex-col">
+              <p className="">Order Mode</p>
+              <p className="">Aggregator</p>
+              <p className="">Order Id</p>
+            </div>
+            <div className="flex flex-col">
+              <p className="">: {bill.mode}</p>
+              <p className="">: {bill.aggregator}</p>
+              <p className="">: {bill.aggregatorOrderId}</p>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <p className="">: TOM HOLLAND</p>
-            <p className="">: 9999999999</p>
-            <p className="">: DINE IN</p>
+        ) : (
+          <div className="flex gap-2 ">
+            <div className="flex flex-col">
+              <p className="">Customer Name</p>
+              <p className="">Customer Number</p>
+              <p className="">Order Mode</p>
+            </div>
+            <div className="flex flex-col">
+              <p className="">: {bill.customerName}</p>
+              <p className="">: {bill.customerPhone}</p>
+              <p className="">: {bill.mode}</p>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="text-sm px-3 pb-2 flex flex-col gap-2">
         <p className="uppercase">Mode of Payment</p>

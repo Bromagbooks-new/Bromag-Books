@@ -2,6 +2,7 @@ const express = require("express");
 const userRouter = express.Router();
 //controllers
 const controller = require("../controller/access_controller");
+const billingController = require("../controller/billing_controller");
 const menuController = require("../controller/menu_controller");
 const posController = require("../controller/pos_controller");
 const capController = require("../controller/cap_controller");
@@ -90,6 +91,18 @@ userRouter.post(
 
 // userRouter.post("/addEmployDetails", upload.ImageUploader.fields([{ name: "aadharImage", maxCount: 1 },
 // { name: "pancardImage", maxCount: 1 },]),interceptor.adminAuth,controller.addEmployDetails);
+
+
+userRouter.post(
+  "/generateBill",
+  interceptor.adminAuth,
+  billingController.generateBill
+);
+userRouter.post(
+  "/fetchBill",
+  interceptor.adminAuth,
+  billingController.fetchBill
+);
 
 userRouter.post(
   "/addMenuCategory",

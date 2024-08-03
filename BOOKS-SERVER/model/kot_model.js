@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 const { menuSchema } = require("./menu_model");
 // console.log(menuSchema);
 
-const billSchema = mongoose.Schema({
-  restrauntId: String,
+const kotSchema = mongoose.Schema({
+  restrauntId: {type: String, required: true},
   restrauntName: String,
   restrauntEmail: String,
   restrauntAddress:  [
@@ -34,8 +34,9 @@ const billSchema = mongoose.Schema({
       },
     },
   ],
-  employeeId: String,
-  billNo: String,
+  billNo: {type: String, required: true},
+  kotNo: {type: String, required: true},
+  billId: {type: String, required: true},
   date: {
     type: Date,
     default: Date.now,
@@ -67,50 +68,24 @@ const billSchema = mongoose.Schema({
   },
   items: [
     new mongoose.Schema({
-      item: menuSchema,
-      quantiy: Number,
+      name: String,
+      quantity: Number,
+      actualPrice: Number,
+      discountPrice: Number,
+      itemId: String,
     }),
   ],
   instructions: [String],
-  grossValue: {
-    type: Number,
-    
-  },
-  discount: {
-    type: Number,
-    
-  },
-  netValue: {
-    type: Number,
-    
-  },
-  taxes: {
-    type: Number,
-    
-  },
-  roundOff: {
-    type: Number,
-    
-  },
-  total: {
-    type: Number,
-    
-  },
-  paymentMode: {
-    type: String,
-    
-  },
-  status: String,
+  status: {type: String, required: true},
 });
 
-billSchema.statics.generateBillId = async function (
-  restaurantName,
+kotSchema.statics.generateKOTNo = async function (
   restrauntId
 ) {
   const today = new Date();
   const dateString = today.toISOString().split("T")[0]; // Get date in YYYY-MM-DD format
-  console.log(restaurantName);
-  const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
+  // console.log(restaurantName);
+  // const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
 
   // Find the last order for this restaurant from today
   const lastOrder = await this.findOne({
@@ -134,8 +109,8 @@ billSchema.statics.generateBillId = async function (
   }
 
   // Format the bill ID
-  const billId = `${restaurantCode}${count.toString().padStart(4, "0")}`;
+  const billId = `${"KOT"}${count.toString().padStart(4, "0")}`;
   return billId;
 };
 
-module.exports = mongoose.model("BillingOrder", billSchema);
+module.exports = mongoose.model("KOT", kotSchema);

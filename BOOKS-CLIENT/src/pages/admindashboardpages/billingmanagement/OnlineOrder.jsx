@@ -110,7 +110,7 @@ const OnlineOrder = () => {
           </div>
         </form>
       </Form>
-      <PreviousBills />
+      <PreviousBills type="online" />
     </div>
   );
 };

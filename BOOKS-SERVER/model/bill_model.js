@@ -67,8 +67,11 @@ const billSchema = mongoose.Schema({
   },
   items: [
     new mongoose.Schema({
-      item: menuSchema,
-      quantiy: Number,
+      name: String,
+      quantity: Number,
+      actualPrice: Number,
+      discountPrice: Number,
+      itemId: String,
     }),
   ],
   instructions: [String],
@@ -114,7 +117,7 @@ billSchema.statics.generateBillId = async function (
 
   // Find the last order for this restaurant from today
   const lastOrder = await this.findOne({
-    restaurantId: restrauntId,
+    restrauntId: restrauntId,
     date: { $gte: new Date(dateString) },
     // $or: [
     //   { orderStatus: 'Success' },
@@ -122,11 +125,12 @@ billSchema.statics.generateBillId = async function (
     // ],
   }).sort({ date: -1 });
 
+  console.log("NEWWW BILLL ID-----------------------------------------");
   console.log(lastOrder);
   let count = 0;
-  if (lastOrder && lastOrder.billId) {
+  if (lastOrder && lastOrder.billNo) {
     // Extract the count from the last bill ID
-    const lastBillId = lastOrder.billId;
+    const lastBillId = lastOrder.billNo;
     const lastCount = lastBillId
       ? parseInt(lastOrder.billId?.substring(3), 10)
       : 1;

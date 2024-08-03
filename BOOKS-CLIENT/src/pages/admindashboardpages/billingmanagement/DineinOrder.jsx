@@ -31,7 +31,7 @@ const onlineOrderSchema = z.object({
   customerName: z
     .string()
     .min(1, { message: "Please enter the customer name" }),
-  customerContact: z.string(),
+  customerPhone: z.string(),
   customerEmail: z.string(),
   tableNo: z.string(),
 });
@@ -41,7 +41,7 @@ const DineinOrder = () => {
     resolver: zodResolver(onlineOrderSchema),
     defaultValues: {
       customerName: "",
-      customerContact: "",
+      customerPhone: "",
       customerEmail: "",
       tableNo: "",
     },
@@ -99,7 +99,7 @@ const DineinOrder = () => {
               )}
             />
             <FormField
-              name="customerContact"
+              name="customerPhone"
               control={form.control}
               render={({ field }) => (
                 <FormItem className="w-1/2">
@@ -153,7 +153,7 @@ const DineinOrder = () => {
           </div>
         </form>
       </Form>
-      <PreviousBills />
+      <PreviousBills type="dinein" />
       <div className="flex gap-3">
       <CountCard title="Total Tables" icon={Icon1} className="border-2 border-[#FF9068]" />
       <CountCard title="Tables Available" icon={Icon} className="border-2 border-[#1BD276]" />

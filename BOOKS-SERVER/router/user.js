@@ -3,6 +3,7 @@ const userRouter = express.Router();
 //controllers
 const controller = require("../controller/access_controller");
 const billingController = require("../controller/billing_controller");
+const kotController = require("../controller/kot_controller");
 const menuController = require("../controller/menu_controller");
 const posController = require("../controller/pos_controller");
 const capController = require("../controller/cap_controller");
@@ -102,6 +103,27 @@ userRouter.post(
   "/fetchBill",
   interceptor.adminAuth,
   billingController.fetchBill
+);
+userRouter.get(
+  "/fetchHoldBills",
+  interceptor.adminAuth,
+  billingController.fetchHoldBills
+);
+userRouter.get(
+  "/fetchCompletedBills",
+  interceptor.adminAuth,
+  billingController.fetchCompletedBills
+);
+userRouter.patch(
+  "/updateBill",
+  interceptor.adminAuth,
+  billingController.updateBill
+);
+
+userRouter.post(
+  "/generateKOT",
+  interceptor.adminAuth,
+  kotController.generateKOT
 );
 
 userRouter.post(

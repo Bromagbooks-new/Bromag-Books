@@ -397,6 +397,39 @@ const FetchBill = async (data)=> {
     console.error(error);
   }
 }
+const FetchHoldBills = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("fetchHoldBills", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const FetchCompletedBills = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("fetchCompletedBills", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const UpdateBill = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.patch("updateBill", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+const GenerateKOT = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
 
 const MenuCategory = async () => {
   try {
@@ -1035,5 +1068,9 @@ export {
   updateEmploymentData,
   getAllRegisteredPos,
   GenerateBill,
-  FetchBill
+  FetchBill,
+  FetchHoldBills,
+  FetchCompletedBills,
+  UpdateBill,
+  GenerateKOT
 };

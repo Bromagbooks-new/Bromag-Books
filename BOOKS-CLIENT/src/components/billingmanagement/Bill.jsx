@@ -11,12 +11,76 @@ import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Input } from "../ui/input";
+import { GenerateKOT, UpdateBill } from "@/config/routeApi/owner";
+import { toastError, toastSuccess } from "@/helpers/helpers";
+import { useNavigate } from "react-router-dom";
 
 const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   // console.log(bill);
 
-  const [instructions, setInstructions] = useState([]);
+  const [sentToKot, setSentToKot] = useState(false);
 
+  const [instructions, setInstructions] = useState([]);
+  const handleKOT = async () => {
+    try {
+      console.log("HEree");
+      console.log(billItems);
+      const modifiedBillItems = billItems.map((item) => ({
+        ...item,
+        itemId: item._id,
+      }));
+      const response = await UpdateBill({
+        billId: bill._id,
+        items: modifiedBillItems,
+        instructions,
+      });
+      if (response.status === 201) {
+        const bill = response.data.bill;
+        const kotResponse = await GenerateKOT({ billData: bill });
+        if (kotResponse.status === 201) {
+          console.log(kotResponse.data);
+          toastSuccess(
+            `Sent to Kitchen Successfully!! ${kotResponse.data.KOT.kotNo}`
+          );
+          setSentToKot(true);
+        }
+        toastError("Something's Wrong, Please Try Again Later!!");
+      }
+
+      toastError("Something's Wrong, Please Try Again Later!!");
+    } catch (error) {
+      console.error(error);
+      toastError("Internal Server Error");
+    }
+  };
+
+  const navigate = useNavigate();
+
+  const handlePrintBill = async () => {
+    try {
+      console.log("HEree");
+
+      const response = await UpdateBill({
+        billId: bill._id,
+        status: "COMPLETED"
+      });
+
+      if(response.status === 201) {
+        console.log(response.data.bill);
+        toastSuccess("Thanks for Visiting!");
+        navigate('/dashboard/billing-management');
+      }
+      
+      toastError("Something's Wrong, Please Try Again Later!!");
+    } catch (error) {
+      console.error(error);
+      toastError("Internal Server Error");
+    }
+  };
+
+
+
+  const [paymentMode, setPaymentMode] = useState("cash");
   const [inputInstruction, setInputInstruction] = useState("");
   const [showInstruction, setShowIntruction] = useState(false);
 
@@ -50,7 +114,13 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   const taxRate = 5;
   const tax = (taxRate / 100) * netValue;
 
-  const totalValue = netValue + tax;
+  let totalValue = netValue + tax;
+  let roundOff = 0;
+
+  if(paymentMode === 'cash') {
+    roundOff = totalValue - Math.round(totalValue);
+    totalValue = Math.round(totalValue);
+  }
 
   const address = bill.restrauntAddress[0];
   // console.log(address);
@@ -149,7 +219,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
           <p>{discount}</p>
           <p>{netValue}</p>
           <p>{tax}</p>
-          <p>{0}</p>
+          <p>{roundOff}</p>
         </div>
       </div>
       <div className="flex justify-between px-3 uppercase text-sm font-bold border-dashed border-y border-gray-500">
@@ -175,7 +245,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
           {instructions.map((instruction, index) => (
             <li
               className="group flex gap-2 items-center h-4 cursor-pointer"
-              onClick={()=>removeInstruction(index)}
+              onClick={() => removeInstruction(index)}
               key={index}
             >
               <span className="hidden group-hover:block text-2xl cursor-pointer -ml-5">
@@ -232,7 +302,11 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
       </div>
       <div className="text-sm px-3 pb-2 flex flex-col gap-2">
         <p className="uppercase">Mode of Payment</p>
-        <RadioGroup className="flex flex-col gap-1" defaultValue="card">
+        <RadioGroup
+          className="flex flex-col gap-1"
+          value={paymentMode}
+          onValueChange={setPaymentMode}
+        >
           <div className="flex gap-1">
             <RadioGroupItem value="card" />
             <Label className="">Credit/Debit Card</Label>
@@ -250,7 +324,10 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
 
       <div className="flex flex-col gap-3">
         <div className="flex gap-0 justify-between text-sm border-dashed border-b pb-2 border-gray-500 p-2">
-          <Button className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
+          <Button
+            onClick={handleKOT}
+            className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black"
+          >
             KOT
           </Button>
           <Button className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
@@ -261,7 +338,11 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
           </Button>
         </div>
         <div className="flex justify-center">
-          <Button className="bg-[#486072] rounded-3xl w-5/6  flex justify-center items-center text-white py-1 h-8 ">
+          <Button
+            disabled={!sentToKot}
+            onClick={handlePrintBill}
+            className="bg-[#486072] rounded-3xl w-5/6  flex justify-center items-center text-white py-1 h-8 "
+          >
             PRINT BILL
           </Button>
         </div>

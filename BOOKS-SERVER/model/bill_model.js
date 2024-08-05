@@ -132,7 +132,7 @@ billSchema.statics.generateBillId = async function (
     // Extract the count from the last bill ID
     const lastBillId = lastOrder.billNo;
     const lastCount = lastBillId
-      ? parseInt(lastOrder.billId?.substring(3), 10)
+      ? parseInt(lastBillId?.substring(3), 10)
       : 1;
     count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999 range
   }

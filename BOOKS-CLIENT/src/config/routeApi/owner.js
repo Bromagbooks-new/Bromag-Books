@@ -421,6 +421,15 @@ const UpdateBill = async (data)=> {
     console.error(error);
   }
 }
+const DeleteBill = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("deleteBill", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
 
 const GenerateKOT = async (data)=> {
   try {
@@ -1072,5 +1081,6 @@ export {
   FetchHoldBills,
   FetchCompletedBills,
   UpdateBill,
-  GenerateKOT
+  GenerateKOT,
+  DeleteBill,
 };

@@ -119,6 +119,11 @@ userRouter.patch(
   interceptor.adminAuth,
   billingController.updateBill
 );
+userRouter.post(
+  "/deleteBill",
+  interceptor.adminAuth,
+  billingController.deleteBill
+);
 
 userRouter.post(
   "/generateKOT",

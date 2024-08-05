@@ -117,6 +117,8 @@ import TakeawayOrder from "./pages/admindashboardpages/billingmanagement/Takeawa
 import DineinOrder from "./pages/admindashboardpages/billingmanagement/DineinOrder";
 import OrderCharts from "./components/billingmanagement/OrderCharts";
 import Order, { orderLoader } from "./pages/admindashboardpages/billingmanagement/Order";
+import OpeningReport from "./pages/admindashboardpages/billingmanagement/OpeningReport";
+import AddOpeningReport from "./pages/admindashboardpages/billingmanagement/AddOpeningReport";
 
 
 const router = createBrowserRouter([
@@ -232,6 +234,14 @@ const router = createBrowserRouter([
             path: 'billing-management/order',
             loader: orderLoader,
             element: <Order />
+          },
+          {
+            path: 'billing-management/opening-report',
+            element: <OpeningReport />
+          },
+          {
+            path: 'billing-management/opening-report/add-report',
+            element: <AddOpeningReport />
           },
           {
             path: "pos-management",

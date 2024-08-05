@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 import { FetchCompletedBills } from "@/config/routeApi/owner";
+import { Dialog, DialogTrigger } from "../ui/dialog";
+import ViewBill from "./ViewBill";
 
 const PreviousBill = ({ bill }) => {
   return (
@@ -41,9 +43,19 @@ const PreviousBill = ({ bill }) => {
         </p>
       </div>
       <div className="flex justify-center">
-        <Button className="rounded-3xl px-6 py-2 bg-[#758D9F]">
-          View Bill
-        </Button>
+        <Dialog>
+          <DialogTrigger>
+            <Button className="rounded-3xl px-6 py-2 bg-[#758D9F]">
+              View Bill
+            </Button>
+          </DialogTrigger>
+          <ViewBill
+            bill={bill}
+            billItems={bill.items}
+            paymentMode={bill.paymentMode}
+            instructions={bill.instructions}
+          />
+        </Dialog>
       </div>
     </div>
   );

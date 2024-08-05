@@ -7,13 +7,17 @@ import {
   X,
 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+
 import { Label } from "../ui/label";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Input } from "../ui/input";
-import { GenerateKOT, UpdateBill } from "@/config/routeApi/owner";
+import { DeleteBill, GenerateKOT, UpdateBill } from "@/config/routeApi/owner";
 import { toastError, toastSuccess } from "@/helpers/helpers";
-import { useNavigate } from "react-router-dom";
+import { redirect, useNavigate } from "react-router-dom";
+import { Dialog, DialogTrigger } from "../ui/dialog";
+import ViewBill from "./ViewBill";
+import DownloadBill from "./DownloadBill";
 
 const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   // console.log(bill);
@@ -56,29 +60,49 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
 
   const navigate = useNavigate();
 
+  const handleHoldBill = async ()=> {
+    toastSuccess("Bill on Hold!");
+    navigate('/dashboard/billing-management');
+  }
+
+  const handleCancelBill = async ()=> {
+    try {
+      console.log(bill._id);
+      const response = await DeleteBill({billId: bill._id});
+      console.log(response)
+      if(response.status === 200) {
+        console.log("Bill Canceled");
+        toastSuccess("Bill Canceled Successfully!");
+        navigate('/dashboard/billing-management');
+      }
+    } catch(error) {
+      console.error(error);
+      toastError("Internal Server Error");
+    }
+  }
+
   const handlePrintBill = async () => {
     try {
       console.log("HEree");
 
       const response = await UpdateBill({
         billId: bill._id,
-        status: "COMPLETED"
+        status: "COMPLETED",
+        paymentMode,
       });
 
-      if(response.status === 201) {
+      if (response.status === 201) {
         console.log(response.data.bill);
         toastSuccess("Thanks for Visiting!");
-        navigate('/dashboard/billing-management');
+        navigate("/dashboard/billing-management");
       }
-      
+
       toastError("Something's Wrong, Please Try Again Later!!");
     } catch (error) {
       console.error(error);
       toastError("Internal Server Error");
     }
   };
-
-
 
   const [paymentMode, setPaymentMode] = useState("cash");
   const [inputInstruction, setInputInstruction] = useState("");
@@ -117,7 +141,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   let totalValue = netValue + tax;
   let roundOff = 0;
 
-  if(paymentMode === 'cash') {
+  if (paymentMode === "cash") {
     roundOff = totalValue - Math.round(totalValue);
     totalValue = Math.round(totalValue);
   }
@@ -152,8 +176,28 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
           </div>
           <p className="text-2xl text-center font-semibold">INVOICE</p>
           <div className="w-1/3 flex gap-2 p-2 justify-end text-gray-600">
-            <EyeIcon className="w-5 h- cursor-pointer" />
-            <DownloadIcon className="w-5 h-5 cursor-pointer" />
+            <Dialog>
+              <DialogTrigger>
+                <EyeIcon className="w-5 h- cursor-pointer" />
+              </DialogTrigger>
+              <ViewBill
+                bill={bill}
+                billItems={billItems}
+                paymentMode={paymentMode}
+                instructions={instructions}
+              />
+            </Dialog>
+            <Dialog>
+              <DialogTrigger>
+                <DownloadIcon className="w-5 h-5 cursor-pointer" />
+              </DialogTrigger>
+              <DownloadBill
+                bill={bill}
+                billItems={billItems}
+                paymentMode={paymentMode}
+                instructions={instructions}
+              />
+            </Dialog>
             <Share2Icon className="w-5 h-5 cursor-pointer" />
           </div>
         </div>
@@ -324,16 +368,16 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
 
       <div className="flex flex-col gap-3">
         <div className="flex gap-0 justify-between text-sm border-dashed border-b pb-2 border-gray-500 p-2">
+          <Button onClick={handleCancelBill} className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
+            CANCEL BILL
+          </Button>
           <Button
             onClick={handleKOT}
             className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black"
           >
             KOT
           </Button>
-          <Button className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
-            VIEW BILL
-          </Button>
-          <Button className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
+          <Button onClick={handleHoldBill} className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
             HOLD ORDER
           </Button>
         </div>

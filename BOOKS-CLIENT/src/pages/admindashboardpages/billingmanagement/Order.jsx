@@ -5,7 +5,7 @@ import { FetchBill, MenuCategory, MenuData } from "@/config/routeApi/owner";
 import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 
 const Order = () => {
   const [selectedCusine, setSelectedCusine] = useState("All");
@@ -112,9 +112,9 @@ const Order = () => {
   return (
     <div className="py-4 w-full h-full flex flex-col gap-4 font-roboto">
       <div className="text-3xl flex gap-4 items-center font-semibold">
-        <div>
+        <Link to="/dashboard/billing-management">
           <ArrowLeft className="w-6 h-6" />
-        </div>
+        </Link>
         <p>Select Dishes</p>
       </div>
       <ScrollArea className="w-full flex gap-4" type="scroll">

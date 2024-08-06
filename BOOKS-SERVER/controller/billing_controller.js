@@ -1,6 +1,10 @@
+const Expense = require("../model/ExpenseModel");
+const OpeningBalance = require("../model/OpeningBalance");
 const bill_model = require("../model/bill_model");
 const Bill = require("../model/bill_model");
 const restaurant_model = require("../model/restaurant_model");
+const path = require('path');
+const helpers = require("../utils/helpers");
 
 exports.generateBill = async (req, res) => {
   try {
@@ -229,6 +233,148 @@ exports.deleteBill = async (req, res) => {
     res.status(200).json({
       status: "BILL_DELETED",
       message: "Bill deleted successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+
+exports.addOpeningReport = async (req, res)=> {
+
+  try {
+
+    const isRestaurant = req.restaurant;
+
+    const {denominations, totalAmount} = req.body;
+    console.log(denominations);
+
+    const openingReport = new OpeningBalance({cashDenomination: denominations, totalAmount, restaurantId: isRestaurant})
+
+    await openingReport.save();
+
+    res.status(201).json({
+      status: "OPENING_REPORT_CREATED",
+      message: "Opening Report Crearted Successfully",
+    });
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+
+}
+exports.getOpeningReports = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+
+    const reports = await OpeningBalance.find({ restaurantId: isRestaurant })
+      .sort({ createdAt: -1 }); // Sort in descending order
+
+      // console.log("REPORTSSSS", reports);
+
+    res.status(200).json({
+      status: "OPENING_REPORT_CREATED",
+      message: "Opening Report Created Successfully",
+      reports
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.isOpeningReportCreatedToday = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const report = await OpeningBalance.findOne({
+      restaurantId: isRestaurant,
+      createdAt: { $gte: today }
+    });
+
+    res.status(200).json({
+      status: "SUCCESS",
+      isCreatedToday: !!report,
+      message: report ? "Opening report has been created today" : "No opening report created today"
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+
+
+exports.addExpense = async (req, res)=> {
+
+  try {
+
+    const isRestaurant = req.restaurant;
+
+    const {description, totalAmount} = req.body;
+
+    const file = req.files[0];
+
+    const dirPath = path.join('uploads', 'expenses');
+    const fileName = `${isRestaurant}/${file.filename}`;
+    const imagePath = path.join(dirPath, fileName);
+  // const imagePath = `table/${isRestaurant}/${file.filename}`;
+
+  await helpers.uploadFileLocally(file, imagePath);
+
+  const itemImage = helpers.getFileUrlLocally(imagePath);
+  console.log("imagePath: ", itemImage);
+  // helpers.deleteFile(file.path);
+  const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+
+
+    // console.log(denominations);
+
+    const openingReport = new Expense({description, totalAmount, restaurantId: isRestaurant, bill: relativeImagePath})
+
+    await openingReport.save();
+
+    res.status(201).json({
+      status: "EXPENSE_CREATED",
+      message: "Expense Crearted Successfully",
+    });
+  } catch(error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+
+}
+exports.getExpenses = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+
+    const reports = await Expense.find({ restaurantId: isRestaurant })
+      .sort({ createdAt: -1 }); // Sort in descending order
+
+      // console.log("REPORTSSSS", reports);
+
+    res.status(200).json({
+      status: "EXPENSES_FETCHED",
+      message: "Expenses Fetched Successfully",
+      reports
     });
   } catch (error) {
     console.error(error);

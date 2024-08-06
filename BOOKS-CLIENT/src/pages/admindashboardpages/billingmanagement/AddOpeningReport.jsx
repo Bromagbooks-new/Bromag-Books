@@ -1,6 +1,7 @@
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { ArrowLeft, CalendarPlus } from "lucide-react";
 import AddOpeningReportForm from "@/components/billingmanagement/AddOpeningReportForm";
+import { IsOpeningReportCreatedToday } from "@/config/routeApi/owner";
 
 const AddOpeningReport = () => {
   return (
@@ -13,9 +14,28 @@ const AddOpeningReport = () => {
           <p>Add Opening Report</p>
         </div>
       </div>
-     <AddOpeningReportForm />
+      <AddOpeningReportForm />
     </div>
   );
 };
 
 export default AddOpeningReport;
+
+export const addOpeningReportLoader = async () => {
+  try {
+    const response = await IsOpeningReportCreatedToday();
+
+    if (response.status === 200) {
+      console.log(response.data);
+      const {isCreatedToday} = response.data;
+      if (!isCreatedToday) {
+        return true;
+      }
+
+      return redirect("/dashboard/billing-management/opening-report");
+    }
+  } catch (error) {
+    console.error(error);
+    return redirect("/dashboard/billing-management/opening-report");
+  }
+};

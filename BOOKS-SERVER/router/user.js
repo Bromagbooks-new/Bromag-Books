@@ -124,6 +124,33 @@ userRouter.post(
   interceptor.adminAuth,
   billingController.deleteBill
 );
+userRouter.post(
+  "/addOpeningReport",
+  interceptor.adminAuth,
+  billingController.addOpeningReport
+);
+userRouter.get(
+  "/getOpeningReports",
+  interceptor.adminAuth,
+  billingController.getOpeningReports
+);
+userRouter.get(
+  "/isOpeningReportCreatedToday",
+  interceptor.adminAuth,
+  billingController.isOpeningReportCreatedToday
+);
+
+userRouter.post(
+  "/addExpense",
+  upload.ImageUploader.array("image", 1),
+  interceptor.adminAuth,
+  billingController.addExpense
+);
+userRouter.get(
+  "/getExpenses",
+  interceptor.adminAuth,
+  billingController.getExpenses
+);
 
 userRouter.post(
   "/generateKOT",

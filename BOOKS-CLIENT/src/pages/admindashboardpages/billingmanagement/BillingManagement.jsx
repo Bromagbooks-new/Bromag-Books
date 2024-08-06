@@ -37,10 +37,13 @@ const BillingManagement = () => {
               Opening Report
             </Button>
           </Link>
+          <Link to="expense-report">
+
           <Button className="bg-[#01A0A0] flex gap-2">
             <img src={AddExpense} className="w-6 h-6" />
             Expense Report
           </Button>
+        </Link>
           <Button className="bg-[#486072] flex gap-2">
             <img src={Passbook} className="w-6 h-6" />
             Passbook

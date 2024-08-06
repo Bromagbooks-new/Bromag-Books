@@ -430,6 +430,52 @@ const DeleteBill = async (data)=> {
     console.error(error);
   }
 }
+const AddOpeningReport = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("addOpeningReport", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetOpeningReports = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("getOpeningReports", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const IsOpeningReportCreatedToday = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("isOpeningReportCreatedToday", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+const AddExpense = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("addExpense", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetExpenses = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("getExpenses", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
 
 const GenerateKOT = async (data)=> {
   try {
@@ -1083,4 +1129,9 @@ export {
   UpdateBill,
   GenerateKOT,
   DeleteBill,
+  AddOpeningReport,
+  GetOpeningReports,
+  IsOpeningReportCreatedToday,
+  AddExpense,
+  GetExpenses,
 };

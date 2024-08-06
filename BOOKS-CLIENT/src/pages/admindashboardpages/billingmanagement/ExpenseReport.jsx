@@ -2,14 +2,17 @@ import { Link, redirect, useLoaderData } from "react-router-dom";
 import { ArrowLeft, CalendarPlus } from "lucide-react";
 import OpeningTable from "@/components/billingmanagement/OpeningTable";
 import {
+  GetExpenses,
   GetOpeningReports,
   IsOpeningReportCreatedToday,
 } from "@/config/routeApi/owner";
 import { Button } from "@/components/ui/button";
+import ExpenseTable from "@/components/billingmanagement/ExpenseTable";
 
-const OpeningReport = () => {
-  const { reports, isCreatedToday } = useLoaderData();
-  console.log(isCreatedToday);
+const ExpenseReport = () => {
+  const { reports } = useLoaderData();
+  // console.log(reports);
+  // console.log(isCreatedToday);
 
   return (
     <div className="py-4 w-full h-full flex flex-col gap-4 font-roboto">
@@ -18,34 +21,34 @@ const OpeningReport = () => {
           <Link to="/dashboard/billing-management">
             <ArrowLeft className="w-6 h-6" />
           </Link>
-          <p>Opening Report</p>
+          <p>Expense Reports</p>
         </div>
         <Link
-          to={isCreatedToday ? "#" : "add-report"}
+          to={"add-report"}
           className="bg-[#01A0A0] rounded-xl text-[14px] p-0 px-4 font-bold flex gap-2 text-white"
         >
-          <Button disabled={isCreatedToday} className="p-0 bg-transparent flex gap-2">
+          <Button className="p-0 bg-transparent flex gap-2">
             <CalendarPlus className="h-5 w-5" />
-            Add Opening
+            Add Expense
           </Button>
         </Link>
       </div>
-      <OpeningTable reports={reports} />
+      <ExpenseTable reports={reports} />
     </div>
   );
 };
 
-export default OpeningReport;
+export default ExpenseReport;
 
-export const openingReportLoader = async () => {
+export const expenseReportLoader = async () => {
   try {
-    const response = await GetOpeningReports();
-    const openingReportCreatedResponse = await IsOpeningReportCreatedToday();
+    const response = await GetExpenses();
+    // const openingReportCreatedResponse = await IsOpeningReportCreatedToday();
     if (response.status === 200) {
       const reports = response.data.reports;
-      console.log(openingReportCreatedResponse.data);
-      const isCreatedToday = openingReportCreatedResponse.data.isCreatedToday;
-      return { reports, isCreatedToday };
+      // console.log(openingReportCreatedResponse.data);
+      // const isCreatedToday = openingReportCreatedResponse.data.isCreatedToday;
+      return { reports };
     }
   } catch (error) {
     console.error(error);

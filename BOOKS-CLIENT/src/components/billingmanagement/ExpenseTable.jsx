@@ -20,8 +20,9 @@ import {
   DialogTrigger,
 } from "../ui/dialog";
 import OpeningCashDenominationDialog from "./OpeningCashDenominationDialog";
+import ExpenseBillDialog from "./ExpenseBillDialog";
 
-const OpeningTable = ({ reports }) => {
+const ExpenseTable = ({ reports }) => {
   console.log(reports);
   return (
     <div className="flex flex-col gap-10 bg-white rounded-xl p-4">
@@ -89,10 +90,13 @@ const OpeningTable = ({ reports }) => {
           <TableHeader>
             <TableRow className="bg-[#1F303C] hover:bg-[#1F303C]">
               <TableHead className="text-white  rounded-tl-lg">S.no</TableHead>
-              <TableHead className="text-white w-[300px]">Date</TableHead>
+              <TableHead className="text-white">Date</TableHead>
               <TableHead className="text-white">Total Amount</TableHead>
+              <TableHead className="text-center text-white w-[300px]">
+                Description
+              </TableHead>
               <TableHead className="text-center text-white w-[300px] rounded-tr-lg">
-                Denomination
+                Bill
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -102,15 +106,17 @@ const OpeningTable = ({ reports }) => {
                 <TableCell className="font-medium py-3">{index + 1}</TableCell>
                 <TableCell className="py-3">{new Date(report.createdAt).toLocaleDateString()}</TableCell>
                 <TableCell className="py-3">₹{report.totalAmount}</TableCell>
+                <TableCell className="py-3">{report.description}</TableCell>
                 <TableCell className="text-center py-3">
                   <Dialog>
                     <DialogTrigger>
                       <Button className="bg-secondary h-8">View</Button>
                     </DialogTrigger>
-                    <OpeningCashDenominationDialog
+                    {/* <OpeningCashDenominationDialog
                       denomination={report.cashDenomination}
                       date={report.createdAt}
-                    />
+                    /> */}
+                    <ExpenseBillDialog bill={report.bill} />
                   </Dialog>
                 </TableCell>
               </TableRow>
@@ -121,4 +127,4 @@ const OpeningTable = ({ reports }) => {
     </div>
   );
 };
-export default OpeningTable;
+export default ExpenseTable;

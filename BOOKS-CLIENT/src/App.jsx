@@ -117,8 +117,10 @@ import TakeawayOrder from "./pages/admindashboardpages/billingmanagement/Takeawa
 import DineinOrder from "./pages/admindashboardpages/billingmanagement/DineinOrder";
 import OrderCharts from "./components/billingmanagement/OrderCharts";
 import Order, { orderLoader } from "./pages/admindashboardpages/billingmanagement/Order";
-import OpeningReport from "./pages/admindashboardpages/billingmanagement/OpeningReport";
-import AddOpeningReport from "./pages/admindashboardpages/billingmanagement/AddOpeningReport";
+import OpeningReport, { openingReportLoader } from "./pages/admindashboardpages/billingmanagement/OpeningReport";
+import AddOpeningReport, { addOpeningReportLoader } from "./pages/admindashboardpages/billingmanagement/AddOpeningReport";
+import AddExpenseReport from "./pages/admindashboardpages/billingmanagement/AddExpenseReport";
+import ExpenseReport, { expenseReportLoader } from "./pages/admindashboardpages/billingmanagement/ExpenseReport";
 
 
 const router = createBrowserRouter([
@@ -237,11 +239,22 @@ const router = createBrowserRouter([
           },
           {
             path: 'billing-management/opening-report',
-            element: <OpeningReport />
+            element: <OpeningReport />,
+            loader: openingReportLoader,
           },
           {
             path: 'billing-management/opening-report/add-report',
-            element: <AddOpeningReport />
+            element: <AddOpeningReport />,
+            loader: addOpeningReportLoader
+          },
+          {
+            path: 'billing-management/expense-report',
+            element: <ExpenseReport />,
+            loader: expenseReportLoader,
+          },
+          {
+            path: 'billing-management/expense-report/add-report',
+            element: <AddExpenseReport />,
           },
           {
             path: "pos-management",

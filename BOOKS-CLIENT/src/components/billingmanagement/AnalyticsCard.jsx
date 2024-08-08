@@ -19,8 +19,24 @@ const AnalyticsCard = ({
   activatedIcon,
   activatedClass,
   url,
+  breakdown
 }) => {
   const [selectedFilter, setSelectedFilter] = useState("today");
+
+  let selectedBreakdown = breakdown.dailyBreakdown;
+
+  if(selectedFilter === 'today') {
+    selectedBreakdown = breakdown.dailyBreakdown;
+  }
+  if(selectedFilter === 'monthly') {
+    selectedBreakdown = breakdown.monthlyBreakdown;
+  }
+  if(selectedFilter === 'weekly') {
+    selectedBreakdown = breakdown.weeklyBreakdown;
+  }
+
+  // console.log(id);
+  // console.log(selectedBreakdown);
 
   return (
     <NavLink
@@ -54,7 +70,7 @@ const AnalyticsCard = ({
                 "text-black": isActive,
               })}
             >
-              12345
+              {selectedBreakdown[id]}
             </p>
             <img src={isActive ? activatedIcon : icon} className="w-14 h-14" />
           </div>

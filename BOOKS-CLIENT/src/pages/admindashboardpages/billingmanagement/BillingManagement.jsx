@@ -10,21 +10,13 @@ import Takeaway from "@/assets/images/billing-management/Takeaway.svg";
 import TakeawayActivated from "@/assets/images/billing-management/TakeawayActivated.svg";
 import Dinein from "@/assets/images/billing-management/Dinein.svg";
 import DineinActivated from "@/assets/images/billing-management/DineinActivated.svg";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useLoaderData } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { GetCardAnalytics } from "@/config/routeApi/owner";
 
 const BillingManagement = () => {
-  const currentLocationArray = window.location.pathname.split("/");
-  const currentPath = currentLocationArray[currentLocationArray.length - 1];
-  console.log(currentPath);
-
-  if (currentPath === "order") {
-    return (
-      <div className="w-full h-full">
-        <Outlet />
-      </div>
-    );
-  }
+ const breakdown = useLoaderData();
+ console.log(breakdown);
 
   return (
     <div className="w-full h-full border py-4 flex flex-col gap-4">
@@ -38,27 +30,30 @@ const BillingManagement = () => {
             </Button>
           </Link>
           <Link to="expense-report">
-
-          <Button className="bg-[#01A0A0] flex gap-2">
-            <img src={AddExpense} className="w-6 h-6" />
-            Expense Report
-          </Button>
-        </Link>
-          <Button className="bg-[#486072] flex gap-2">
-            <img src={Passbook} className="w-6 h-6" />
-            Passbook
-          </Button>
+            <Button className="bg-[#01A0A0] flex gap-2">
+              <img src={AddExpense} className="w-6 h-6" />
+              Expense Report
+            </Button>
+          </Link>
+          <Link to="passbook">
+            <Button className="bg-[#486072] flex gap-2">
+              <img src={Passbook} className="w-6 h-6" />
+              Passbook
+            </Button>
+          </Link>
         </div>
       </div>
       <div className="flex gap-[0.7rem]">
         {billingOptions.map((item) => (
           <AnalyticsCard
             key={item.id}
+            id={item.id}
             title={item.title}
             url={item.url}
             icon={item.icon}
             activatedIcon={item.activatedIcon}
             activatedClass={item.activatedClass}
+            breakdown={breakdown}
           />
         ))}
       </div>
@@ -71,9 +66,22 @@ const BillingManagement = () => {
 
 export default BillingManagement;
 
+export const billingManagementLoader = async ()=> {
+  try {
+    const response = await GetCardAnalytics({date: new Date()});
+
+    if(response.status === 200) {
+      console.log(response.data);
+      return response.data.breakdown;
+    }
+  } catch(error) {
+    console.error(error);
+  }
+}
+
 const billingOptions = [
   {
-    id: "online-order",
+    id: "online",
     title: "Online Order",
     icon: Online,
     activatedIcon: OnlineActivated,
@@ -81,7 +89,7 @@ const billingOptions = [
     activatedClass: "bg-[#FFE588] border-2 border-[#CF9710]",
   },
   {
-    id: "takeaway-order",
+    id: "takeaway",
     title: "Takeaway Order",
     icon: Takeaway,
     activatedIcon: TakeawayActivated,
@@ -89,7 +97,7 @@ const billingOptions = [
     activatedClass: "bg-[#FFD6B1] border-2 border-[#DD6031]",
   },
   {
-    id: "dinein-order",
+    id: "dinein",
     title: "Dinein Order",
     icon: Dinein,
     activatedIcon: DineinActivated,

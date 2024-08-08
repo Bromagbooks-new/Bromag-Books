@@ -25,7 +25,7 @@ import {
   Customers,
   Dashboard,
   EmploymentDetails,
-  Passbook,
+  Passbook as OldPassbook,
   Settings,
   AddNewAccess,
   Support,
@@ -111,6 +111,19 @@ import StockOut from "./pages/admindashboardpages/stockmanagement/StockOut";
 import Features from "./pages/Features";
 import BookADemo from "./pages/BookADemo";
 import DemoBooked from "./pages/DemoBooked";
+import BillingManagement, { billingManagementLoader } from "./pages/admindashboardpages/billingmanagement/BillingManagement";
+import OnlineOrder from "./pages/admindashboardpages/billingmanagement/OnlineOrder";
+import TakeawayOrder from "./pages/admindashboardpages/billingmanagement/TakeawayOrder";
+import DineinOrder from "./pages/admindashboardpages/billingmanagement/DineinOrder";
+import OrderCharts, { orderChartsLoader } from "./components/billingmanagement/OrderCharts";
+import Order, { orderLoader } from "./pages/admindashboardpages/billingmanagement/Order";
+import OpeningReport, { openingReportLoader } from "./pages/admindashboardpages/billingmanagement/OpeningReport";
+import AddOpeningReport, { addOpeningReportLoader } from "./pages/admindashboardpages/billingmanagement/AddOpeningReport";
+import AddExpenseReport from "./pages/admindashboardpages/billingmanagement/AddExpenseReport";
+import ExpenseReport, { expenseReportLoader } from "./pages/admindashboardpages/billingmanagement/ExpenseReport";
+import Passbook, { passbookReportLoader } from "./pages/admindashboardpages/billingmanagement/Passbook";
+import AddClosingReport, { addClosingReportLoader } from "./pages/admindashboardpages/billingmanagement/AddClosingReport";
+import ComingSoon from "./pages/ComingSoon";
 
 
 const router = createBrowserRouter([
@@ -154,6 +167,10 @@ const router = createBrowserRouter([
       {
         path: "demo-booked",
         element: <DemoBooked />,
+      },
+      {
+        path: "coming-soon",
+        element: <ComingSoon />,
       },
       {
         path: "admin-login",
@@ -200,6 +217,65 @@ const router = createBrowserRouter([
             element: <Dashboard />,
           },
           {
+            path: 'billing-management',
+            element: <BillingManagement />,
+            loader: billingManagementLoader,
+            children: [
+              {
+                index: true,
+                element: <OrderCharts />,
+                loader: orderChartsLoader,
+              },
+              {
+                path: 'online-order',
+                element: <OnlineOrder />
+              },
+              {
+                path: 'takeaway-order',
+                element: <TakeawayOrder />
+              },
+              {
+                path: 'dinein-order',
+                element: <DineinOrder />
+              },
+              
+            ]
+          },
+          {
+            path: 'billing-management/order',
+            loader: orderLoader,
+            element: <Order />
+          },
+          {
+            path: 'billing-management/opening-report',
+            element: <OpeningReport />,
+            loader: openingReportLoader,
+          },
+          {
+            path: 'billing-management/opening-report/add-report',
+            element: <AddOpeningReport />,
+            loader: addOpeningReportLoader
+          },
+          {
+            path: 'billing-management/expense-report',
+            element: <ExpenseReport />,
+            loader: expenseReportLoader,
+          },
+          {
+            path: 'billing-management/expense-report/add-report',
+            element: <AddExpenseReport />,
+          },
+          {
+            path: 'billing-management/passbook',
+            element: <Passbook />,
+            loader: passbookReportLoader,
+          },
+          {
+            path: 'billing-management/passbook/closing-report',
+            element: <AddClosingReport />,
+            loader: addClosingReportLoader,
+          },
+          {
             path: "pos-management",
             element: <Outlet />,
             children: [
@@ -209,7 +285,7 @@ const router = createBrowserRouter([
               },
               {
                 path: "pos-passbook",
-                element: <Passbook />,
+                element: <OldPassbook />,
               },
 
             ],

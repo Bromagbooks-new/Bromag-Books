@@ -380,9 +380,173 @@ export const StockDashboard = async () => {
   }
 };
 
+
+const GenerateBill = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("generateBill", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const FetchBill = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("fetchBill", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const FetchHoldBills = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("fetchHoldBills", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const FetchCompletedBills = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("fetchCompletedBills", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const UpdateBill = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.patch("updateBill", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const DeleteBill = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("deleteBill", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const AddOpeningReport = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("addOpeningReport", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetOpeningReports = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("getOpeningReports", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const IsOpeningReportCreatedToday = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("isOpeningReportCreatedToday", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+const AddExpense = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("addExpense", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetExpenses = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("getExpenses", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+const AddClosingReport = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("addClosingReport", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetClosingReports = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("getClosingReports", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const IsClosingReportCreatedToday = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("isClosingReportCreatedToday", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+const GetPassbookData = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("getPassbookData", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetCardAnalytics = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("getCardAnalytics", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetDashboardAnalytics = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("getDashboardAnalytics", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+const GenerateKOT = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
 const MenuCategory = async () => {
   try {
+    console.log("Here");
     const response = await restaurantOwnerAxiosInstance.get("getMenuCategory");
+    console.log(response);
     return response;
   } catch (error) {
     console.log(error);
@@ -1014,4 +1178,22 @@ export {
   updateEmploymentDetails,
   updateEmploymentData,
   getAllRegisteredPos,
+  GenerateBill,
+  FetchBill,
+  FetchHoldBills,
+  FetchCompletedBills,
+  UpdateBill,
+  GenerateKOT,
+  DeleteBill,
+  AddOpeningReport,
+  GetOpeningReports,
+  IsOpeningReportCreatedToday,
+  AddExpense,
+  GetExpenses,
+  AddClosingReport,
+  GetClosingReports,
+  IsClosingReportCreatedToday,
+  GetPassbookData,
+  GetCardAnalytics,
+  GetDashboardAnalytics
 };

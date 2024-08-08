@@ -17,9 +17,9 @@ import ClosingReportTable from "@/components/billingmanagement/ClosingReportTabl
 
 const Passbook = () => {
   const { reports, isCreatedToday, passbookData } = useLoaderData();
-  console.log(passbookData);
+  // console.log(passbookData);
   const {openingBalance, salesAmount, totalExpenses, closingBalance, netAmount} = passbookData;
-  console.log(reports);
+  // console.log(reports);
   // console.log(isCreatedToday);
 
   return (
@@ -60,7 +60,7 @@ const Passbook = () => {
           />
           <PassbookAnalyticsCard
             id="total-sales"
-            title="Total Sales"
+            title="Available Balance"
             borderClass="border-3 border-sky-500"
             amount={netAmount}
           />

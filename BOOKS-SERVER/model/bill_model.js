@@ -118,7 +118,7 @@ billSchema.statics.generateBillId = async function (
   // Find the last order for this restaurant from today
   const lastOrder = await this.findOne({
     restrauntId: restrauntId,
-    date: { $gte: new Date(dateString) },
+    // date: { $gte: new Date(dateString) },
     // $or: [
     //   { orderStatus: 'Success' },
     //   { orderMode: { $in: ['Swiggy', 'Zomato', 'Bromag', 'others'] } }

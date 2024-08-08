@@ -43,7 +43,7 @@ const AnalyticsCard = ({
       to={url}
       className={({ isActive }) =>
         cn(
-          `rounded-2xl w-[16rem] p-2 px-3 flex flex-col gap-1 bg-white shadow-md ${
+          `rounded-2xl w-[16rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${
             isActive && activatedClass
           }`
         )

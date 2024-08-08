@@ -30,19 +30,19 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className={({ isActive }) => isActive && "font-bold text-black"}
-          to="/features"
+          to="/coming-soon"
         >
           Features
         </NavLink>
         <NavLink
           className={({ isActive }) => isActive && "font-bold text-black"}
-          to="/upgrade"
+          to="/coming-soon"
         >
           Upgrade
         </NavLink>
         <NavLink
           className={({ isActive }) => isActive && "font-bold text-black"}
-          to="/who-we-are"
+          to="/coming-soon"
         >
           Who We Are
         </NavLink>
@@ -84,7 +84,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 isActive && "underline text-blue-600"
               }
-              to="/features"
+              to="/coming-soon"
             >
               Features
             </NavLink>
@@ -92,7 +92,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 isActive && "underline text-blue-600"
               }
-              to="/upgrade"
+              to="/coming-soon"
             >
               Upgrade
             </NavLink>
@@ -100,7 +100,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 isActive && "underline text-blue-600"
               }
-              to="/who-we-are"
+              to="/coming-soon"
             >
               Who We Are
             </NavLink>

@@ -91,7 +91,7 @@ const AddExpenseReportForm = () => {
             control={form.control}
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Total Amount*</FormLabel>
+                <FormLabel>Description*</FormLabel>
                 <Textarea
                   {...field}
                   className="bg-[#F4FAFF]"

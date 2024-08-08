@@ -13,9 +13,11 @@ const initialDenominations = {
   20: 0,
   10: 0,
   5: 0,
+  2: 0,
+  1: 0,
 };
 
-const AddClosingReportForm = () => {
+const AddClosingReportForm = ({netAmount}) => {
   const [denominations, setDenominations] = useState(initialDenominations);
 
   const handleAdd = (denomination) => {
@@ -41,6 +43,12 @@ const AddClosingReportForm = () => {
 
   const handleSubmit = async () => {
     try {
+
+      if(total !== netAmount) {
+        toastError("Total Closing Balance should match with Available Balance");
+        return;
+      }
+
       const response = await AddClosingReport({
         denominations,
         totalAmount: total,
@@ -92,9 +100,17 @@ const AddClosingReportForm = () => {
           </div>
         ))}
       </div>
-      <div className="flex gap-2 justify-center bg-[#A4C5DD] text-white rounded-xl p-2">
+      <div className="flex gap-20 justify-center bg-[#A4C5DD] text-white rounded-xl p-2">
+        <div className="flex gap-2">
+          
+        <p className="text-xl font-semibold">Available Balance</p>
+        <span className="text-xl font-bold">₹{netAmount}</span>
+        </div>
+        <div className="flex gap-2">
+          
         <p className="text-xl font-semibold">Total Cash</p>
         <span className="text-xl font-bold">₹{total}</span>
+        </div>
       </div>
       <div className="flex gap-1 justify-center ">
         <Button className="bg-secondary" onClick={handleSubmit}>

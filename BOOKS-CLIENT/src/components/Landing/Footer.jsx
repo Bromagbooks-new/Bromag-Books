@@ -14,6 +14,7 @@ import { BsWhatsapp } from "react-icons/bs";
 import ellipse546 from "@/assets/images/landing-images/Ellipse 546.svg";
 import ellipse544 from '@/assets/images/landing-images/Ellipse 544.svg'
 import group216 from "@/assets/images/landing-images/Group 216.svg";
+import { Link } from "react-router-dom";
 
 const Footer = () => {
   return (
@@ -48,10 +49,10 @@ const Footer = () => {
         </div>
         <div className="flex flex-col items-center md:items-start gap-4">
           <p className="text-3xl text-white font-bold">About Us</p>
-          <ul className="text-gray-500 flex flex-col items-center md:items-start gap-2 text-xl">
-            <li className="flex gap-2">Who we are</li>
-            <li className="flex gap-2">Privacy Policy</li>
-            <li className="flex gap-2">Terms and Conditions</li>
+          <ul className="text-gray-500 flex flex-col items-center md:items-start gap-2 text-xl z-20">
+            <Link to="/coming-soon" className="flex gap-2">Who we are</Link>
+            <Link to="/coming-soon" className="flex gap-2">Privacy Policy</Link>
+            <Link to="/coming-soon" className="flex gap-2">Terms and Conditions</Link>
           </ul>
         </div>
         <div className="z-10 flex md:block flex-col items-center md:items-start">
@@ -74,7 +75,7 @@ const Footer = () => {
         </div>
       </div>
       <p className="text-gray-500 text-base">
-        Copyrights © Reserved Bromag India Private Limited
+        © All Rights Reserved Bromag India Private Limited
       </p>
       <div className="relative h-0 hidden md:block">
         <img

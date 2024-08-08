@@ -98,7 +98,7 @@ const billingOptions = [
   },
   {
     id: "dinein",
-    title: "Dinein Order",
+    title: "Dine-In Order",
     icon: Dinein,
     activatedIcon: DineinActivated,
     url: "dinein-order",

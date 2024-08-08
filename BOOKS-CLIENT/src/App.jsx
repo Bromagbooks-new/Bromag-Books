@@ -123,6 +123,7 @@ import AddExpenseReport from "./pages/admindashboardpages/billingmanagement/AddE
 import ExpenseReport, { expenseReportLoader } from "./pages/admindashboardpages/billingmanagement/ExpenseReport";
 import Passbook, { passbookReportLoader } from "./pages/admindashboardpages/billingmanagement/Passbook";
 import AddClosingReport, { addClosingReportLoader } from "./pages/admindashboardpages/billingmanagement/AddClosingReport";
+import ComingSoon from "./pages/ComingSoon";
 
 
 const router = createBrowserRouter([
@@ -166,6 +167,10 @@ const router = createBrowserRouter([
       {
         path: "demo-booked",
         element: <DemoBooked />,
+      },
+      {
+        path: "coming-soon",
+        element: <ComingSoon />,
       },
       {
         path: "admin-login",

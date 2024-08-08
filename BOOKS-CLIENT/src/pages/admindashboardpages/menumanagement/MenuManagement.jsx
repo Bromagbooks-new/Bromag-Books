@@ -1,14 +1,9 @@
 import MenuDisplay from "@/components/menumanagement/MenuDisplay";
 import { Button } from "@/components/ui/button";
 import { CalendarPlus, StoreIcon } from "lucide-react";
-
-
+import { Link } from "react-router-dom";
 
 const MenuManagement = () => {
-  
-
-  
-
   return (
     <div className="w-full h-full py-4 flex flex-col gap-4">
       <div className="flex justify-between">
@@ -22,10 +17,12 @@ const MenuManagement = () => {
             <StoreIcon />
             Cusines
           </Button>
-          <Button className="bg-landing-secondary gap-2">
-            <StoreIcon />
-            Aggregators
-          </Button>
+          <Link to="aggregator/add-aggregator">
+            <Button className="bg-landing-secondary gap-2">
+              <StoreIcon />
+              Aggregators
+            </Button>
+          </Link>
         </div>
       </div>
       <MenuDisplay />

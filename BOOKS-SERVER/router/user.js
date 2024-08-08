@@ -153,6 +153,37 @@ userRouter.get(
 );
 
 userRouter.post(
+  "/addClosingReport",
+  interceptor.adminAuth,
+  billingController.addClosingReport
+);
+userRouter.get(
+  "/getClosingReports",
+  interceptor.adminAuth,
+  billingController.getClosingReports
+);
+userRouter.get(
+  "/isClosingReportCreatedToday",
+  interceptor.adminAuth,
+  billingController.isClosingReportCreatedToday
+);
+userRouter.post(
+  "/getPassbookData",
+  interceptor.adminAuth,
+  billingController.getPassbookData
+);
+userRouter.post(
+  "/getCardAnalytics",
+  interceptor.adminAuth,
+  billingController.getCardAnalytics
+);
+userRouter.post(
+  "/getDashboardAnalytics",
+  interceptor.adminAuth,
+  billingController.getDashboardAnalytics
+);
+
+userRouter.post(
   "/generateKOT",
   interceptor.adminAuth,
   kotController.generateKOT

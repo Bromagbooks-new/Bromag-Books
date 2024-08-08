@@ -38,6 +38,8 @@ const AddExpenseReportForm = () => {
   }, []);
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
     try {
 

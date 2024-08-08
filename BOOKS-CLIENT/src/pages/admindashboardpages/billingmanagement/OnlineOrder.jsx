@@ -1,5 +1,8 @@
 import PreviousBills from "@/components/billingmanagement/PreviousBills";
+import CountCard from "@/components/billingmanagement/CountCard";
 import { Button } from "@/components/ui/button";
+import Icon2 from '@/assets/images/billing-management/Icon-2.svg'
+
 import {
   Form,
   FormControl,
@@ -60,9 +63,9 @@ const OnlineOrder = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col gap-4">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="rounded-xl shadow-md p-4 w-[68.2%] bg-white flex flex-col gap-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="rounded-xl shadow-md p-4 w-[68.2%] bg-white flex flex-col gap-2 -mt-3">
           <p className="text-xl font-semibold">Online Order Details</p>
             <div className="flex gap-4 w-full">
               <FormField
@@ -111,6 +114,11 @@ const OnlineOrder = () => {
         </form>
       </Form>
       <PreviousBills type="online" />
+      <div className="flex gap-3">
+      {/* <CountCard title="Total Tables" icon={Icon1} className="border-2 border-[#FF9068]" /> */}
+      {/* <CountCard title="Tables Available" icon={Icon} className="border-2 border-[#1BD276]" /> */}
+      <CountCard title="Orders on Hold" url="orders-on-hold" icon={Icon2} className="border-2 border-[#5A57D0]" />
+      </div>
     </div>
   );
 };

@@ -155,9 +155,9 @@ const DineinOrder = () => {
       </Form>
       <PreviousBills type="dinein" />
       <div className="flex gap-3">
-      <CountCard title="Total Tables" icon={Icon1} className="border-2 border-[#FF9068]" />
-      <CountCard title="Tables Available" icon={Icon} className="border-2 border-[#1BD276]" />
-      <CountCard title="Tables Occupied" url="orders-on-hold" icon={Icon2} className="border-2 border-[#5A57D0]" />
+      {/* <CountCard title="Total Tables" icon={Icon1} className="border-2 border-[#FF9068]" /> */}
+      {/* <CountCard title="Tables Available" icon={Icon} className="border-2 border-[#1BD276]" /> */}
+      <CountCard title="Orders on Hold" url="orders-on-hold" icon={Icon2} className="border-2 border-[#5A57D0]" />
       </div>
     </div>
   );

@@ -13,14 +13,15 @@ import {
 const ExpenseBillDialog = ({ bill }) => {
     console.log("HERER")
     console.log(bill);
+    console.log(formatImageUrl(bill));
     // console.log(denomination);
   return (
-    <DialogContent className="p-0 border-0 max-w-none w-1/4">
+    <DialogContent className="p-0 border-0 max-w-none w-1/3">
       <DialogHeader className="bg-[#1F303C] flex text-start p-4 h-16 text-white rounded-t-lg">
         <DialogTitle>Bill</DialogTitle>
       </DialogHeader>
-     <div className="w-3/4 h-96 rounded-xl">
-        <img sec={formatImageUrl(bill)} className="w-64 h-64" />
+     <div className="w-full h-96 rounded-xl">
+        <img src={formatImageUrl(bill)} className="w-full h-full" />
      </div>
     </DialogContent>
   );

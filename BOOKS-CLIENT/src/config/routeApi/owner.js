@@ -477,6 +477,62 @@ const GetExpenses = async (data)=> {
   }
 }
 
+const AddClosingReport = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("addClosingReport", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetClosingReports = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("getClosingReports", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const IsClosingReportCreatedToday = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.get("isClosingReportCreatedToday", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+const GetPassbookData = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("getPassbookData", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetCardAnalytics = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("getCardAnalytics", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetDashboardAnalytics = async (data)=> {
+  try {
+    console.log("HERERE");
+    const response = await restaurantOwnerAxiosInstance.post("getDashboardAnalytics", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
 const GenerateKOT = async (data)=> {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
@@ -1134,4 +1190,10 @@ export {
   IsOpeningReportCreatedToday,
   AddExpense,
   GetExpenses,
+  AddClosingReport,
+  GetClosingReports,
+  IsClosingReportCreatedToday,
+  GetPassbookData,
+  GetCardAnalytics,
+  GetDashboardAnalytics
 };

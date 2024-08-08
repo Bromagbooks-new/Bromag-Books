@@ -24,6 +24,8 @@ import {
   SelectValue,
 } from "../ui/select";
 import { useState } from "react";
+import { GetDashboardAnalytics } from "@/config/routeApi/owner";
+import { useLoaderData } from "react-router-dom";
 const chartData = [
   { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
   { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
@@ -36,12 +38,20 @@ const chartConfig = {
  
 };
 
-export function Chart() {
-  const ordersData = [
+export function Chart({data}) {
+  let ordersData = [
       { mode: "Take Away", percent: 60, fill: "#3EE54F" },
     { mode: "Online", percent: 30, fill: "#FADF53" },
     { mode: "Dine In", percent: 10, fill: "#2AA4FC" },
   ];
+
+  Object.keys(data).forEach(key=> {
+    if(key==='online') ordersData[1].percent = data[key];
+    if(key==='takeaway') ordersData[0].percent = data[key];
+    if(key==='dinein') ordersData[2].percent = data[key];
+  });
+
+  console.log(ordersData);
 
   return (
     <div className="flex flex-col w-1/3">
@@ -68,13 +78,29 @@ export function Chart() {
 }
 
 const OrderCharts = () => {
+
+  const stats = useLoaderData();
+  console.log(stats);
+
   const [filter, setFilter] = useState("monthly");
+
+  let filtredStats = stats.monthlyStats;
+
+  if(filter === 'today') {
+    filtredStats = stats.dailyStats;
+  }
+  if(filter === 'weekly') {
+    filtredStats = stats.weeklyStats;
+  }
+  if(filter === 'monthly') {
+    filtredStats = stats.monthlyStats;
+  }
 
   return (
     <div className="p-4 h-[90%] rounded-xl bg-white shadow-md w-full">
       <p className="text-2xl font-semibold">Total Orders</p>
       <div className="flex justify-start gap-32 px-10">
-        <Chart />
+        <Chart data={filtredStats.orderTypeBreakdown} />
         <div className="flex flex-col gap-4">
             <div className="flex flex-col gap-2">
 
@@ -98,30 +124,30 @@ const OrderCharts = () => {
             </div>
             <div className="flex gap-1 font-bold">
               <div className="rounded-full w-4 h-4 bg-[#2AA4FC]" />
-              <p>Takeaway Orders</p>
+              <p>Dine In Orders</p>
             </div>
             <div className="flex gap-1 font-bold">
               <div className="rounded-full w-4 h-4 bg-[#3EE54F]" />
-              <p>Dine In Orders</p>
+              <p>Takeaway Orders</p>
             </div>
           </div>
         </div>
         <div className="flex flex-col gap-2 text-gray-500">
             <div className="flex flex-col gap-2">
                 <p className="text-xl">Total Orders</p>
-                <p className="text-3xl font-bold">0000</p>
+                <p className="text-3xl font-bold">{filtredStats.totalBills}</p>
             </div>
             <div className="flex flex-col gap-2">
                 <p className="text-xl">New Orders</p>
-                <p className="text-3xl font-bold">0000</p>
+                <p className="text-3xl font-bold">{filtredStats.billsWithSameItems}</p>
             </div>
             <div className="flex flex-col gap-2">
                 <p className="text-xl">Repeat Orders</p>
-                <p className="text-3xl font-bold">0000</p>
+                <p className="text-3xl font-bold">{filtredStats.billsWithRepeatedItems}</p>
             </div>
             <div className="flex flex-col gap-2">
                 <p className="text-xl">Repeat Rate (%) </p>
-                <p className="text-3xl font-bold">10%</p>
+                <p className="text-3xl font-bold">{filtredStats.repeatRate}</p>
             </div>
         </div>
       </div>
@@ -130,3 +156,17 @@ const OrderCharts = () => {
 };
 
 export default OrderCharts;
+
+export const orderChartsLoader = async ()=> {
+
+  try {
+    const response = await GetDashboardAnalytics({date: new Date()});
+
+    if(response.status === 200) {
+      // console.log(response.data);
+      return response.data.stats;
+    }
+  } catch(error) {
+    console.error(error);
+  }
+}

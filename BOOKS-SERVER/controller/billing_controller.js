@@ -3,8 +3,9 @@ const OpeningBalance = require("../model/OpeningBalance");
 const bill_model = require("../model/bill_model");
 const Bill = require("../model/bill_model");
 const restaurant_model = require("../model/restaurant_model");
-const path = require('path');
+const path = require("path");
 const helpers = require("../utils/helpers");
+const ClosingReport = require("../model/ClosingReport");
 
 exports.generateBill = async (req, res) => {
   try {
@@ -128,10 +129,12 @@ exports.fetchCompletedBills = async (req, res) => {
     // const billId = req.body.billId;
 
     // Fetch and sort bills in descending order based on the date field
-    const bills = await bill_model.find({
-      restrauntId: isRestaurant,
-      status: 'COMPLETED'
-    }).sort({ date: -1 });
+    const bills = await bill_model
+      .find({
+        restrauntId: isRestaurant,
+        status: "COMPLETED",
+      })
+      .sort({ date: -1 });
 
     res.status(200).json({
       status: "BILL_FETCHED",
@@ -243,17 +246,18 @@ exports.deleteBill = async (req, res) => {
   }
 };
 
-
-exports.addOpeningReport = async (req, res)=> {
-
+exports.addOpeningReport = async (req, res) => {
   try {
-
     const isRestaurant = req.restaurant;
 
-    const {denominations, totalAmount} = req.body;
+    const { denominations, totalAmount } = req.body;
     console.log(denominations);
 
-    const openingReport = new OpeningBalance({cashDenomination: denominations, totalAmount, restaurantId: isRestaurant})
+    const openingReport = new OpeningBalance({
+      cashDenomination: denominations,
+      totalAmount,
+      restaurantId: isRestaurant,
+    });
 
     await openingReport.save();
 
@@ -261,28 +265,28 @@ exports.addOpeningReport = async (req, res)=> {
       status: "OPENING_REPORT_CREATED",
       message: "Opening Report Crearted Successfully",
     });
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({
       status: "FAILED",
       message: "Internal Server Error",
     });
   }
-
-}
+};
 exports.getOpeningReports = async (req, res) => {
   try {
     const isRestaurant = req.restaurant;
 
-    const reports = await OpeningBalance.find({ restaurantId: isRestaurant })
-      .sort({ createdAt: -1 }); // Sort in descending order
+    const reports = await OpeningBalance.find({
+      restaurantId: isRestaurant,
+    }).sort({ createdAt: -1 }); // Sort in descending order
 
-      // console.log("REPORTSSSS", reports);
+    // console.log("REPORTSSSS", reports);
 
     res.status(200).json({
       status: "OPENING_REPORT_CREATED",
       message: "Opening Report Created Successfully",
-      reports
+      reports,
     });
   } catch (error) {
     console.error(error);
@@ -301,13 +305,15 @@ exports.isOpeningReportCreatedToday = async (req, res) => {
 
     const report = await OpeningBalance.findOne({
       restaurantId: isRestaurant,
-      createdAt: { $gte: today }
+      createdAt: { $gte: today },
     });
 
     res.status(200).json({
       status: "SUCCESS",
       isCreatedToday: !!report,
-      message: report ? "Opening report has been created today" : "No opening report created today"
+      message: report
+        ? "Opening report has been created today"
+        : "No opening report created today",
     });
   } catch (error) {
     console.error(error);
@@ -318,63 +324,289 @@ exports.isOpeningReportCreatedToday = async (req, res) => {
   }
 };
 
-
-
-exports.addExpense = async (req, res)=> {
-
+exports.addExpense = async (req, res) => {
   try {
-
     const isRestaurant = req.restaurant;
 
-    const {description, totalAmount} = req.body;
+    const { description, totalAmount } = req.body;
 
     const file = req.files[0];
 
-    const dirPath = path.join('uploads', 'expenses');
+    const dirPath = path.join("uploads", "expenses");
     const fileName = `${isRestaurant}/${file.filename}`;
     const imagePath = path.join(dirPath, fileName);
-  // const imagePath = `table/${isRestaurant}/${file.filename}`;
+    // const imagePath = `table/${isRestaurant}/${file.filename}`;
 
-  await helpers.uploadFileLocally(file, imagePath);
+    await helpers.uploadFileLocally(file, imagePath);
 
-  const itemImage = helpers.getFileUrlLocally(imagePath);
-  console.log("imagePath: ", itemImage);
-  // helpers.deleteFile(file.path);
-  const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
-
+    const itemImage = helpers.getFileUrlLocally(imagePath);
+    console.log("imagePath: ", itemImage);
+    // helpers.deleteFile(file.path);
+    const relativeImagePath = `/${imagePath.replace(/\\/g, "/")}`;
 
     // console.log(denominations);
 
-    const openingReport = new Expense({description, totalAmount, restaurantId: isRestaurant, bill: relativeImagePath})
+    const expense = new Expense({
+      description,
+      totalAmount,
+      restaurantId: isRestaurant,
+      bill: relativeImagePath,
+    });
 
-    await openingReport.save();
+    await expense.save();
 
     res.status(201).json({
       status: "EXPENSE_CREATED",
       message: "Expense Crearted Successfully",
     });
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     res.status(500).json({
       status: "FAILED",
       message: "Internal Server Error",
     });
   }
-
-}
+};
 exports.getExpenses = async (req, res) => {
   try {
     const isRestaurant = req.restaurant;
 
-    const reports = await Expense.find({ restaurantId: isRestaurant })
-      .sort({ createdAt: -1 }); // Sort in descending order
+    const reports = await Expense.find({ restaurantId: isRestaurant }).sort({
+      createdAt: -1,
+    }); // Sort in descending order
 
-      // console.log("REPORTSSSS", reports);
+    // console.log("REPORTSSSS", reports);
 
     res.status(200).json({
       status: "EXPENSES_FETCHED",
       message: "Expenses Fetched Successfully",
-      reports
+      reports,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.getPassbookData = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+    const { date } = req.body;
+
+    // Create start and end of the day
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+
+    console.log(start);
+
+    let openingBalance = 0;
+    const openingReport = await OpeningBalance.findOne({
+      restaurantId: isRestaurant,
+      createdAt: { $gte: start },
+    });
+    if (openingReport) {
+      openingBalance = openingReport.totalAmount;
+    }
+
+    let closingBalance = 0;
+    const closingReport = await ClosingReport.findOne({
+      restaurantId: isRestaurant,
+      createdAt: { $gte: start },
+    });
+
+    if (closingReport) {
+      // console.log("CLOSINGG REPORTT", closingReport);
+      closingBalance = closingReport.totalCashAmount;
+    }
+
+    const totalExpenses = await Expense.getTotalExpensesForDay(
+      isRestaurant,
+      date
+    );
+
+    const salesAmount = await Bill.getTotalAmountForDay(isRestaurant, date);
+
+    const netAmount = openingBalance + salesAmount - totalExpenses;
+
+    const passbookData = {
+      openingBalance,
+      salesAmount,
+      totalExpenses,
+      closingBalance,
+      netAmount,
+    };
+
+    res.status(200).json({
+      status: "PASSBOOK_DATA_FETCHD",
+      message: "Passbook Data Fetched Successfully",
+      passbookData,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.addClosingReport = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+
+    const { denominations, totalAmount: totalCashAmount } = req.body;
+    console.log(denominations);
+
+    const today = new Date();
+
+    const totalBills = await Bill.getTotalBillsForDay(isRestaurant, today);
+    const totalAmount = await Bill.getTotalAmountForDay(isRestaurant, today);
+    const totalOnlineAmount = await Bill.getTotalTakeawayAmountForDay(
+      isRestaurant,
+      today
+    );
+    const totalTakeawayAmount = await Bill.getTotalOnlineAmountForDay(
+      isRestaurant,
+      today
+    );
+    const totalDineinAmount = await Bill.getTotalDineinAmountForDay(
+      isRestaurant,
+      today
+    );
+
+    const closingReport = new ClosingReport({
+      cashDenomination: denominations,
+      totalCashAmount,
+      restaurantId: isRestaurant,
+      totalBills,
+      totalAmount,
+      totalDineinAmount,
+      totalOnlineAmount,
+      totalTakeawayAmount,
+    });
+
+    await closingReport.save();
+
+    res.status(201).json({
+      status: "CLOSING_REPORT_CREATED",
+      message: "Closing Report Crearted Successfully",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+exports.getClosingReports = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+
+    const reports = await ClosingReport.find({
+      restaurantId: isRestaurant,
+    }).sort({ createdAt: -1 }); // Sort in descending order
+
+    // console.log("REPORTSSSS", reports);
+
+    res.status(200).json({
+      status: "CLOSING_REPORTS_FETCHED",
+      message: "Closing Report Fetched Successfully",
+      reports,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.isClosingReportCreatedToday = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    const report = await ClosingReport.findOne({
+      restaurantId: isRestaurant,
+      createdAt: { $gte: today },
+    });
+
+    res.status(200).json({
+      status: "SUCCESS",
+      isCreatedToday: !!report,
+      message: report
+        ? "Closing report has been created today"
+        : "No opening report created today",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.getCardAnalytics = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+
+    const { date } = req.body;
+
+    const dailyBreakdown = await Bill.getBillBreakdownForDay(
+      isRestaurant,
+      date
+    );
+    const monthlyBreakdown = await Bill.getBillBreakdownForMonth(
+      isRestaurant,
+      date
+    );
+    const weeklyBreakdown = await Bill.getBillBreakdownForWeek(
+      isRestaurant,
+      date
+    );
+
+    const breakdown = { dailyBreakdown, monthlyBreakdown, weeklyBreakdown };
+
+    res.status(200).json({
+      status: "CARD_ANALYTICS_FETCHED",
+      message: "Card Analytics Fetched Successfully",
+      breakdown,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
+exports.getDashboardAnalytics = async (req, res) => {
+  try {
+    const isRestraunt = req.restaurant;
+
+    const { date } = req.body;
+
+    const dailyStats = await Bill.getStats(isRestraunt, date, "day");
+    const weeklyStats = await Bill.getStats(isRestraunt, date, "week");
+    const monthlyStats = await Bill.getStats(isRestraunt, date, "month");
+
+    const stats = {
+      dailyStats,
+      weeklyStats,
+      monthlyStats,
+    };
+    res.status(200).json({
+      status: "DASHBOARD_ANALYTICS_FETCHED",
+      message: "Dashboard Analtics Fetched Successfully",
+      stats,
     });
   } catch (error) {
     console.error(error);

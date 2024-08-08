@@ -86,7 +86,7 @@ const PreviousBills = ({ type }) => {
   }, []);
 
   return (
-    <div className="rounded-xl w-[23%] right-8 top-[14%] fixed h-[85%] bg-white shadow-md">
+    <div className="rounded-xl w-[22%] right-2 top-[14%] fixed h-[85%] bg-white shadow-md">
       <div className="rounded-t-lg bg-gray-900 text-lg px-4 h-10 flex items-center text-white">
         Previous Bills
       </div>

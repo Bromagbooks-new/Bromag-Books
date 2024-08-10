@@ -125,6 +125,8 @@ import Passbook, { passbookReportLoader } from "./pages/admindashboardpages/bill
 import AddClosingReport, { addClosingReportLoader } from "./pages/admindashboardpages/billingmanagement/AddClosingReport";
 import ComingSoon from "./pages/ComingSoon";
 import AddAggregator from "./pages/admindashboardpages/menumanagement/AddAggregator";
+import AddCusine from "./pages/admindashboardpages/menumanagement/AddCusine";
+import AddMenuItem from "./pages/admindashboardpages/menumanagement/AddMenuItem";
 
 
 const router = createBrowserRouter([
@@ -429,8 +431,16 @@ const router = createBrowserRouter([
                 element: <MenuManagement />,
               },
               {
-                path: 'aggregator/add-aggregator',
+                path: 'aggregators/add-aggregator',
                 element: <AddAggregator />,
+              },
+              {
+                path: 'cusines/add-cusine',
+                element: <AddCusine />,
+              },
+              {
+                path: 'menu/add-menu-item',
+                element: <AddMenuItem />,
               },
               {
                 path: "menu",

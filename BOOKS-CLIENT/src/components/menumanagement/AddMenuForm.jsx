@@ -23,27 +23,25 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import AddSubCusine from "./AddSubCusine";
 import AddAggregatorForMenu from "./AddAggregatorForMenu";
+import { useDropzone } from "react-dropzone";
+import { useCallback } from "react";
+
+import DragAndDrop from "@/assets/images/billing-management/DragAndDrop.svg";
 
 const cusineSchema = z.object({
   name: z.string().min(1, { message: "Kindly enter the cusine's name" }),
   cusine: z.string().min(1, { message: "Kindly select one subcusine" }),
   subCusine: z.string().min(1, { message: "Kindly select the sub-cusine" }),
   itemType: z.string().min(1, { message: "Kindly select the item type" }),
-  quantity: z
-    .number()
-    .min(1, { message: "Kindly enter the quantiy greater than 0" }),
+  quantity: z.string().min(1, {message: "Kindl set quantityy gratear than 0 "}).transform((v) => Number(v)||0),
   aggregators: z.array(
     z.object({
-      aggregator: z.string(),
-      portions: z.object({
-        type: z.string(),
-        actualPrice: z
-          .number()
-          .min(1, { message: "Kindly set a price greater than 0" }),
-        discountPrice: z
-          .number()
-          .min(1, { message: "Kindly set a price greater than 0" }),
-      }),
+      aggregator: z.string({message: "UWUW"}),
+      portions: z.array(z.object({
+        type: z.string({message: "WUIWU"}),
+        actualPrice: z.string().min(1, {message: "Kindl set quantityy gratear than 0 "}).transform((v) => Number(v)||0),
+        discountPrice: z.string().min(1, {message: "Kindl set quantityy gratear than 0 "}).transform((v) => Number(v)||0),
+      }))
     })
   ),
   description: z
@@ -64,18 +62,24 @@ const AddMenuItemForm = () => {
       aggregators: [
         {
           aggregator: "Restraunt",
-          portions: [
-            {
-              type: "Regular",
-              actualPrice: 0,
-              discountPrice: 0,
-            },
-          ],
+          portions: [],
         },
       ],
       description: "",
     },
   });
+  // console.log(form.watch('aggregators'));
+  // console.log(form.formState);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    console.log(acceptedFiles);
+    form.setValue("image", acceptedFiles[0]);
+    // Do something with the files
+  }, []);
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+  const removeImage = ()=> {
+    form.setValue('image', null);
+  }
 
   const onSubmit = async (data) => {
     console.log(data);
@@ -228,11 +232,45 @@ const AddMenuItemForm = () => {
               )}
             />
           </div>
+          {!form.watch("image") ? (
+            <>
+              <div className="flex flex-col gap-1">
+                <p className="">Upload the menu image*</p>
+              </div>
+              <div
+                {...getRootProps()}
+                className="w-full h-44 flex-col  justify-center flex border-3 rounded-xl border-dashed items-center"
+              >
+                <input {...getInputProps()} />
+                <img src={DragAndDrop} />
+                {isDragActive ? (
+                  <p>Drop your Image here ...</p>
+                ) : (
+                  <p>
+                    Drop your image here, or{" "}
+                    <span className="text-blue-500">Browse</span>
+                  </p>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className="w-64 group">
+              <div className="h-0 w-0 relative">
+                <Button onClick={removeImage} className="hidden group-hover:block bg-secondary text-white rounded-full w-auto p-0 px-2 text-sm relative left-[14rem] top-2 h-auto">
+                  X
+                </Button>
+              </div>
+              <img
+                className=" rounded-xl"
+                src={URL.createObjectURL(form.watch("image"))}
+              />
+            </div>
+          )}
         </div>
         <div className="flex justify-center gap-3 ">
           <Button className="bg-[#486072]">Submit</Button>
           <Link to="/dashboard/menu-management">
-            <Button className="bg-transparent border-1 border-[#486072] text-[#486072]">
+            <Button type="button" className="bg-transparent border-1 border-[#486072] text-[#486072]">
               Cancel
             </Button>
           </Link>

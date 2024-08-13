@@ -1,6 +1,7 @@
 
 
-import AddCusineForm from "@/components/menumanagement/AddCusineForm";
+
+import AddEmployeeForm from "@/components/employeemanagement/AddEmployeeForm";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -8,21 +9,21 @@ import { Link } from "react-router-dom";
 
 
 
-const AddCusine = ()=> {
+const AddEmployee = ()=> {
 
 
     return <div className="py-4 w-full h-full flex flex-col gap-4 font-roboto">
     <div className="flex justify-between items-center">
       <div className="text-3xl flex gap-4 items-center font-semibold">
-        <Link to="/dashboard/menu-management/cuisines">
+        <Link to="/dashboard/employee-management/employees">
           <ArrowLeft className="w-6 h-6" />
         </Link>
-        <p>Add Cusine</p>
+        <p>Add Employee</p>
       </div>
     </div>
-        <AddCusineForm />
+        <AddEmployeeForm />
     </div>
 
 };
 
-export default AddCusine;
+export default AddEmployee;

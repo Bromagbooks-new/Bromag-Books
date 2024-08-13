@@ -7,7 +7,9 @@ import { Button } from "../ui/button";
 import { z } from "zod";
 import { FormField, Form, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { AddAggregator } from "@/config/routeApi/owner";
+import { toastError, toastSuccess } from "@/helpers/helpers";
 
 const aggregatorSchema = z.object({
   name: z.string().min(1, { message: "Kindly enter the aggregatror's name" }),
@@ -27,8 +29,36 @@ const AddAggregatorForm = () => {
     },
   });
 
+  const navigate = useNavigate();
   const onSubmit = async (data) => {
     console.log(data);
+
+    try {
+      const response = await AddAggregator(data);
+      console.log(response);
+
+      if(response.status === 200) {
+        if(response.data.status === 'AGGREGATOR_ALLREADY_EXISTS') {
+          toastError("Aggregtor already exists");
+          return;
+        }
+      }
+      
+      if(response.status === 201) {
+        console.log(response.data.message);
+        
+        toastSuccess("Aggregator Added Successfully");
+        navigate('/dashboard/menu-management/aggregators');
+
+      }
+
+    } catch(error) {
+      console.error(error);
+      console.log(error);
+
+      toastError("Internal Server Error");
+    }
+
   };
 
   return (

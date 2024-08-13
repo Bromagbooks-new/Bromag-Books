@@ -50,7 +50,7 @@ const AddSubCusine = () => {
       </ul>}
       <div className="flex gap-1 w-1/2">
         <Input className="h-8 bg-[#F4FAFF] border-[#758D9F] border-1" value={subCusine} onChange={handleInputChange} />
-        <Button className="h-8 w-8 rounded-full p-2 bg-landing-secondary" onClick={handleAccept}>
+        <Button type="button" className="h-8 w-8 rounded-full p-2 bg-landing-secondary" onClick={handleAccept}>
           <div>
             <PlusIcon />
           </div>

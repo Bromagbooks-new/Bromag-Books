@@ -2,7 +2,7 @@ import { Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 
-import { FetchBill, MenuCategory, MenuData } from "@/config/routeApi/owner";
+import { FetchBill, GetAllCuisines, GetAllMenuItems, MenuCategory, MenuData } from "@/config/routeApi/owner";
 import { useEffect, useState } from "react";
 
 import {
@@ -18,20 +18,26 @@ import ItemCard from "../menumanagement/ItemCard";
 const MenuDisplay = () => {
   const [filter, setFilter] = useState("all");
   const [menuItems, setMenuItems] = useState([]);
+  const [cuisines, setCuisines] = useState([]);
 
   useEffect(() => {
     // console.log(data);
     const getMenuData = async () => {
-      const categoriesData = await MenuCategory();
-      console.log(categoriesData);
-      //   setCategories(categoriesData.data.Categories);
-      const menuData = await MenuData();
+      const categoriesData = await GetAllCuisines();
+      console.log(categoriesData.data.cuisines);
+        setCuisines(categoriesData.data.cuisines);
+      const menuData = await GetAllMenuItems();
       console.log(menuData);
-      setMenuItems(menuData.data.restaurantMenu);
+      setMenuItems(menuData.data.data);
       //   setFilteredMenuItems(menuData.data.restaurantMenu);
     };
     getMenuData();
   }, []);
+  
+  const filteredMenu = menuItems.filter((item)=> {
+    if(filter === 'all') return true;
+    return filter === item.cuisine;
+  });
 
   return (
     <div className="flex flex-col gap-4 p-4 rounded-lg bg-white">
@@ -59,6 +65,9 @@ const MenuDisplay = () => {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="all">All Cusines</SelectItem>
+              {
+                cuisines.map((cuisine)=> <SelectItem key={cuisine._id} value={cuisine.name}>{cuisine.name}</SelectItem>)
+              }
               {/* <SelectItem value="weekly">Weekly</SelectItem> */}
               {/* <SelectItem value="monthly">Monthly</SelectItem> */}
             </SelectContent>
@@ -74,13 +83,14 @@ const MenuDisplay = () => {
         <div className="py-3 w-32  text-center">Bromag</div>
       </div>
       <div className="flex flex-wrap gap-3 -mx-4 p-4 bg-[#F5F6FA]">
-        {menuItems.map((item) => (
+        {filteredMenu.map((item) => (
           <ItemCard
             key={item._id}
-            img={item.itemImage}
-            name={item.item}
-            actualPrice={item.actualPrice}
-            discountedPrice={item.discountPrice}
+            img={item.image}
+            name={item.name}
+            portions={item.aggregators[0].portions}
+            actualPrice={item.aggregators[0].actualPrice}
+            discountedPrice={item.aggregators[0].discountedPrice}
             available={item.quantity}
             itemId={item._id}
           />

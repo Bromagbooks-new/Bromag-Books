@@ -19,7 +19,8 @@ import {
 import { toastError } from "@/helpers/helpers";
 import { FormLabel } from "../ui/form";
 
-const AddAggregatorForMenu = () => {
+const AddAggregatorForMenu = ({ availableAggregators }) => {
+  console.log(availableAggregators);
   const form = useFormContext();
   const aggregators = form.watch("aggregators");
 
@@ -108,19 +109,24 @@ const AddAggregatorForMenu = () => {
       {aggregators.length > 0 && (
         <ul className="flex flex-col gap-1 p-2 pb-4">
           {aggregators.map((aggregator, index) => (
-            <div key={aggregator.aggregator} className="flex flex-col gap-1 w-1/2">
-              <p className="text-xl font-semibold text-teal-600">{aggregator.aggregator}</p>
+            <div
+              key={aggregator.aggregator}
+              className="flex flex-col gap-1 w-1/2"
+            >
+              <p className="text-xl font-semibold text-teal-600">
+                {aggregator.aggregator}
+              </p>
               <div className="flex flex-col gap-1">
-                  <div className="flex  justify-between uppercase font-semibold">
+                <div className="flex  justify-between uppercase font-semibold">
                   <p className="">Portion</p>
-                    <p className="">Actual Price</p>
-                    <p className="">Discount Price</p>
-                  </div>
+                  <p className="">Actual Price</p>
+                  <p className="">Discount Price</p>
                 </div>
+              </div>
               {aggregator.portions.map((portion) => (
                 <div key={portion.type} className="flex flex-col gap-1">
                   <div className="flex justify-between">
-                  <p className="">{portion.type}</p>
+                    <p className="">{portion.type}</p>
                     <p className="">₹{portion.actualPrice}</p>
                     <p className="">₹{portion.discountPrice}</p>
                   </div>
@@ -129,13 +135,13 @@ const AddAggregatorForMenu = () => {
               {showPortionInput === aggregator.aggregator && (
                 <div className="flex flex-col gap-3 py-6">
                   <div className="flex flex-col gap-2">
-                  <FormLabel>Portion Size Name</FormLabel>
-                  <Input
-                    value={portionInput}
-                    onChange={(e) => handlePortionInput(e.target.value)}
-                    className="bg-[#F4FAFF] border-[#758D9F] border-1"
+                    <FormLabel>Portion Size Name</FormLabel>
+                    <Input
+                      value={portionInput}
+                      onChange={(e) => handlePortionInput(e.target.value)}
+                      className="bg-[#F4FAFF] border-[#758D9F] border-1"
                     />
-                    </div>
+                  </div>
                   <div className="flex gap-2">
                     <div className="flex flex-col gap-2">
                       <FormLabel>Actual Price</FormLabel>
@@ -164,7 +170,7 @@ const AddAggregatorForMenu = () => {
                     </div>
                   </div>
                   <Button
-                  className="bg-landing-secondary"
+                    className="bg-landing-secondary"
                     onClick={() => handleConfirmPortion(aggregator)}
                     type="button"
                   >
@@ -193,9 +199,14 @@ const AddAggregatorForMenu = () => {
               <SelectValue placeholder="Select one aggregator" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="swiggy">Swiggy</SelectItem>
-              <SelectItem value="zomato">Zomato</SelectItem>
-              <SelectItem value="bromag">Bromag</SelectItem>
+              {availableAggregators.map((aggregator) => (
+                <SelectItem key={aggregator._id} value={aggregator.name}>
+                  {aggregator.name}
+                </SelectItem>
+              ))}
+              {/* <SelectItem value="swiggy">Swiggy</SelectItem> */}
+              {/* <SelectItem value="zomato">Zomato</SelectItem> */}
+              {/* <SelectItem value="bromag">Bromag</SelectItem> */}
             </SelectContent>
           </Select>
           <Button

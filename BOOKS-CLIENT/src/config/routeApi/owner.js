@@ -542,6 +542,59 @@ const GenerateKOT = async (data)=> {
   }
 }
 
+const AddAggregator = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("addAggregator", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetAllAggregators = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getAllAggregators", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+
+const AddCuisine = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("addCuisine", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetAllCuisines = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getAllCuisines", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
+
+const AddMenuItem = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.post("addMenuItem", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+const GetAllMenuItems = async (data)=> {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getAllMenuItems", data);
+    return response;
+  } catch(error) {
+    console.error(error);
+  }
+}
+
 const MenuCategory = async () => {
   try {
     console.log("Here");
@@ -1195,5 +1248,11 @@ export {
   IsClosingReportCreatedToday,
   GetPassbookData,
   GetCardAnalytics,
-  GetDashboardAnalytics
+  GetDashboardAnalytics,
+  AddAggregator,
+  GetAllAggregators,
+  AddCuisine,
+  GetAllCuisines,
+  AddMenuItem,
+  GetAllMenuItems
 };

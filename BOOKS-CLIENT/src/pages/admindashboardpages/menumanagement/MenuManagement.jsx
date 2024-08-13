@@ -9,15 +9,19 @@ const MenuManagement = () => {
       <div className="flex justify-between">
         <p className="text-3xl font-semibold">Menu Management</p>
         <div className="flex gap-4">
-          <Button className="bg-[#01A0A0] gap-2">
-            <CalendarPlus />
-            Add Menu
-          </Button>
-          <Button className="bg-landing-secondary gap-2">
-            <StoreIcon />
-            Cusines
-          </Button>
-          <Link to="aggregator/add-aggregator">
+          <Link to="menu/add-menu-item">
+            <Button className="bg-[#01A0A0] gap-2">
+              <CalendarPlus />
+              Add Menu
+            </Button>
+          </Link>
+          <Link to="cuisines">
+            <Button className="bg-landing-secondary gap-2">
+              <StoreIcon />
+              Cusines
+            </Button>
+          </Link>
+          <Link to="aggregators">
             <Button className="bg-landing-secondary gap-2">
               <StoreIcon />
               Aggregators

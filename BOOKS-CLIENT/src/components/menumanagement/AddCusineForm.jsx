@@ -6,15 +6,19 @@ import { Button } from "../ui/button";
 import { z } from "zod";
 import { FormField, Form, FormItem, FormLabel, FormMessage } from "../ui/form";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import AddSubCusine from "./AddSubCusine";
+import { AddCuisine } from "@/config/routeApi/owner";
+
+import { toastError, toastSuccess } from "@/helpers/helpers";
+
 
 const cusineSchema = z.object({
-  name: z.string().min(1, { message: "Kindly enter the cusine's name" }),
+  name: z.string().min(1, { message: "Kindly enter the Cuisine's name" }),
   subCusines: z.array(z.string()).min(1, {message: "Kindly enter atleast one subcusine"}),
   description: z
     .string()
-    .min(1, { message: "Kindly enter the cusine's description" }),
+    .min(1, { message: "Kindly enter the Cuisine's description" }),
 });
 
 const AddCusineForm = () => {
@@ -27,8 +31,37 @@ const AddCusineForm = () => {
     },
   });
 
+  const navigate = useNavigate();
+
   const onSubmit = async (data) => {
     console.log(data);
+
+    try {
+      const response = await AddCuisine(data);
+      console.log(response);
+
+      if(response.status === 200) {
+        if(response.data.status === 'CUISINE_EXISTS') {
+          toastError("Cuisine already exists");
+          return;
+        }
+      }
+      
+      if(response.status === 201) {
+        console.log(response.data.message);
+        
+        toastSuccess("Cuisine Added Successfully");
+        navigate('/dashboard/menu-management');
+
+      }
+
+    } catch(error) {
+      console.error(error);
+      console.log(error);
+
+      toastError("Internal Server Error");
+    }
+
   };
 
   return (
@@ -44,7 +77,7 @@ const AddCusineForm = () => {
               control={form.control}
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <FormLabel>Cusine Name*</FormLabel>
+                  <FormLabel>Cuisine Name*</FormLabel>
                   <Input
                     {...field}
                     className="w-full bg-[#F4FAFF] border-[#758D9F] border-1"
@@ -72,7 +105,7 @@ const AddCusineForm = () => {
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Cusine Description*</FormLabel>
+                  <FormLabel>Cuisine Description*</FormLabel>
                   <Textarea
                     {...field}
                     className="h-28 bg-[#F4FAFF] border-[#758D9F] border-1"

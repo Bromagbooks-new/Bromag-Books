@@ -19,6 +19,7 @@ const {
 const StockOut = require("../model/stock_out");
 const { generateEmployId } = require("../middleware/employ_Id");
 const feedback_model = require("../model/feedback_model");
+const Token = require('../model/token_model');
 const path = require('path');
 const { DemoRequestModel } = require("../model/demo_request");
 const {UserQuery} = require('../model/userQuery');
@@ -306,186 +307,81 @@ exports.verifyLogin = async (req, res) => {
           { id: employee._id },
           process.env.SECRET_KEY,
           {
-            expiresIn: "30d",
+            expiresIn: "1hr",
           }
         );
+
+        const newToken = new Token({
+          token: token,
+          employeeId: employee._id,
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour expiration
+        });
+
+        await newToken.save();
 
         const encodedToken = btoa(token);
         const dashboardLink = `${process.env.CLIENT}/link-verification/token/${encodedToken}`;
 
-
         const mailFormat = {
           to: employee.email,
           subject: "Bromag Books Private Limited : Open your account",
-          html: `<h4>Hi dear,</h4><br><p>Welcome back to Bromag Books! Use the link to access your dashboard: <a href="${dashboardLink}">${dashboardLink}</a></p>`,
+          html: `
+            <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9;">
+              <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 10px;">
+                <img src="cid:logo" alt="Bromag Books" style="width: 120px; margin-bottom: 20px;">
+                <h2>Welcome to BROMAG BOOKS!</h2>
+                <p>Please click on the below blue button to verify & login.</p>
+                <a href="${dashboardLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">LOGIN</a>
+              </div>
+              <div style="margin-top: 20px;">
+                <p>Follow us on:</p>
+                <p>
+                  <a href="https://www.facebook.com" style="margin: 0 10px;"><img src="cid:facebook" alt="Facebook" style="width: 24px;"></a>
+                  <a href="https://www.instagram.com" style="margin: 0 10px;"><img src="cid:instagram" alt="Instagram" style="width: 24px;"></a>
+                  <a href="https://www.whatsapp.com" style="margin: 0 10px;"><img src="cid:whatsapp" alt="WhatsApp" style="width: 24px;"></a>
+                  <a href="https://www.youtube.com" style="margin: 0 10px;"><img src="cid:youtube" alt="YouTube" style="width: 24px;"></a>
+                  <a href="https://www.linkedin.com" style="margin: 0 10px;"><img src="cid:linkedin" alt="LinkedIn" style="width: 24px;"></a>
+                </p>
+              </div>
+              <div style="margin-top: 20px; font-size: 12px;">
+                <p>&copy; 2024 Bromag Books. All rights reserved.</p>
+                <p><a href="https://www.bromagbooks.com" style="text-decoration: none; color: #007bff;">www.bromagbooks.com</a></p>
+              </div>
+            </div>
+          `,
+          attachments: [
+            {
+              filename: 'logo.svg',
+              path: '/public',
+              cid: 'logo' // same cid value as in the html img src
+            },
+            {
+              filename: 'facebook.svg',
+              path: '/public',
+              cid: 'facebook'
+            },
+            {
+              filename: 'instagram.svg',
+              path: '/path',
+              cid: 'instagram'
+            },
+            {
+              filename: 'whatsapp.svg',
+              path: '/path',
+              cid: 'whatsapp'
+            },
+            {
+              filename: 'youtube.svg',
+              path: '/path',
+              cid: 'youtube'
+            },
+            {
+              filename: 'linkedin.svg',
+              path: '/path',
+              cid: 'linkedin'
+            }
+          ]
         };
-        // const mailFormat = {
-        //   to: employee.email,
-        //   subject: "Bromag Book Private Limited : Open your account",
-        //   html:
-        //     "<h4>Hi dear,</h4><br><p>Welcome back to Bromag Book! Use " +
-        //     `Click the link to access your dashboard: ${dashboardLink}`,
-        // };
-
-
-
-        // const mailFormat = {
-        //   to: employee.email,
-        //   subject: "Bromag India Private Limited : Open your account",
-        //   html:`<!DOCTYPE html>
-        //   <html lang="en">
-          
-        //   <head>
-        //       <meta charset="UTF-8">
-        //       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          
-        //       <!-- google fonts -->
-        //       <link rel="preconnect" href="https://fonts.googleapis.com">
-        //       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        //       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
-          
-          
-        //       <title>Document</title>
-        //   </head>
-          
-        //   <body style="margin: 0px; box-sizing: border-box; overflow-x: hidden; width: 100%; height: 100%; font-family: 'Inter', sans-serif; color: #404040; font-weight: 400; display: flex; justify-content: center; align-items: center;">
-        //       <div
-        //           style='width: 700px;background-color: #E5E5E5;display:flex; align-items:center;justify-content: center; padding-left: 80px ;padding-right:80px'>
-        //           <div align="center" style='width: 100%;height: 100%;  align-items:center;justify-content: center'>
-        //               <header
-        //                   style='width: 100%;background-color: #0059C2;color:#fff;padding: 10px 50px;border-radius: 30px 30px 0px 0px;'>
-        //                   <h1 style='font-weight: 600;'>Welcome to Bromag Books!</h1>
-        //               </header>
-          
-        //               <section style='width: 100%;padding:50px 50px;background-color:#fff;border-radius: 0px 0px 30px 30px'>
-        //                   <div>
-        //                       <div style='display: flex;align-items: center;column-gap: 7px;'>
-        //                           <h4 style='margin: 5px 0px'>Dear</h4>
-        //                           <p style='margin: 5px 0px'>[Restaurant Owner/Manager],</p>
-        //                       </div>
-          
-        //                       <div>
-        //                           <p style='margin: 10px 0px'>Welcome to Bromag Books! We are delighted to have you on board, and
-        //                               we are confident that our billing solution will streamline your restaurant's operations and
-        //                               enhance your overall efficiency.
-        //                           </p>
-        //                       </div>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Your Account Details:</h4>
-        //                       <p style='margin: 5px 0px'>Your account has been set up. You can log in using the following
-        //                           credentials:</p>
-        //                       <div
-        //                           style='width: 30%;background-color:#B3C3DA40;padding: 5px 30px; border-radius: 10px;margin-top: 20px;'>
-        //                           <p>Username: [username]</p>
-        //                           <p>Password: [password]</p>
-        //                       </div>
-        //                       <div
-        //                           style='width: 100%;margin: 30px 0px;display: flex;flex-direction: column; align-items: center;   '>
-        //                           <img style='width: 77px;height:104px;' src="../assets/images/email-bg.png" alt="">
-        //                           <p>Click on the button below to redirect to your restaurant home page</p>
-        //                           <a style='background-color:#00418D;color: #fff;padding: 10px 50px;border-radius: 25px; text-decoration:none'
-        //                               href='${dashboardLink}'>
-        //                               Click here
-        //                           </a>
-        //                       </div>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Getting to Know Bromag Books:</h4>
-        //                       <p style='margin: 5px 0px'>
-        //                           Your account has to take a few minutes to explore the intuitive features of our web app. From easy
-        //                           menu
-        //                           setup, table
-        //                           management to seamless order tracking and we've designed it to simplify your billing process.
-        //                       </p>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>User Guides and Tutorials</h4>
-        //                       <p style='margin: 5px 0px'>
-        //                           To help you get started, we have prepared user guides and tutorials. Access them [insert link to
-        //                           guides/tutorials] to
-        //                           familiarize yourself with the key functionalities.
-        //                       </p>
-        //                   </div>
-          
-        //                   <p style='margin-top: 40px;font-size: 20px;'>Setting Up Your Restaurant</p>
-          
-        //                   <div>
-        //                       <h4 style='margin: 5px 0px'>1. Menu Configuration:</h4>
-        //                       <p style='margin: 10px 0px'>
-        //                           Navigate to the menu configuration section to input your restaurant's offerings accurately. You
-        //                           can
-        //                           add/edit items, set prices, and customize categories to match your menu structure.
-        //                       </p>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>2. Table Management:</h4>
-        //                       <p style='margin: 10px 0px'>
-        //                           Efficiently manage your restaurant's dining areas using our Table Management System.
-        //                       </p>
-          
-        //                       <p>Here's how to get started:</p>
-          
-        //                       <ul style='list-style-type: lower-alpha;'>
-        //                           <li style='margin:10px 0px'>
-        //                               Access the Captain Management section in the web app.
-        //                           </li>
-        //                           <li style='margin:10px 0px'>
-        //                               Add tables and customize the layout based on your restaurant's floor plan.
-        //                           </li>
-        //                           <li style='margin:10px 0px'>
-        //                               Easily track the status of each table, including occupied, available, and reserved.
-        //                           </li>
-        //                           <li style='margin:10px 0px'>
-        //                               Improve overall customer experience by ensuring smooth table turnover
-        //                           </li>
-        //                       </ul>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Need Help?</h4>
-        //                       <p style='margin: 5px 0px'>
-        //                           If you have any questions or encounter any issues during the onboarding process, our support
-        //                           team is
-        //                           ready to assist
-        //                           you.
-        //                       </p>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Contact Us</h4>
-        //                       <div
-        //                           style='width: 30%;background-color:#B3C3DA40;padding: 5px 30px; border-radius: 10px;margin-top: 20px;'>
-        //                           <p>Mail ID: [mail id]</p>
-        //                           <p>Phone: [contact number]</p>
-        //                       </div>
-        //                   </div>
-          
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Onboarding Assistance:</h4>
-        //                       <p style='margin: 5px 0px'>
-        //                           For personalized onboarding assistance, we offer live training sessions. Schedule a session by
-        //                           replying to this email
-        //                           with your preferred time, and a member of our team will guide you through the setup process
-          
-        //                       </p>
-        //                   </div>
-          
-        //                   <h2 style='text-align: center;margin-top: 50px;font-weight: 600'>We Are Here For You!</h2>
-        //               </section>
-        //           </div>
-        //       </div>
-        //   </body>
-          
-        //   </html>`,
-        // };
-
-
 
         sendEmail(mailFormat.to, mailFormat.subject, mailFormat.html);
         res.json({
@@ -494,19 +390,52 @@ exports.verifyLogin = async (req, res) => {
           message: `Welcome ${employee.username}!`,
         });
 
-        
-
       } else {
         console.log("!password");
         res.json({ success: false, message: "Incorrect password!" });
       }
     } else {
-      res.json({ success: false, message: "Not matches in our record!" });
+      res.json({ success: false, message: "No match in our records!" });
     }
   } catch (error) {
-    res
-      .status(500)
-      .json({ success: false, serverMessage: "Internal Server Error" });
+    res.status(500).json({ success: false, serverMessage: "Internal Server Error" });
+  }
+}
+
+
+exports.verifyToken = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const decodedToken = atob(token);
+
+    const tokenRecord = await Token.findOne({ token: decodedToken });
+
+    if (!tokenRecord) {
+      return res.status(200).json({ success: false, message: "Invalid token!" });
+    }
+
+    if (tokenRecord.used) {
+      return res.status(200).json({ success: false, message: "This link has already been used!" });
+    }
+
+    if (new Date() > tokenRecord.expiresAt) {
+      return res.status(200).json({ success: false, message: "This link has expired!" });
+    }
+
+    // Mark the token as used
+    tokenRecord.used = true;
+    await tokenRecord.save();
+
+    // Return the actual token
+    const actualToken = jwtToken.sign(
+      { id: tokenRecord.employeeId },
+      process.env.SECRET_KEY,
+      { expiresIn: "1hr" }
+    );
+
+    res.json({ success: true, actualToken });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
 

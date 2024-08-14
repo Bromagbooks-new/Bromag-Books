@@ -18,6 +18,7 @@ import { redirect, useNavigate } from "react-router-dom";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 import ViewBill from "./ViewBill";
 import DownloadBill from "./DownloadBill";
+import ViewKOT from "./ViewKOT";
 
 const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   // console.log(bill);
@@ -60,26 +61,26 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
 
   const navigate = useNavigate();
 
-  const handleHoldBill = async ()=> {
+  const handleHoldBill = async () => {
     toastSuccess("Bill on Hold!");
-    navigate('/dashboard/billing-management');
-  }
+    navigate("/dashboard/billing-management");
+  };
 
-  const handleCancelBill = async ()=> {
+  const handleCancelBill = async () => {
     try {
       console.log(bill._id);
-      const response = await DeleteBill({billId: bill._id});
-      console.log(response)
-      if(response.status === 200) {
+      const response = await DeleteBill({ billId: bill._id });
+      console.log(response);
+      if (response.status === 200) {
         console.log("Bill Canceled");
         toastSuccess("Bill Canceled Successfully!");
-        navigate('/dashboard/billing-management');
+        navigate("/dashboard/billing-management");
       }
-    } catch(error) {
+    } catch (error) {
       console.error(error);
       toastError("Internal Server Error");
     }
-  }
+  };
 
   const handlePrintBill = async () => {
     try {
@@ -368,16 +369,34 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
 
       <div className="flex flex-col gap-3">
         <div className="flex gap-0 justify-between text-sm border-dashed border-b pb-2 border-gray-500 p-2">
-          <Button onClick={handleCancelBill} className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
+          <Button
+            onClick={handleCancelBill}
+            className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black"
+          >
             CANCEL BILL
           </Button>
+          <Dialog>
+            <DialogTrigger>
+              <Button
+                type="button"
+                className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black"
+              >
+                KOT
+              </Button>
+            </DialogTrigger>
+            <ViewKOT
+              bill={bill}
+              billItems={billItems}
+              instructions={instructions}
+              paymentMode={paymentMode}
+              sentToKot={sentToKot}
+              handleKOT={handleKOT}
+            />
+          </Dialog>
           <Button
-            onClick={handleKOT}
-            className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black"
+            onClick={handleHoldBill}
+            className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black"
           >
-            KOT
-          </Button>
-          <Button onClick={handleHoldBill} className="text-center px-2 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black">
             HOLD ORDER
           </Button>
         </div>

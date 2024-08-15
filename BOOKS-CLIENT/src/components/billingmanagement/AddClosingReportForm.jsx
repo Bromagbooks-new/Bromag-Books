@@ -20,6 +20,8 @@ const initialDenominations = {
 const AddClosingReportForm = ({netAmount}) => {
   const [denominations, setDenominations] = useState(initialDenominations);
 
+  const roundOffAmount = Math.round(netAmount);
+
   const handleAdd = (denomination) => {
     setDenominations((prev) => ({
       ...prev,
@@ -44,7 +46,8 @@ const AddClosingReportForm = ({netAmount}) => {
   const handleSubmit = async () => {
     try {
 
-      if(total !== netAmount) {
+      console.log(total, roundOffAmount);
+      if(total !== roundOffAmount) {
         toastError("Total Closing Balance should match with Available Balance");
         return;
       }
@@ -104,7 +107,7 @@ const AddClosingReportForm = ({netAmount}) => {
         <div className="flex gap-2">
           
         <p className="text-xl font-semibold">Available Balance</p>
-        <span className="text-xl font-bold">₹{netAmount}</span>
+        <span className="text-xl font-bold">₹{roundOffAmount}</span>
         </div>
         <div className="flex gap-2">
           

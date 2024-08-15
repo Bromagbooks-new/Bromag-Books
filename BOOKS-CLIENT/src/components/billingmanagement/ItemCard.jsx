@@ -15,15 +15,20 @@ import { formatImageUrl } from "@/helpers/helpers";
 const ItemCard = ({
   img,
   name,
-  actualPrice,
-  discountedPrice,
   available,
   itemId,
   quantity,
   addItem,
   subtractItem,
+  portions
 }) => {
-  const [selectedFilter, setSelectedFilter] = useState("quater");
+  const [selectedFilter, setSelectedFilter] = useState(portions[0].type);
+
+
+  const actualPrice = portions.filter(portion=> portion.type === selectedFilter)[0].actualPrice;
+  const discountedPrice = portions.filter(portion=> portion.type === selectedFilter)[0].discountPrice;
+
+
   const maxCount = available;
   const [count, setCount] = useState(0);
   const incrementCount = () => {
@@ -53,14 +58,15 @@ const ItemCard = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="quater">Quater</SelectItem>
-              <SelectItem value="half">Half</SelectItem>
-              <SelectItem value="full">Full</SelectItem>
+              {portions.map(portion=> <SelectItem value={portion.type} >{portion.type}</SelectItem>)}
+              {/* <SelectItem value="quater">Quater</SelectItem> */}
+              {/* <SelectItem value="half">Half</SelectItem> */}
+              {/* <SelectItem value="full">Full</SelectItem> */}
             </SelectContent>
           </Select>
           <div className="flex gap-2">
-            <p className="text line-through">{actualPrice}</p>
-            <p className="text">{discountedPrice}</p>
+            <p className="text line-through">₹{actualPrice}</p>
+            <p className="text">₹{discountedPrice}</p>
           </div>
           <div className="flex items-center gap-4 justify-between">
             <div className="border rounded-full flex w-24 items-center px-2 justify-between">

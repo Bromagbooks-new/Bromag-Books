@@ -1,7 +1,7 @@
 import Bill from "@/components/billingmanagement/Bill";
 import ItemCard from "@/components/billingmanagement/ItemCard";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { FetchBill, MenuCategory, MenuData } from "@/config/routeApi/owner";
+import { FetchBill, GetAllCuisines, GetAllMenuItems, MenuCategory, MenuData } from "@/config/routeApi/owner";
 import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -23,11 +23,14 @@ const Order = () => {
 
       if (newItem.quantity < 1) return;
 
+      const currentAggregatorData = newItem.aggregators[0];
+      console.log(currentAggregatorData);
+
       foundItem = {
-        name: newItem?.item,
+        name: newItem?.name,
         quantity: 1,
-        actualPrice: newItem?.actualPrice,
-        discountPrice: newItem?.discountPrice,
+        actualPrice: currentAggregatorData.portions[0].actualPrice,
+        discountPrice: currentAggregatorData.portions[0].discountPrice,
         _id: newItem?._id,
       };
       setBillItems((prev) => [...prev, foundItem]);
@@ -77,13 +80,13 @@ const Order = () => {
   useEffect(() => {
     console.log(data);
     const getMenuData = async () => {
-      const categoriesData = await MenuCategory();
+      const categoriesData = await GetAllCuisines();
       console.log(categoriesData);
-      setCategories(categoriesData.data.Categories);
-      const menuData = await MenuData();
+      setCategories(categoriesData.data.cuisines);
+      const menuData = await GetAllMenuItems();
       console.log(menuData);
-      setMenuItems(menuData.data.restaurantMenu);
-      setFilteredMenuItems(menuData.data.restaurantMenu);
+      setMenuItems(menuData.data.data);
+      setFilteredMenuItems(menuData.data.data);
     };
     getMenuData();
   }, []);
@@ -96,7 +99,7 @@ const Order = () => {
       return;
     }
     const filteredItems = menuItems.filter(
-      (item) => item.category === selectedCusine
+      (item) => item.cuisine === selectedCusine
     );
     setFilteredMenuItems(filteredItems);
   }, [selectedCusine]);
@@ -105,8 +108,8 @@ const Order = () => {
 
   const handleSelectCusine = (cusine) => {
     console.log(cusine);
-    if (cusine.category === selectedCusine) return;
-    setSelectedCusine(cusine.category);
+    if (cusine.name === selectedCusine) return;
+    setSelectedCusine(cusine.name);
   };
 
   return (
@@ -134,16 +137,16 @@ const Order = () => {
               </div>
               {categories.map((cusine, index) => (
                 <div
-                  key={cusine.id}
+                  key={cusine._id}
                   className={cn(
                     "rounded-3xl w-32 border-3 bg-white text-gray-500 text-center p-1",
                     {
-                      "bg-black text-white": selectedCusine === cusine.category,
+                      "bg-black text-white": selectedCusine === cusine.name,
                     }
                   )}
                   onClick={(e) => handleSelectCusine(cusine)}
                 >
-                  {cusine.category}
+                  {cusine.name}
                 </div>
               ))}
             </div>
@@ -159,13 +162,17 @@ const Order = () => {
 
                 const quantity = selectedItem?.quantity || 0;
 
+                const currentAggregatorData = item.aggregators[0];
+                console.log(currentAggregatorData);
+
                 return (
                   <ItemCard
                     key={item._id}
-                    img={item.itemImage}
-                    name={item.item}
-                    actualPrice={item.actualPrice}
-                    discountedPrice={item.discountPrice}
+                    img={item.image}
+                    name={item.name}
+                    portions={currentAggregatorData.portions}
+                    actualPrice={currentAggregatorData.actualPrice}
+                    discountedPrice={currentAggregatorData.discountPrice}
                     available={item.quantity}
                     itemId={item._id}
                     quantity={quantity}

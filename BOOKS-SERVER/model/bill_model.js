@@ -127,7 +127,7 @@ billSchema.statics.generateBillId = async function (
 
   console.log("NEWWW BILLL ID-----------------------------------------");
   console.log(lastOrder);
-  let count = 0;
+  let count = 1;
   if (lastOrder && lastOrder.billNo) {
     // Extract the count from the last bill ID
     const lastBillId = lastOrder.billNo;

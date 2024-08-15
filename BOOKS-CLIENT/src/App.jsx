@@ -124,6 +124,14 @@ import ExpenseReport, { expenseReportLoader } from "./pages/admindashboardpages/
 import Passbook, { passbookReportLoader } from "./pages/admindashboardpages/billingmanagement/Passbook";
 import AddClosingReport, { addClosingReportLoader } from "./pages/admindashboardpages/billingmanagement/AddClosingReport";
 import ComingSoon from "./pages/ComingSoon";
+import AddAggregator from "./pages/admindashboardpages/menumanagement/AddAggregator";
+import AddCusine from "./pages/admindashboardpages/menumanagement/AddCusine";
+import AddMenuItem, { addMenuItemLoader } from "./pages/admindashboardpages/menumanagement/AddMenuItem";
+import Cuisines, { cuisinesLoader } from "./pages/admindashboardpages/menumanagement/Cuisines";
+import Aggregators, { aggregatorsLoader } from "./pages/admindashboardpages/menumanagement/Aggregators";
+import EmployeeManagement from "./pages/admindashboardpages/employeemanagement/EmployeeManagement";
+import AddEmployee from "./pages/admindashboardpages/employeemanagement/AddEmployee";
+import Employees from "./pages/admindashboardpages/employeemanagement/Employees";
 
 
 const router = createBrowserRouter([
@@ -356,7 +364,15 @@ const router = createBrowserRouter([
             children: [
               {
                 index: true,
-                element: <BasicDetails />,
+                element: <EmployeeManagement />,
+              },
+              {
+                path: 'employees',
+                element: <Employees />,
+              },
+              {
+                path: 'employees/add-employee',
+                element: <AddEmployee />,
               },
               {
                 path: "basic-details",
@@ -426,6 +442,29 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: <MenuManagement />,
+              },
+              {
+                path: 'aggregators',
+                element: <Aggregators />,
+                loader: aggregatorsLoader
+              },
+              {
+                path: 'aggregators/add-aggregator',
+                element: <AddAggregator />,
+              },
+              {
+                path: 'cuisines',
+                element: <Cuisines />,
+                loader: cuisinesLoader
+              },
+              {
+                path: 'cuisines/add-cuisine',
+                element: <AddCusine />,
+              },
+              {
+                path: 'menu/add-menu-item',
+                element: <AddMenuItem />,
+                loader: addMenuItemLoader
               },
               {
                 path: "menu",

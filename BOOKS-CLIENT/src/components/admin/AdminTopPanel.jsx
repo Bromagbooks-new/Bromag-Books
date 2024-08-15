@@ -8,6 +8,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { useDispatch } from "react-redux";
+import { ownerLogout } from "@/store/slices/owner";
+
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -43,6 +47,8 @@ const Menu = () => {
 
 const AdminTopPanel = () => {
   
+  const dispatch = useDispatch();
+
   const navigate = useNavigate();
 
   const logoutHandler = ()=> {

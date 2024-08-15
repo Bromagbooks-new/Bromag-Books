@@ -17,6 +17,7 @@ const upload = require("../utils/uploaders");
 /* restaurant */
 userRouter.get("/accessRestaurantHome", controller.accessRestaurantHome);
 userRouter.post("/login", controller.verifyLogin);
+userRouter.post("/verifyToken", controller.verifyToken);
 userRouter.post("/demo-request", controller.storeDemoRequest);
 userRouter.post("/user-query", controller.storeUserRequest);
 
@@ -187,6 +188,49 @@ userRouter.post(
   "/generateKOT",
   interceptor.adminAuth,
   kotController.generateKOT
+);
+
+
+userRouter.post(
+  "/addAggregator",
+  interceptor.adminAuth,
+  menuController.addAggregator
+);
+
+
+userRouter.get(
+  "/getAllAggregators",
+  interceptor.adminAuth,
+  menuController.getAllAggregators
+);
+
+
+userRouter.post(
+  "/addCuisine",
+  interceptor.adminAuth,
+  menuController.addCuisine
+);
+
+
+userRouter.get(
+  "/getAllCuisines",
+  interceptor.adminAuth,
+  menuController.getAllCuisines
+);
+
+
+userRouter.post(
+  "/addMenuItem",
+  upload.ImageUploader.single("ItemImage"),
+  interceptor.adminAuth,
+  menuController.addMenuItem
+);
+
+
+userRouter.get(
+  "/getAllMenuItems",
+  interceptor.adminAuth,
+  menuController.getAllMenuItems
 );
 
 userRouter.post(

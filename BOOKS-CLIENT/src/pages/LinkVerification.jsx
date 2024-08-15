@@ -1,42 +1,57 @@
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { restaurantDetails } from "../store/slices/restaurantAdmin";
 import { toastError } from "../helpers/helpers";
+import axios from "axios";
+import { RestaurantAdminApi } from "@/config/global";
+import LinkExpired from "./LinkExpired";
+
 const LinkVerification = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useParams();
 
-  const value = useSelector((data)=>{return data})
+  const [showPage, setShowPage] = useState(false);
+
   useEffect(() => {
-    const decodedToken = atob(token);
-    if(decodedToken){
-      localStorage.setItem(
-        "restaurant",
-        JSON.stringify(decodedToken)
-      );
-      let impData = {
-        role:"restaurant",
-        token:decodedToken
+    const verifyToken = async () => {
+      try {
+        const response = await axios.post(`${RestaurantAdminApi}verifyToken`, { token });
+        console.log(response.data);
+
+        
+        if (response.data.success) {
+          const actualToken = response.data.actualToken;
+
+          localStorage.setItem("restaurant", JSON.stringify(actualToken));
+          
+          let impData = {
+            role: "restaurant",
+            token: actualToken,
+          };
+
+          dispatch(restaurantDetails(impData));
+          navigate("/restaurant-home");
+        } else {
+          toastError(response.data.message || "Token verification failed");
+          setShowPage(true);
+        }
+      } catch (error) {
+        toastError("An error occurred while verifying the token");
+        setShowPage(true);
+
       }
-      dispatch(restaurantDetails(impData));
-      navigate("/restaurant-home");
+    };
 
-      // dispatch(restaurantDetails({ token: decodedToken, role: "restaurant" }));
-      // console.log("Before setting item to local storage",value);
-      // localStorage.setItem("restaurant", JSON.stringify(value.restaurantToken));
-      // console.log("After setting item to local storage",value);
-      // navigate("/dashboard");
+    if (token) {
+      verifyToken();
     } else {
-      
-      toastError("Token Unavailable")
-   
+      toastError("Token is unavailable");
     }
-   
-  }, []);
+  }, [dispatch, navigate, token]);
 
-  return <div>laoding...</div>;
+  return showPage && <LinkExpired />;
 };
 
 export default LinkVerification;

@@ -17,12 +17,16 @@ import { PencilLine, Trash } from "lucide-react";
 const ItemCard = ({
   img,
   name,
-  actualPrice,
-  discountedPrice,
+  portions,
   available,
   itemId,
 }) => {
-  const [selectedFilter, setSelectedFilter] = useState("quater");
+  console.log(portions);
+  const [selectedFilter, setSelectedFilter] = useState(portions[0].type);
+
+  const actualPrice = portions.filter(portion=> portion.type === selectedFilter)[0].actualPrice;
+  const discountedPrice = portions.filter(portion=> portion.type === selectedFilter)[0].discountPrice;
+
   const maxCount = available;
 
   return (
@@ -34,14 +38,23 @@ const ItemCard = ({
         <div className="flex flex-col gap-1">
           <img src={nonVeg} className="w-5 h-5" />
           <p className="font-semibold">{name}</p>
-          <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+          <Select value={selectedFilter.type} onValueChange={setSelectedFilter}>
             <SelectTrigger className="w-16 px-0 gap-1 bg-transparent border-0  focus:ring-0 text-green-500 h-5 ">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="quater">Quater</SelectItem>
-              <SelectItem value="half">Half</SelectItem>
-              <SelectItem value="full">Full</SelectItem>
+              {portions.map((portion) => {
+                
+                // console.log(portion);
+
+                return (
+                <SelectItem key={portion.type} value={portion.type}>
+                  {portion.type}
+                </SelectItem>
+              )})}
+              {/* <SelectItem value="quater">Quater</SelectItem> */}
+              {/* <SelectItem value="half">Half</SelectItem> */}
+              {/* <SelectItem value="full">Full</SelectItem> */}
             </SelectContent>
           </Select>
           <div className="flex gap-2">
@@ -49,18 +62,15 @@ const ItemCard = ({
             <p className="text-xl">₹{discountedPrice}</p>
           </div>
           <div className="flex items-center gap-4 justify-between">
-           
-            <div className="text-gray-500 text-sm">
-              Available {maxCount}
-            </div>
+            <div className="text-gray-500 text-sm">Available {maxCount}</div>
           </div>
         </div>
         <div className="flex gap-2 w-full">
           <Button vaiant="icon" className="px-3 h-8 bg-landing-secondary">
-            <PencilLine className="w-4 h-4"/>
+            <PencilLine className="w-4 h-4" />
           </Button>
           <Button vaiant="icon" className="px-3 h-8 bg-red-500">
-            <Trash className="w-4 h-4"/>
+            <Trash className="w-4 h-4" />
           </Button>
         </div>
       </div>

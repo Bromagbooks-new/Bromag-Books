@@ -3,6 +3,8 @@ import { Link, useRouteError } from 'react-router-dom'
 //image imports
 import img from '../assets/images/page-not-found.svg'
 import { serverError } from '../assets/images'
+import ComingSoon from './ComingSoon'
+import ComingSoonDashboard from './ComingSoonDashboard'
 
 
 const Error = () => {
@@ -11,13 +13,7 @@ const Error = () => {
 
     if (error.status == 404) {
         return (
-            <Wrapper>
-                <div>
-                    <div className='img-div'><img src={img} alt="page not found" /></div>
-                    <h3>ohh! page not found</h3>
-                    <p>we can&apos;t seem to find the page your are looking for</p>
-                </div>
-            </Wrapper>
+            <ComingSoonDashboard />
         )
     }
 

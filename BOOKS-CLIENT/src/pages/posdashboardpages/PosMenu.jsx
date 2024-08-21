@@ -15,9 +15,10 @@ import { GetMenuDataAtPos, HoldItemsAtPos, posDashboard } from "../../config/rou
 import { KotOrder } from "../../config/routeApi/pos";
 // import Wrapper1 from "../../assets/wrappers/poswrappers/PosFormModal";
 import { IoMdPrint } from "react-icons/io";
-import { formatDate, toastError, toastSuccess } from "../../helpers/helpers";
+import { formatDate, printKOT, toastError, toastSuccess } from "../../helpers/helpers";
 import Uploading from "../../components/loaders/Uploading";
 import TakeAwaySummeryModal from "../../components/poscomponents/TakeAwaySummeryModal.jsx";
+import { RestaurantAdminApi } from "../../config/global.js";
 
 const PosMenu = () => {
   const [modalKot, setModalKot] = useState(false);
@@ -107,6 +108,8 @@ const PosMenu = () => {
   const [manager, setManager] = useState({});
   const [restaurant, setRestaurant] = useState({});
 
+  const [billId, setBillId] = useState(null);
+
   useEffect(() => {
     const handleManagerData = async () => {
       try {
@@ -143,9 +146,10 @@ const PosMenu = () => {
 
   const handleModalPrintBillOpen = () => {
     const TotalAmount = calculateTotalOrderAmount(selectedItems);
+    console.log(TotalAmount);
     setTotalPrice(TotalAmount);
 
-    if (totalPrice == 0) {
+    if (TotalAmount == 0) {
       toastError("Please select the item from menu!");
     } else {
       setModalPrintBill(true);
@@ -181,7 +185,11 @@ const PosMenu = () => {
         }
         setSelectedCategory("All");
         console.log(data.MenuData, "i am data.menudata");
-        setCurrentMenu(data.MenuData);
+        const formattedMenuDta = data.MenuData.map(menuItem=> {
+          menuItem.itemImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1) + menuItem.itemImage;
+          return menuItem;
+        })
+        setCurrentMenu(formattedMenuDta);
       } else {
         // Display error toast
         toastError(data.message);
@@ -279,10 +287,15 @@ const PosMenu = () => {
       });
 
       const response = await KotOrder(data);
-      console.log(response, orderData, "i ma response from kot submit");
+      console.log(response.data, orderData, "i ma response from kot submit");
       setUploading(false);
       setKotId(response.data.orderId);
       if (response.data.success) {
+        console.log(data.kotData);
+        setBillId(response.data.billId);
+        console.log(response.data.billId);
+        printKOT(restaurant, manager, data.kotData, orderData);
+
         setModalKot(false);
 
         toastSuccess(response.data.message);
@@ -548,7 +561,7 @@ okButtonProps={{ style: { display: "none" } }}
             okButtonProps={{ style: { display: "none" } }}
             printBillData={selectedItems}
             TotalPrice={totalPrice}
-            billid={selectedItems?._id}
+            billId={billId}
             kotId={kotId}
             // orderData={orderData}
           />

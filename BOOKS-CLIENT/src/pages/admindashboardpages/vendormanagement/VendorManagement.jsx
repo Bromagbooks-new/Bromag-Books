@@ -18,6 +18,7 @@ import { toastError } from "../../../helpers/helpers";
 import Styled from "styled-components";
 import Zoom from 'react-medium-image-zoom'
 import 'react-medium-image-zoom/dist/styles.css'
+import { RestaurantAdminApi } from "../../../config/global";
 
 
 const ModalStyle = Styled(Modal)`
@@ -90,14 +91,36 @@ const VendorManagement = () => {
     try {
       const response = await VendorDashboard();
 
-      const { todaysArray, yesterdayArray, lastweekArray, lastmontharray, lastYeararray } = response.data
-      console.log(todaysArray, yesterdayArray, lastweekArray, lastmontharray, lastYeararray, "today")
+      const { todaysArray, yesterdayArray, lastweekArray, lastmontharray, lastYeararray } = response.data;
+
+      const transformedTodaysArray = todaysArray.map((data)=> {
+        const newImgUrls = data.imageUrls.map(url=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+url);
+        return {...data, imageUrls: newImgUrls};
+      });
+      const transformedYesterdaysArray = yesterdayArray.map((data)=> {
+        const newImgUrls = data.imageUrls.map(url=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+url);
+        return {...data, imageUrls: newImgUrls};
+      });
+      const transformedLastWeekArray = lastweekArray.map((data)=> {
+        const newImgUrls = data.imageUrls.map(url=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+url);
+        return {...data, imageUrls: newImgUrls};
+      });
+      const transformedLastMonthArray = lastmontharray.map((data)=> {
+        const newImgUrls = data.imageUrls.map(url=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+url);
+        return {...data, imageUrls: newImgUrls};
+      });
+      const transformedLastYearArray = lastYeararray.map((data)=> {
+        const newImgUrls = data.imageUrls.map(url=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+url);
+        return {...data, imageUrls: newImgUrls};
+      });
+
+      console.log(transformedTodaysArray, transformedYesterdaysArray, transformedLastWeekArray, transformedLastMonthArray, transformedLastYearArray, "today")
       if (response.data.success) {
-        setYesterday(yesterdayArray)
-        setToday(todaysArray);
-        setLastWeek(lastweekArray);
-        setLastMonth(lastmontharray);
-        setLastYear(lastYeararray);
+        setYesterday(transformedYesterdaysArray);
+        setToday(transformedTodaysArray);
+        setLastWeek(transformedLastWeekArray);
+        setLastMonth(transformedLastMonthArray);
+        setLastYear(transformedLastYearArray);
     
       } else {
         toastError(response.data.message)

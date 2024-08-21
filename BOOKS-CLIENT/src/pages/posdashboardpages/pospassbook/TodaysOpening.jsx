@@ -196,7 +196,7 @@ const TodaysOpening = () => {
                 <th>S.No.</th>
                 <th>Date</th>
                 <th>Total Amount</th>
-                <th>Dinomination</th>
+                <th>Denomination</th>
               </tr>
             </thead>
 

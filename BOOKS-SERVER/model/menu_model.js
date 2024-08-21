@@ -64,4 +64,6 @@ const menu = mongoose.Schema({
   },
 },{timestamps:true});
 
-module.exports = mongoose.model("Menu", menu);
+// exports.menu = menu;
+
+module.exports = {menu: mongoose.model("Menu", menu), menuSchema: menu};

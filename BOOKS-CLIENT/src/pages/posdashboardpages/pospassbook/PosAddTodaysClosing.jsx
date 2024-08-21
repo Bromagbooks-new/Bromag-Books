@@ -371,7 +371,7 @@ const PosAddTodaysClosing = () => {
 
                   <input
                     disabled
-                    {...register("totalamountdine", { required: true })}
+                    {...register("todaysTotalAmountDineIn", { required: true })}
                     type="number"
                     placeholder="Enter Total Amount In Dine"
                   />
@@ -448,7 +448,7 @@ const PosAddTodaysClosing = () => {
                               {/* Display total cash received */}
                               <div className="col-md-3">
           <div className="form-input-row">
-            <div className="form-input-full">
+            <div className="form-input-full" style={{display: 'flex', alignItems: 'center', gap: 10}}>
               <label>Total Cash Received:</label>
               <span>{totalCashReceived}</span>
             </div>

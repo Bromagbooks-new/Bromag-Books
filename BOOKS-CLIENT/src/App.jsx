@@ -1,5 +1,5 @@
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
-import "./App.css";
+// import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import {
@@ -25,7 +25,7 @@ import {
   Customers,
   Dashboard,
   EmploymentDetails,
-  Passbook,
+  Passbook as OldPassbook,
   Settings,
   AddNewAccess,
   Support,
@@ -108,6 +108,30 @@ import PosTodaysClosing from "./pages/posdashboardpages/pospassbook/PosTodaysClo
 import StockManagement from "./pages/admindashboardpages/stockmanagement/StockManagemnet";
 import StockIn from "./pages/admindashboardpages/stockmanagement/StockIn";
 import StockOut from "./pages/admindashboardpages/stockmanagement/StockOut";
+import Features from "./pages/Features";
+import BookADemo from "./pages/BookADemo";
+import DemoBooked from "./pages/DemoBooked";
+import BillingManagement, { billingManagementLoader } from "./pages/admindashboardpages/billingmanagement/BillingManagement";
+import OnlineOrder from "./pages/admindashboardpages/billingmanagement/OnlineOrder";
+import TakeawayOrder from "./pages/admindashboardpages/billingmanagement/TakeawayOrder";
+import DineinOrder from "./pages/admindashboardpages/billingmanagement/DineinOrder";
+import OrderCharts, { orderChartsLoader } from "./components/billingmanagement/OrderCharts";
+import Order, { orderLoader } from "./pages/admindashboardpages/billingmanagement/Order";
+import OpeningReport, { openingReportLoader } from "./pages/admindashboardpages/billingmanagement/OpeningReport";
+import AddOpeningReport, { addOpeningReportLoader } from "./pages/admindashboardpages/billingmanagement/AddOpeningReport";
+import AddExpenseReport from "./pages/admindashboardpages/billingmanagement/AddExpenseReport";
+import ExpenseReport, { expenseReportLoader } from "./pages/admindashboardpages/billingmanagement/ExpenseReport";
+import Passbook, { passbookReportLoader } from "./pages/admindashboardpages/billingmanagement/Passbook";
+import AddClosingReport, { addClosingReportLoader } from "./pages/admindashboardpages/billingmanagement/AddClosingReport";
+import ComingSoon from "./pages/ComingSoon";
+import AddAggregator from "./pages/admindashboardpages/menumanagement/AddAggregator";
+import AddCusine from "./pages/admindashboardpages/menumanagement/AddCusine";
+import AddMenuItem, { addMenuItemLoader } from "./pages/admindashboardpages/menumanagement/AddMenuItem";
+import Cuisines, { cuisinesLoader } from "./pages/admindashboardpages/menumanagement/Cuisines";
+import Aggregators, { aggregatorsLoader } from "./pages/admindashboardpages/menumanagement/Aggregators";
+import EmployeeManagement from "./pages/admindashboardpages/employeemanagement/EmployeeManagement";
+import AddEmployee from "./pages/admindashboardpages/employeemanagement/AddEmployee";
+import Employees from "./pages/admindashboardpages/employeemanagement/Employees";
 
 
 const router = createBrowserRouter([
@@ -119,6 +143,10 @@ const router = createBrowserRouter([
       {
         index: true,
         element: <Landing />,
+      },
+      {
+        path: "features",
+        element: <Features />
       },
       {
         path: "login",
@@ -139,6 +167,18 @@ const router = createBrowserRouter([
       {
         path: "email-verification",
         element: <EmailVerification />,
+      },
+      {
+        path: "book-a-demo",
+        element: <BookADemo />,
+      },
+      {
+        path: "demo-booked",
+        element: <DemoBooked />,
+      },
+      {
+        path: "coming-soon",
+        element: <ComingSoon />,
       },
       {
         path: "admin-login",
@@ -167,7 +207,7 @@ const router = createBrowserRouter([
         element: (
           <>
             <ReduxReset />
-            <RestaurantHome />,
+            <RestaurantHome />
           </>
         ),
       },
@@ -180,92 +220,159 @@ const router = createBrowserRouter([
           </>
         ),
         children: [
+          // {
+          //   index: true,
+          //   element: <Dashboard />,
+          // },
           {
-            index: true,
-            element: <Dashboard />,
-          },
-          {
-            path: "pos-management",
-            element: <Outlet />,
+            path: 'billing-management',
+            element: <BillingManagement />,
+            loader: billingManagementLoader,
             children: [
               {
                 index: true,
-                element: <PosManagement />
+                element: <OrderCharts />,
+                loader: orderChartsLoader,
               },
               {
-                path: "pos-passbook",
-                element: <Passbook />,
+                path: 'online-order',
+                element: <OnlineOrder />
               },
+              {
+                path: 'takeaway-order',
+                element: <TakeawayOrder />
+              },
+              {
+                path: 'dinein-order',
+                element: <DineinOrder />
+              },
+              
+            ]
+          },
+          {
+            path: 'billing-management/order',
+            loader: orderLoader,
+            element: <Order />
+          },
+          {
+            path: 'billing-management/opening-report',
+            element: <OpeningReport />,
+            loader: openingReportLoader,
+          },
+          {
+            path: 'billing-management/opening-report/add-report',
+            element: <AddOpeningReport />,
+            loader: addOpeningReportLoader
+          },
+          {
+            path: 'billing-management/expense-report',
+            element: <ExpenseReport />,
+            loader: expenseReportLoader,
+          },
+          {
+            path: 'billing-management/expense-report/add-report',
+            element: <AddExpenseReport />,
+          },
+          {
+            path: 'billing-management/passbook',
+            element: <Passbook />,
+            loader: passbookReportLoader,
+          },
+          {
+            path: 'billing-management/passbook/closing-report',
+            element: <AddClosingReport />,
+            loader: addClosingReportLoader,
+          },
+          // {
+          //   path: "pos-management",
+          //   element: <Outlet />,
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <PosManagement />
+          //     },
+          //     {
+          //       path: "pos-passbook",
+          //       element: <OldPassbook />,
+          //     },
 
-            ],
-          },
-          {
-            path: "sales-management",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <SalesManagement />,
-              },
-              {
-                path: "total-sales",
-                element: <TotalSales />,
-              },
-              {
-                path: "online-orders",
-                element: <OnlineOrders />,
-              },
-              {
-                path: "take-away",
-                element: <TakeAway />,
-              },
-              {
-                path: "dining",
-                element: <Dining />,
-              },
-            ],
-          },
-          {
-            path: "vendor-management",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <VendorManagement />,
-              },
-              {
-                path: "invoice",
-                element: <Invoice />,
-              },
-              {
-                path: "add-invoice",
-                element: <AddInvoice />,
-              },
-              {
-                path: "update-invoice",
-                element: <UpdateInvoice />,
-              },
-              {
-                path: "vendor-settings",
-                element: <VendorSettings />,
-              },
-              {
-                path: "add-vendor",
-                element: <AddVendor />,
-              },
-              {
-                path: "update-vendor",
-                element: <UpdateVendor />,
-              },
-            ],
-          },
+          //   ],
+          // },
+          // {
+          //   path: "sales-management",
+          //   element: <Outlet />,
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <SalesManagement />,
+          //     },
+          //     {
+          //       path: "total-sales",
+          //       element: <TotalSales />,
+          //     },
+          //     {
+          //       path: "online-orders",
+          //       element: <OnlineOrders />,
+          //     },
+          //     {
+          //       path: "take-away",
+          //       element: <TakeAway />,
+          //     },
+          //     {
+          //       path: "dining",
+          //       element: <Dining />,
+          //     },
+          //   ],
+          // },
+          // {
+          //   path: "vendor-management",
+          //   element: <Outlet />,
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <VendorManagement />,
+          //     },
+          //     {
+          //       path: "invoice",
+          //       element: <Invoice />,
+          //     },
+          //     {
+          //       path: "add-invoice",
+          //       element: <AddInvoice />,
+          //     },
+          //     {
+          //       path: "update-invoice",
+          //       element: <UpdateInvoice />,
+          //     },
+          //     {
+          //       path: "vendor-settings",
+          //       element: <VendorSettings />,
+          //     },
+          //     {
+          //       path: "add-vendor",
+          //       element: <AddVendor />,
+          //     },
+          //     {
+          //       path: "update-vendor",
+          //       element: <UpdateVendor />,
+          //     },
+          //   ],
+          // },
           {
             path: "employee-management",
             element: <Outlet />,
             children: [
               {
                 index: true,
-                element: <BasicDetails />,
+                element: <EmployeeManagement />,
+              },
+              {
+                path: 'employees',
+                element: <Employees />,
+              },
+              {
+                path: 'employees/add-employee',
+                element: <AddEmployee />,
               },
               {
                 path: "basic-details",
@@ -293,41 +400,41 @@ const router = createBrowserRouter([
               },
             ],
           },
-          {
-            path: "customer-management",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <Customers />,
-              },
-              {
-                path: "add-customer",
-                element: <AddCustomer />,
-              },
-              {
-                path: "update-customer/:Id",
-                element: <UpdateCustomer />,
-              },
-            ],
-          },
-          {
-            path: "stock-management",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <StockManagement />,
-              }, {
-                path: "stock-in",
-                element: <StockIn />,
-              },
-              {
-                path: "stock-out",
-                element: <StockOut />,
-              },
-            ],
-          },
+          // {
+          //   path: "customer-management",
+          //   element: <Outlet />,
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <Customers />,
+          //     },
+          //     {
+          //       path: "add-customer",
+          //       element: <AddCustomer />,
+          //     },
+          //     {
+          //       path: "update-customer/:Id",
+          //       element: <UpdateCustomer />,
+          //     },
+          //   ],
+          // },
+          // {
+          //   path: "stock-management",
+          //   element: <Outlet />,
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <StockManagement />,
+          //     }, {
+          //       path: "stock-in",
+          //       element: <StockIn />,
+          //     },
+          //     {
+          //       path: "stock-out",
+          //       element: <StockOut />,
+          //     },
+          //   ],
+          // },
           {
             path: "menu-management",
             element: <Outlet />,
@@ -335,6 +442,29 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: <MenuManagement />,
+              },
+              {
+                path: 'aggregators',
+                element: <Aggregators />,
+                loader: aggregatorsLoader
+              },
+              {
+                path: 'aggregators/add-aggregator',
+                element: <AddAggregator />,
+              },
+              {
+                path: 'cuisines',
+                element: <Cuisines />,
+                loader: cuisinesLoader
+              },
+              {
+                path: 'cuisines/add-cuisine',
+                element: <AddCusine />,
+              },
+              {
+                path: 'menu/add-menu-item',
+                element: <AddMenuItem />,
+                loader: addMenuItemLoader
               },
               {
                 path: "menu",
@@ -362,233 +492,233 @@ const router = createBrowserRouter([
               },
             ],
           },
-          {
-            path: "order-management",
-            element: <OrderManagement />,
-          },
-          {
-            path: "captain-management",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <CaptainManagement />,
-              },
-              {
-                path: "table-details",
-                element: <TableDetails />
-              },
-              {
-                path: "add-table",
-                element: <AddTable />,
-              },
-              {
-                path: "update-table/:tableId",
-                element: <UpdateTable />,
-              },
-              {
-                path: "captain-passbook",
-                element: <CaptainPassbook />
-              },
-            ],
-          },
-          {
-            path: "settings",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <Settings />,
-              },
-              {
-                path: "add-new-access",
-                element: <AddNewAccess />,
-              },
-              {
-                path: "update-employee-access",
-                element: <UpdateEmployeeAccess />,
-              },
-            ],
-          },
-          {
-            path: "support",
-            element: <Support />,
-          },
+          // {
+          //   path: "order-management",
+          //   element: <OrderManagement />,
+          // },
+          // {
+          //   path: "captain-management",
+          //   element: <Outlet />,
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <CaptainManagement />,
+          //     },
+          //     {
+          //       path: "table-details",
+          //       element: <TableDetails />
+          //     },
+          //     {
+          //       path: "add-table",
+          //       element: <AddTable />,
+          //     },
+          //     {
+          //       path: "update-table/:tableId",
+          //       element: <UpdateTable />,
+          //     },
+          //     {
+          //       path: "captain-passbook",
+          //       element: <CaptainPassbook />
+          //     },
+          //   ],
+          // },
+          // {
+          //   path: "settings",
+          //   element: <Outlet />,
+          //   children: [
+          //     {
+          //       index: true,
+          //       element: <Settings />,
+          //     },
+          //     {
+          //       path: "add-new-access",
+          //       element: <AddNewAccess />,
+          //     },
+          //     {
+          //       path: "update-employee-access",
+          //       element: <UpdateEmployeeAccess />,
+          //     },
+          //   ],
+          // },
+          // {
+          //   path: "support",
+          //   element: <Support />,
+          // },
         ],
       },
-      {
-        path: "pos-dashboard",
-        element: (
-          <>
-            <PosAccess />
-            <PosDashboardLayout />
-          </>
-        ),
-        children: [
-          {
-            index: true,
-            element: (
-              <>
-                <PosDashboard />,
-              </>
-            ),
-          },
+      // {
+      //   path: "pos-dashboard",
+      //   element: (
+      //     <>
+      //       <PosAccess />
+      //       <PosDashboardLayout />
+      //     </>
+      //   ),
+      //   children: [
+      //     {
+      //       index: true,
+      //       element: (
+      //         <>
+      //           <PosDashboard />,
+      //         </>
+      //       ),
+      //     },
 
-          {
-            path: "pos-menu",
-            element: <PosMenu />,
-          },
-          {
-            path: "pos-takeaway",
-            element: <PosTakeAwayPage />,
-          },
-          {
-            path: "pos-online",
-            element: <PosOnlineData />,
-          },
-          {
-            path: "pos-dinein",
-            element: <PosDineInPage />,
-          },
-          {
-            path: "pos-leads",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <PosLeads />,
-              },
-              {
-                path: "pos-add-lead",
-                element: <PosAddLead />,
-              },
-              {
-                path: "pos-update-lead/:leadId",
-                element: <PosUpdateLead />,
-              },
-            ],
-          },
-          {
-            path: "pos-customers",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <PosCustomers />,
-              },
-              {
-                path: "select-customer",
-                element: <PosSelectCustomer />,
-              },
-              {
-                path: "update-customer",
-                element: <PosUpdateCustomer />,
-              },
-            ],
-          },
-          {
-            path: "pos-passbook",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <PosPassbook />,
-              },
-              {
-                path: "todays-opening",
-                element: <TodaysOpening />,
-              },
-              {
-                path: "todays-closing",
-                element: <PosTodaysClosing />,
-              },
-              {
-                path: "todays-expense",
-                element: <TodaysExpense />,
-              },
-              {
-                path: "add-todays-expense",
-                element: <PosAddTodaysExpense />,
-              },
-              {
-                path: "add-todays-opening-balance",
-                element: <PosAddTodaysOpeningBalance />,
-              },
-              {
-                path: "add-todays-closing",
-                element: <PosAddTodaysClosing />,
-              },
-              {
-                path: "update-todays-closing",
-                element: <PosUpdateTodaysExpenses />,
-              },
-            ],
-          },
-          {
-            path: "support",
-            element: <PosSupport />,
-          },
-        ],
-      },
-      {
-        path: "captain-dashboard",
-        element: (
-          <>
-            <CaptainAccess />
-            <CaptainDashboardLayout />
-          </>
-        ),
-        children: [
-          {
-            index: true,
-            element: <CaptainDashboard />,
-          },
-          {
-            path: "captain-menu",
-            element: <CaptainMenu />,
-          },
-          {
-            path: "captain-leads",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <CaptainLeads />,
-              },
-              {
-                path: "captain-add-lead",
-                element: <CaptainAddLead />,
-              },
-              {
-                path: "captain-update-lead/:leadId",
-                element: <CaptainUpdateLead />,
-              },
-            ],
-          },
-          {
-            path: "captain-customers",
-            element: <Outlet />,
-            children: [
-              {
-                index: true,
-                element: <CaptainCustomers />,
-              },
-              {
-                path: "select-customer",
-                element: <CaptainSelectCustomer />,
-              },
-              {
-                path: "update-customer",
-                element: <CaptainUpdateCustomer />,
-              },
-            ],
-          },
-          {
-            path: "support",
-            element: <CaptainSupport />,
-          },
-        ],
-      },
+      //     {
+      //       path: "pos-menu",
+      //       element: <PosMenu />,
+      //     },
+      //     {
+      //       path: "pos-takeaway",
+      //       element: <PosTakeAwayPage />,
+      //     },
+      //     {
+      //       path: "pos-online",
+      //       element: <PosOnlineData />,
+      //     },
+      //     {
+      //       path: "pos-dinein",
+      //       element: <PosDineInPage />,
+      //     },
+      //     {
+      //       path: "pos-leads",
+      //       element: <Outlet />,
+      //       children: [
+      //         {
+      //           index: true,
+      //           element: <PosLeads />,
+      //         },
+      //         {
+      //           path: "pos-add-lead",
+      //           element: <PosAddLead />,
+      //         },
+      //         {
+      //           path: "pos-update-lead/:leadId",
+      //           element: <PosUpdateLead />,
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       path: "pos-customers",
+      //       element: <Outlet />,
+      //       children: [
+      //         {
+      //           index: true,
+      //           element: <PosCustomers />,
+      //         },
+      //         {
+      //           path: "select-customer",
+      //           element: <PosSelectCustomer />,
+      //         },
+      //         {
+      //           path: "update-customer",
+      //           element: <PosUpdateCustomer />,
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       path: "pos-passbook",
+      //       element: <Outlet />,
+      //       children: [
+      //         {
+      //           index: true,
+      //           element: <PosPassbook />,
+      //         },
+      //         {
+      //           path: "todays-opening",
+      //           element: <TodaysOpening />,
+      //         },
+      //         {
+      //           path: "todays-closing",
+      //           element: <PosTodaysClosing />,
+      //         },
+      //         {
+      //           path: "todays-expense",
+      //           element: <TodaysExpense />,
+      //         },
+      //         {
+      //           path: "add-todays-expense",
+      //           element: <PosAddTodaysExpense />,
+      //         },
+      //         {
+      //           path: "add-todays-opening-balance",
+      //           element: <PosAddTodaysOpeningBalance />,
+      //         },
+      //         {
+      //           path: "add-todays-closing",
+      //           element: <PosAddTodaysClosing />,
+      //         },
+      //         {
+      //           path: "update-todays-closing",
+      //           element: <PosUpdateTodaysExpenses />,
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       path: "support",
+      //       element: <PosSupport />,
+      //     },
+      //   ],
+      // },
+      // {
+      //   path: "captain-dashboard",
+      //   element: (
+      //     <>
+      //       <CaptainAccess />
+      //       <CaptainDashboardLayout />
+      //     </>
+      //   ),
+      //   children: [
+      //     {
+      //       index: true,
+      //       element: <CaptainDashboard />,
+      //     },
+      //     {
+      //       path: "captain-menu",
+      //       element: <CaptainMenu />,
+      //     },
+      //     {
+      //       path: "captain-leads",
+      //       element: <Outlet />,
+      //       children: [
+      //         {
+      //           index: true,
+      //           element: <CaptainLeads />,
+      //         },
+      //         {
+      //           path: "captain-add-lead",
+      //           element: <CaptainAddLead />,
+      //         },
+      //         {
+      //           path: "captain-update-lead/:leadId",
+      //           element: <CaptainUpdateLead />,
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       path: "captain-customers",
+      //       element: <Outlet />,
+      //       children: [
+      //         {
+      //           index: true,
+      //           element: <CaptainCustomers />,
+      //         },
+      //         {
+      //           path: "select-customer",
+      //           element: <CaptainSelectCustomer />,
+      //         },
+      //         {
+      //           path: "update-customer",
+      //           element: <CaptainUpdateCustomer />,
+      //         },
+      //       ],
+      //     },
+      //     {
+      //       path: "support",
+      //       element: <CaptainSupport />,
+      //     },
+      //   ],
+      // },
     ],
   },
 ]);

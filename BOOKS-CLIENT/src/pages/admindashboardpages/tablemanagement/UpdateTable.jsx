@@ -14,6 +14,7 @@ import {
 import { useEffect, useState } from "react";
 import { toastError, toastSuccess } from "../../../helpers/helpers";
 import Uploading from "../../../components/loaders/Uploading";
+import { RestaurantAdminApi } from "../../../config/global";
 
 const UpdateTable = () => {
   const [tableImage, setTableImage] = useState("");
@@ -40,7 +41,7 @@ const UpdateTable = () => {
       const tableData = response.data.table;
       setCaptain(response.data.captains);
 
-      setPreview(response.data.table.image)
+      setPreview(RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+response.data.table.image);
       setValue("tableNum", tableData.tableName);
       setValue("numberOfSeats", tableData.numberOfSeats);
       setValue("image", tableData.image);

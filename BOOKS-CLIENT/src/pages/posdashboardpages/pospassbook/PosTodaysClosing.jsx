@@ -25,7 +25,7 @@ import {
   TodaysClosingDateFilter,
   searchTodayClosing,
 } from "../../../config/routeApi/pos";
-import { toastError } from "../../../helpers/helpers";
+import { formatImageUrl, toastError } from "../../../helpers/helpers";
 
 const PosTodaysClosing = () => {
   const [openingdata, setOpeningdata] = useState([]);
@@ -67,7 +67,10 @@ const PosTodaysClosing = () => {
 
       if (response.data.success) {
         console.log(response.data.data, " i am data ka data");
-        setOpeningdata(response.data.data);
+
+        const imageFilePathTransformedData = response.data.data.map((report)=> ({...report, bill: formatImageUrl(report.bill)}));
+
+        setOpeningdata(imageFilePathTransformedData);
       } else {
         toastError(response.data.message);
       }

@@ -151,6 +151,8 @@ const PosPassbook = () => {
           "/pos/fetchPassbookData"
         );
 
+        console.log(response.data.data);
+
         if (response.data.success) {
           setPassbookData(response.data.data);
         }
@@ -264,7 +266,7 @@ const PosPassbook = () => {
           <Card className="sales-card">
             <div className="card-bg"></div>
             <Card.Body>
-              <Card.Title>Floating Amount</Card.Title>
+              <Card.Title>Sales Amount</Card.Title>
               <h1>
                 <CountUp duration={0.6} prefix="₹ " end={floatingCash} />
               </h1>

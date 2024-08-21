@@ -17,6 +17,7 @@ import { Form, Space, Select, Input, Radio } from 'antd';
 const { TextArea } = Input;
 import Zoom from "react-medium-image-zoom";
 import { useLocation } from "react-router-dom";
+import { RestaurantAdminApi } from "../../../config/global";
 const UpdateNewMenuItem = () => {
   const [menuCategories, setMenuCategories] = useState([]);
   const [options, setOptions] = useState([]);
@@ -117,7 +118,7 @@ async function handleRenders(){
 
 
           setPlateform(platformName)
-        setImagePreview(itemImage)
+        setImagePreview(RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+itemImage)
    
 
         form.setFieldsValue({

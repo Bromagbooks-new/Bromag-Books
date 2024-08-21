@@ -14,6 +14,7 @@ import 'react-medium-image-zoom/dist/styles.css'
 import { toastError, toastSuccess } from "../../../helpers/helpers";
 import { useNavigate } from "react-router-dom";
 import Uploading from "../../../components/loaders/Uploading";
+import { RestaurantAdminApi } from "../../../config/global";
 const UpdateEmployeeAccess = () => {
   const location = useLocation();
   const [image, setImage] = useState(null);
@@ -39,7 +40,7 @@ const UpdateEmployeeAccess = () => {
 
       if (data.success) {
         const { accessFor, email, password, _id, profileImage, username } = data.AccessData[0]
-        setImagePreview(profileImage)
+        setImagePreview(RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+profileImage)
         setID(_id)
         setValue("accessAs", accessFor);
         setValue("username", username);

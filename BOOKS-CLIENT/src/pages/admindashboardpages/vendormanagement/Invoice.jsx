@@ -14,6 +14,7 @@ import { getIngredientsData } from "../../../config/routeApi/owner";
 import { useEffect, useState } from "react";
 import ViewVendorInvoiceDetailModal from "../../../components/admindashboardcomponents/ViewVendorInvoiceDetailModal";
 import { toastSuccess } from "../../../helpers/helpers";
+import { RestaurantAdminApi } from "../../../config/global";
 
 
 const Invoice = () => {
@@ -28,7 +29,11 @@ const Invoice = () => {
             const response = await getIngredientsData();
             if (response.data.success) {
                 console.log(response.data.IngredientsData)
-                setIngredientsData(response.data.IngredientsData);
+                const transformedInvoices = response.data.IngredientsData.map((invoice)=> {
+                    invoice.billImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+invoice.billImage;
+                    return invoice;
+                })
+                setIngredientsData(transformedInvoices);
             } else {
 
                 toastSuccess(response.data.message)

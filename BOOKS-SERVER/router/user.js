@@ -2,6 +2,8 @@ const express = require("express");
 const userRouter = express.Router();
 //controllers
 const controller = require("../controller/access_controller");
+const billingController = require("../controller/billing_controller");
+const kotController = require("../controller/kot_controller");
 const menuController = require("../controller/menu_controller");
 const posController = require("../controller/pos_controller");
 const capController = require("../controller/cap_controller");
@@ -15,6 +17,9 @@ const upload = require("../utils/uploaders");
 /* restaurant */
 userRouter.get("/accessRestaurantHome", controller.accessRestaurantHome);
 userRouter.post("/login", controller.verifyLogin);
+userRouter.post("/verifyToken", controller.verifyToken);
+userRouter.post("/demo-request", controller.storeDemoRequest);
+userRouter.post("/user-query", controller.storeUserRequest);
 
 
 /* restaurant owner */
@@ -88,6 +93,145 @@ userRouter.post(
 
 // userRouter.post("/addEmployDetails", upload.ImageUploader.fields([{ name: "aadharImage", maxCount: 1 },
 // { name: "pancardImage", maxCount: 1 },]),interceptor.adminAuth,controller.addEmployDetails);
+
+
+userRouter.post(
+  "/generateBill",
+  interceptor.adminAuth,
+  billingController.generateBill
+);
+userRouter.post(
+  "/fetchBill",
+  interceptor.adminAuth,
+  billingController.fetchBill
+);
+userRouter.get(
+  "/fetchHoldBills",
+  interceptor.adminAuth,
+  billingController.fetchHoldBills
+);
+userRouter.get(
+  "/fetchCompletedBills",
+  interceptor.adminAuth,
+  billingController.fetchCompletedBills
+);
+userRouter.patch(
+  "/updateBill",
+  interceptor.adminAuth,
+  billingController.updateBill
+);
+userRouter.post(
+  "/deleteBill",
+  interceptor.adminAuth,
+  billingController.deleteBill
+);
+userRouter.post(
+  "/addOpeningReport",
+  interceptor.adminAuth,
+  billingController.addOpeningReport
+);
+userRouter.get(
+  "/getOpeningReports",
+  interceptor.adminAuth,
+  billingController.getOpeningReports
+);
+userRouter.get(
+  "/isOpeningReportCreatedToday",
+  interceptor.adminAuth,
+  billingController.isOpeningReportCreatedToday
+);
+
+userRouter.post(
+  "/addExpense",
+  upload.ImageUploader.array("image", 1),
+  interceptor.adminAuth,
+  billingController.addExpense
+);
+userRouter.get(
+  "/getExpenses",
+  interceptor.adminAuth,
+  billingController.getExpenses
+);
+
+userRouter.post(
+  "/addClosingReport",
+  interceptor.adminAuth,
+  billingController.addClosingReport
+);
+userRouter.get(
+  "/getClosingReports",
+  interceptor.adminAuth,
+  billingController.getClosingReports
+);
+userRouter.get(
+  "/isClosingReportCreatedToday",
+  interceptor.adminAuth,
+  billingController.isClosingReportCreatedToday
+);
+userRouter.post(
+  "/getPassbookData",
+  interceptor.adminAuth,
+  billingController.getPassbookData
+);
+userRouter.post(
+  "/getCardAnalytics",
+  interceptor.adminAuth,
+  billingController.getCardAnalytics
+);
+userRouter.post(
+  "/getDashboardAnalytics",
+  interceptor.adminAuth,
+  billingController.getDashboardAnalytics
+);
+
+userRouter.post(
+  "/generateKOT",
+  interceptor.adminAuth,
+  kotController.generateKOT
+);
+
+
+userRouter.post(
+  "/addAggregator",
+  interceptor.adminAuth,
+  menuController.addAggregator
+);
+
+
+userRouter.get(
+  "/getAllAggregators",
+  interceptor.adminAuth,
+  menuController.getAllAggregators
+);
+
+
+userRouter.post(
+  "/addCuisine",
+  interceptor.adminAuth,
+  menuController.addCuisine
+);
+
+
+userRouter.get(
+  "/getAllCuisines",
+  interceptor.adminAuth,
+  menuController.getAllCuisines
+);
+
+
+userRouter.post(
+  "/addMenuItem",
+  upload.ImageUploader.single("ItemImage"),
+  interceptor.adminAuth,
+  menuController.addMenuItem
+);
+
+
+userRouter.get(
+  "/getAllMenuItems",
+  interceptor.adminAuth,
+  menuController.getAllMenuItems
+);
 
 userRouter.post(
   "/addMenuCategory",

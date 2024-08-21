@@ -15,6 +15,7 @@ import { useState } from "react";
 import { getVendorData, handledeleteVendor } from "../../../config/routeApi/owner";
 import { useEffect } from "react";
 import { toastError } from "../../../helpers/helpers";
+import { RestaurantAdminApi } from "../../../config/global";
 
 
 const VendorSettings = () => {
@@ -56,7 +57,18 @@ const VendorSettings = () => {
     try {
       const response = await getVendorData();
       if (response.data.success) {
-        setVendorData(response.data.VendorData);
+
+        const vendorData = response.data.VendorData;
+
+        console.log(vendorData);
+
+        const transformedVendorData = vendorData.map(vendor=> {
+          vendor.billImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+vendor.billImage;
+
+          return vendor;
+        });
+
+        setVendorData(transformedVendorData);
       } else {
 
         toastError(response.data.message)

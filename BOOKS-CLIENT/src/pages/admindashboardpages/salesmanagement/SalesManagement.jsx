@@ -40,8 +40,11 @@ const SalesManagement = () => {
   } = useForm();
 
   const handleSalesDashboard = async (dates) => {
+    console.log("here");
     try {
+      console.log("here");
       const response = await SalesDashboard(dates || {});
+      console.log(response.data);
 
       if (response.data.success) {
         // data as cards
@@ -71,6 +74,7 @@ const SalesManagement = () => {
   const handleButtonClick = (dateRange) => {
     const todayDate = new Date().toISOString().split("T")[0];
     const defaultDates = { start: todayDate, end: todayDate };
+    console.log(defaultDates);
 
     const yesterdayDate = new Date();
     yesterdayDate.setDate(yesterdayDate.getDate() - 1);
@@ -85,6 +89,7 @@ const SalesManagement = () => {
         setShowLastMonth(false);
         setShowLastYear(false);
         setShowFiltered(false);
+        console.log("here");
         handleSalesDashboard(defaultDates);
         break;
       case "yesterday":

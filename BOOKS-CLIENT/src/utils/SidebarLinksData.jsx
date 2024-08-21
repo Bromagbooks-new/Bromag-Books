@@ -15,6 +15,27 @@ const sidebarlinks = [
         icon: <BsGrid1X2Fill />,
     },
     {
+        text: "Billing Management",
+        path: "/dashboard/billing-management",
+        icon: <BsBookFill />,
+        iconClosed: <IoMdArrowDropdown />,
+        iconOpened: <IoMdArrowDropup />,
+    },
+    {
+        text: "Dominent Management",
+        path: "/dashboard/dominent-management",
+        icon: <BsBookFill />,
+        iconClosed: <IoMdArrowDropdown />,
+        iconOpened: <IoMdArrowDropup />,
+    },
+    {
+        text: "Inventory Management",
+        path: "/dashboard/inventory-management",
+        icon: <BsBookFill />,
+        iconClosed: <IoMdArrowDropdown />,
+        iconOpened: <IoMdArrowDropup />,
+    },
+    {
         text: "POS Management",
         path: "/dashboard/pos-management",
         icon: <BsBookFill />,

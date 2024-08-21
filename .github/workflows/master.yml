@@ -3,7 +3,7 @@ name: bromagbooks master
 on:
   push:
     branches:
-      - master
+      - Master
 jobs:
   bromagbooks:
     runs-on: ubuntu-latest

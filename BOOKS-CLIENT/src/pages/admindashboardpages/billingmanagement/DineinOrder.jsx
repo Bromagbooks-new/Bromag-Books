@@ -24,8 +24,10 @@ import { z } from "zod";
 import Icon2 from '@/assets/images/billing-management/Icon-2.svg'
 import Icon from '@/assets/images/billing-management/Icon.svg'
 import Icon1 from '@/assets/images/billing-management/Icon-1.svg'
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLoaderData } from "react-router-dom";
 import { GenerateBill } from "@/config/routeApi/owner";
+import { GetTablesHoldAndAvailableCount } from "@/config/routeApi/owner";
+import { useState, useEffect } from "react";
 
 const onlineOrderSchema = z.object({
   customerName: z
@@ -37,6 +39,10 @@ const onlineOrderSchema = z.object({
 });
 
 const DineinOrder = () => {
+
+  const [ tablesCount, setSetTablesCount ] = useState([]);
+  // console.log('tablesCount:', tablesCount)
+
   const form = useForm({
     resolver: zodResolver(onlineOrderSchema),
     defaultValues: {
@@ -46,11 +52,27 @@ const DineinOrder = () => {
       tableNo: "",
     },
   });
-
+  
   const navigate = useNavigate();
 
+  useEffect(() => {
+    getTablesHoldAndAvailableCount();
+  },[])
+
+  const getTablesHoldAndAvailableCount = async () => {
+    try {
+      const { data } = await GetTablesHoldAndAvailableCount();
+      // console.log('data getTablesHoldAndAvailableCount DineinOrder.jsx:', data);
+  
+      setSetTablesCount(data);    
+    } catch(error) {
+      console.error("Error in getTablesHoldAndAvailableCount DineinOrder.jsx :", error);
+      // toastError()
+    }
+  }
+  
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
 
       const response = await GenerateBill({...data, mode: "dinein"});
@@ -60,6 +82,7 @@ const DineinOrder = () => {
         
         const billId = response.data.billId;
         console.log(billId);
+        getTablesHoldAndAvailableCount();
 
         navigate(`/dashboard/billing-management/order?id=${billId}`);
         return;
@@ -69,7 +92,7 @@ const DineinOrder = () => {
       }
     } catch(error) {
       console.error(error);
-      toastError("Internal Server Eerror");
+      toastError(error?.response.data.message);
     }
   };
 
@@ -155,9 +178,9 @@ const DineinOrder = () => {
       </Form>
       <PreviousBills type="dinein" />
       <div className="flex gap-3">
-      {/* <CountCard title="Total Tables" icon={Icon1} className="border-2 border-[#FF9068]" /> */}
-      {/* <CountCard title="Tables Available" icon={Icon} className="border-2 border-[#1BD276]" /> */}
-      <CountCard title="Orders on Hold" url="orders-on-hold" icon={Icon2} className="border-2 border-[#5A57D0]" />
+      <CountCard title="Total Tables" Count={tablesCount?.TotalTables} url={`tables-on-hold-and-available?total-tables=${tablesCount?.TotalTables}`} icon={Icon1} textColor1={"text-486072-color"} textColor2={"text-color-CB5124"} className="border-2 border-[#FF9068]" />
+      <CountCard title="Tables Available" Count={tablesCount?.AvailableTables} url={`tables-on-hold-and-available?total-tables=${tablesCount?.TotalTables}`} icon={Icon} textColor1={"text-486072-color"} textColor2={"text-color-038D47"} className="border-2 border-[#1BD276]" />
+      <CountCard title="Tables on Hold" Count={tablesCount?.TablesOnHold} url={`tables-on-hold?on-hold=${tablesCount?.TablesOnHold}&total-table=${tablesCount?.TotalTables}`} textColor1={"text-486072-color"} textColor2={"text-color-097ACA"} icon={Icon2} className="border-2 border-[#5A57D0]" />
       </div>
     </div>
   );

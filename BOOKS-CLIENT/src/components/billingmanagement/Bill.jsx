@@ -28,8 +28,8 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   const [instructions, setInstructions] = useState([]);
   const handleKOT = async () => {
     try {
-      console.log("HEree");
-      console.log(billItems);
+      // console.log("HEree");
+      // console.log(billItems);
       const modifiedBillItems = billItems.map((item) => ({
         ...item,
         itemId: item._id,
@@ -43,7 +43,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
         const bill = response.data.bill;
         const kotResponse = await GenerateKOT({ billData: bill });
         if (kotResponse.status === 201) {
-          console.log(kotResponse.data);
+          // console.log(kotResponse.data);
           toastSuccess(
             `Sent to Kitchen Successfully!! ${kotResponse.data.KOT.kotNo}`
           );
@@ -68,11 +68,11 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
 
   const handleCancelBill = async () => {
     try {
-      console.log(bill._id);
+      // console.log(bill._id);
       const response = await DeleteBill({ billId: bill._id });
-      console.log(response);
+      // console.log(response);
       if (response.status === 200) {
-        console.log("Bill Canceled");
+        // console.log("Bill Canceled");
         toastSuccess("Bill Canceled Successfully!");
         navigate("/dashboard/billing-management");
       }
@@ -84,7 +84,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
 
   const handlePrintBill = async () => {
     try {
-      console.log("HEree");
+      // console.log("HEree");
 
       const response = await UpdateBill({
         billId: bill._id,
@@ -93,7 +93,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
       });
 
       if (response.status === 201) {
-        console.log(response.data.bill);
+        // console.log(response.data.bill);
         toastSuccess("Thanks for Visiting!");
         navigate("/dashboard/billing-management");
       }

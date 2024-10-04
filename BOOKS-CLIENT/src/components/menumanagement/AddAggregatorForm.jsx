@@ -31,11 +31,11 @@ const AddAggregatorForm = () => {
 
   const navigate = useNavigate();
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
 
     try {
       const response = await AddAggregator(data);
-      console.log(response);
+      // console.log(response);
 
       if(response.status === 200) {
         if(response.data.status === 'AGGREGATOR_ALLREADY_EXISTS') {
@@ -45,7 +45,7 @@ const AddAggregatorForm = () => {
       }
       
       if(response.status === 201) {
-        console.log(response.data.message);
+        // console.log(response.data.message);
         
         toastSuccess("Aggregator Added Successfully");
         navigate('/dashboard/menu-management/aggregators');

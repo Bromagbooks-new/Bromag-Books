@@ -10,8 +10,8 @@ import {
   } from "@/components/ui/table";
 
 const OpeningCashDenominationDialog = ({ denomination, date }) => {
-    console.log("HERER")
-    console.log(denomination);
+    // console.log("HERER")
+    // console.log(denomination);
   return (
     <DialogContent className="p-0 border-0 max-w-none w-1/4" crossColor="text-white">
       <DialogHeader className="bg-[#1F303C] flex text-start p-4 h-16 text-white rounded-t-lg">

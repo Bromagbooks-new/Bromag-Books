@@ -109,19 +109,19 @@ setCustomerName(data.customerName)
       setUploading(false);
 
       setBooked(!booked);
-      console.log(response.data.message);
+      // console.log(response.data.message);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleModal = () => {
-    console.log("here im");
+    // console.log("here im");
     setModal2Open(!modal2Open);
   };
 
   const handleCancelModal = () => {
-    console.log("here");
+    // console.log("here");
     setCancelModalOpen(!cancelModalOpen);
   };
 
@@ -131,8 +131,8 @@ setCustomerName(data.customerName)
 
   const handleMenuSubmit = async () => {
     const data = customerData;
-    console.log(data);
-    console.log(data,"i am customer data");
+    // console.log(data);
+    // console.log(data,"i am customer data");
     navigate(`/captain-dashboard/captain-menu`, {
       state: { data },
     });

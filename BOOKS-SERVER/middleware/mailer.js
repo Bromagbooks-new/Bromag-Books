@@ -10,6 +10,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+
 const sendEmail = (to, subject, html) => {
   console.log(to,process.env.EMAIL);
   const mailOptions = {

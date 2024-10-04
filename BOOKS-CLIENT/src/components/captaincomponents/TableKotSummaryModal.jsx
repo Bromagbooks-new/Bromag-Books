@@ -8,7 +8,7 @@ import Uploading from "../loaders/Uploading";
 import { calculateGST, formatDate, printKOT, toastError, toastSuccess } from "../../helpers/helpers";
 
 const TableKotSummaryModal = (props) => {
-  console.log(props);
+  // console.log(props);
   const [isUploading, setUploading] = useState(false);
   const {setSelectedItems, kotData, orderData, TotalPrice } = props;
   const [manager, setManager] = useState({});
@@ -50,11 +50,11 @@ const TableKotSummaryModal = (props) => {
       props.onCancel();
       toastSuccess(response.data.message);
       // setSelectedItems([]);
-      console.log(props);
+      // console.log(props);
       props.clearItems();
-      console.log(props.clearItems);
-      console.log(orderData);
-      console.log(kotData);
+      // console.log(props.clearItems);
+      // console.log(orderData);
+      // console.log(kotData);
       const modifiedKotData = kotData.map((item)=> ({...item, orderedQuantity: item.quantity}));
       printKOT(restaurant, manager, modifiedKotData, orderData);
       props.sendClearMenuSignal();

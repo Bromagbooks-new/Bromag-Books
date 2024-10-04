@@ -126,7 +126,7 @@ const sideBarItems = [
   {
     id: 7,
     title: "Table Management",
-    url: "captain-management",
+    url: "table-management",
     icon: tableManagement,
   },
   {

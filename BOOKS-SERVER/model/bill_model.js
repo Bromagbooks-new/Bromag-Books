@@ -6,7 +6,7 @@ const billSchema = mongoose.Schema({
   restrauntId: String,
   restrauntName: String,
   restrauntEmail: String,
-  restrauntAddress:  [
+  restrauntAddress: [
     {
       building: {
         type: String,
@@ -40,30 +40,30 @@ const billSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  mode: {type: String, required: true},
+  mode: { type: String, required: true },
   tableNo: {
     type: Number,
-    
+
   },
   aggregator: {
     type: String,
-    
+
   },
   aggregatorOrderId: {
     type: String,
-    
+
   },
   customerName: {
     type: String,
-    
+
   },
   customerPhone: {
     type: String,
-    
+
   },
   customerEmail: {
     type: String,
-    
+
   },
   items: [
     new mongoose.Schema({
@@ -77,43 +77,46 @@ const billSchema = mongoose.Schema({
   instructions: [String],
   grossValue: {
     type: Number,
-    
+
   },
   discount: {
     type: Number,
-    
+
   },
   netValue: {
     type: Number,
-    
+
   },
   taxes: {
     type: Number,
-    
+
   },
   roundOff: {
     type: Number,
-    
+
   },
   total: {
     type: Number,
-    
+
   },
   paymentMode: {
     type: String,
-    
+
   },
   status: String,
 });
 
+billSchema.index({ restrauntId: 1 })
+
 billSchema.statics.generateBillId = async function (
-  restaurantName,
-  restrauntId
+  restaurantName, // Rathor
+  restrauntId //
 ) {
   const today = new Date();
   const dateString = today.toISOString().split("T")[0]; // Get date in YYYY-MM-DD format
   console.log(restaurantName);
-  const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
+  const restaurantCode = restaurantName.substring(0, 3).toUpperCase(); // RAT0035 RAT
+  console.log('restaurantCode:', restaurantCode)
 
   // Find the last order for this restaurant from today
   const lastOrder = await this.findOne({
@@ -123,26 +126,29 @@ billSchema.statics.generateBillId = async function (
     //   { orderStatus: 'Success' },
     //   { orderMode: { $in: ['Swiggy', 'Zomato', 'Bromag', 'others'] } }
     // ],
-  }).sort({ date: -1 });
+  }).sort({ date: -1 }); // 66ed682a03b498ef78cc5985
+  // console.log('lastOrder:', lastOrder)
 
   console.log("NEWWW BILLL ID-----------------------------------------");
-  console.log(lastOrder);
+  // console.log(lastOrder);
+  console.log('lastOrder.billNo:', lastOrder.billNo)
   let count = 1;
-  if (lastOrder && lastOrder.billNo) {
+  if (lastOrder && lastOrder.billNo) { // RAT0035
     // Extract the count from the last bill ID
-    const lastBillId = lastOrder.billNo;
+    const lastBillId = lastOrder.billNo; // RAT0035
     const lastCount = lastBillId
-      ? parseInt(lastBillId?.substring(3), 10)
+      ? parseInt(lastBillId?.substring(3), 10) // 35
       : 1;
-    count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999 range
+    count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999 range  // 6
   }
 
   // Format the bill ID
   const billId = `${restaurantCode}${count.toString().padStart(4, "0")}`;
-  return billId;
+  console.log('billId:', billId)
+  return billId; // RAT006
 };
 
-billSchema.statics.getTotalBillsForDay = async function(restaurantId, date) {
+billSchema.statics.getTotalBillsForDay = async function (restaurantId, date) {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -171,7 +177,7 @@ billSchema.statics.getTotalBillsForDay = async function(restaurantId, date) {
   return result.length > 0 ? result[0].totalAmount : 0;
 };
 
-billSchema.statics.getTotalAmountForDay = async function(restaurantId, date) {
+billSchema.statics.getTotalAmountForDay = async function (restaurantId, date) {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -201,7 +207,7 @@ billSchema.statics.getTotalAmountForDay = async function(restaurantId, date) {
 };
 
 
-billSchema.statics.getTotalOnlineAmountForDay = async function(restaurantId, date) {
+billSchema.statics.getTotalOnlineAmountForDay = async function (restaurantId, date) {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -232,7 +238,7 @@ billSchema.statics.getTotalOnlineAmountForDay = async function(restaurantId, dat
 };
 
 
-billSchema.statics.getTotalTakeawayAmountForDay = async function(restaurantId, date) {
+billSchema.statics.getTotalTakeawayAmountForDay = async function (restaurantId, date) {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -263,7 +269,7 @@ billSchema.statics.getTotalTakeawayAmountForDay = async function(restaurantId, d
 };
 
 
-billSchema.statics.getTotalDineinAmountForDay = async function(restaurantId, date) {
+billSchema.statics.getTotalDineinAmountForDay = async function (restaurantId, date) {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -295,7 +301,7 @@ billSchema.statics.getTotalDineinAmountForDay = async function(restaurantId, dat
 
 
 // Daily breakdown
-billSchema.statics.getBillBreakdownForDay = async function(restaurantId, date) {
+billSchema.statics.getBillBreakdownForDay = async function (restaurantId, date) {
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -339,7 +345,7 @@ billSchema.statics.getBillBreakdownForDay = async function(restaurantId, date) {
 };
 
 // Weekly breakdown
-billSchema.statics.getBillBreakdownForWeek = async function(restaurantId, date) {
+billSchema.statics.getBillBreakdownForWeek = async function (restaurantId, date) {
   const startOfWeek = new Date(date);
   startOfWeek.setHours(0, 0, 0, 0);
   startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
@@ -385,7 +391,7 @@ billSchema.statics.getBillBreakdownForWeek = async function(restaurantId, date) 
 };
 
 // Monthly breakdown
-billSchema.statics.getBillBreakdownForMonth = async function(restaurantId, inpDate) {
+billSchema.statics.getBillBreakdownForMonth = async function (restaurantId, inpDate) {
   const date = new Date(inpDate);
   const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
   startOfMonth.setHours(0, 0, 0, 0);
@@ -449,8 +455,10 @@ const getDateRange = (date, period) => {
 };
 
 // Total Bills
-billSchema.statics.getTotalBills = async function(restaurantId, date, period = 'day') {
+billSchema.statics.getTotalBills = async function (restaurantId, date, period = 'day') {
   const { start, end } = getDateRange(date, period);
+  console.log('start:', start)
+  console.log('end:', end)
   return this.countDocuments({
     restrauntId: restaurantId,
     status: "COMPLETED",
@@ -459,7 +467,7 @@ billSchema.statics.getTotalBills = async function(restaurantId, date, period = '
 };
 
 // Total Bills where items are same
-billSchema.statics.getTotalBillsWithSameItems = async function(restaurantId, date, period = 'day') {
+billSchema.statics.getTotalBillsWithSameItems = async function (restaurantId, date, period = 'day') {
   const { start, end } = getDateRange(date, period);
   const result = await this.aggregate([
     {
@@ -500,7 +508,7 @@ billSchema.statics.getTotalBillsWithSameItems = async function(restaurantId, dat
 };
 
 // Total Bills where same items are repeated
-billSchema.statics.getTotalBillsWithRepeatedItems = async function(restaurantId, date, period = 'day') {
+billSchema.statics.getTotalBillsWithRepeatedItems = async function (restaurantId, date, period = 'day') {
   const { start, end } = getDateRange(date, period);
   const result = await this.aggregate([
     {
@@ -534,7 +542,7 @@ billSchema.statics.getTotalBillsWithRepeatedItems = async function(restaurantId,
 };
 
 // Repeat rate
-billSchema.statics.getRepeatRate = async function(restaurantId, date, period = 'day') {
+billSchema.statics.getRepeatRate = async function (restaurantId, date, period = 'day') {
   const totalBills = await this.getTotalBills(restaurantId, date, period);
   const billsWithRepeatedItems = await this.getTotalBillsWithRepeatedItems(restaurantId, date, period);
 
@@ -544,7 +552,7 @@ billSchema.statics.getRepeatRate = async function(restaurantId, date, period = '
 };
 
 // Function to get order type breakdown
-billSchema.statics.getOrderTypeBreakdown = async function(restaurantId, date, period = 'day') {
+billSchema.statics.getOrderTypeBreakdown = async function (restaurantId, date, period = 'day') {
   const { start, end } = getDateRange(date, period);
   const result = await this.aggregate([
     {
@@ -583,8 +591,9 @@ billSchema.statics.getOrderTypeBreakdown = async function(restaurantId, date, pe
 };
 
 // Updated function to get all stats including order type breakdown
-billSchema.statics.getStats = async function(restaurantId, date, period = 'day') {
+billSchema.statics.getStats = async function (restaurantId, date, period = 'day') {
   const totalBills = await this.getTotalBills(restaurantId, date, period);
+  console.log('totalBills:', totalBills)
   const billsWithSameItems = await this.getTotalBillsWithSameItems(restaurantId, date, period);
   const billsWithRepeatedItems = await this.getTotalBillsWithRepeatedItems(restaurantId, date, period);
   const repeatRate = await this.getRepeatRate(restaurantId, date, period);

@@ -145,12 +145,12 @@ const AddToCartMenuCard = ({
       // Item exists in selected items
       // You can perform additional actions or set state accordingly
       setChecked(true)
-      console.log(`${Item.item} is already selected.`);
+      // console.log(`${Item.item} is already selected.`);
     } else {
       setChecked(false)
       // Item does not exist in selected items
       // You can perform additional actions or set state accordingly
-      console.log(`${Item.item} is not selected.`);
+      // console.log(`${Item.item} is not selected.`);
     }
   }, [Item._id]);
 
@@ -257,7 +257,7 @@ return   toastError("Uncheck to change quantity")
 
     if (isChecked) {
       const storedSelectedItems = JSON.parse(localStorage.getItem("selectedItems")) || [];
-      console.log("called uncheck", storedSelectedItems);
+      // console.log("called uncheck", storedSelectedItems);
       
       localStorage.removeItem('selectedItems');
     

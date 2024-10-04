@@ -2,6 +2,7 @@ import PreviousBills from "@/components/billingmanagement/PreviousBills";
 import CountCard from "@/components/billingmanagement/CountCard";
 import { Button } from "@/components/ui/button";
 import Icon2 from '@/assets/images/billing-management/Icon-2.svg'
+import Icon1 from '@/assets/images/billing-management/Icon-1.svg'
 
 import {
   Form,
@@ -12,13 +13,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { toastError } from "@/helpers/helpers";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLoaderData } from "react-router-dom";
 import { GenerateBill } from "@/config/routeApi/owner";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline } from "@/config/routeApi/owner";
 
 const onlineOrderSchema = z.object({
   orderId: z.string().min(1, { message: "Please enter the Order ID" }),
@@ -28,6 +30,9 @@ const onlineOrderSchema = z.object({
 });
 
 const OnlineOrder = () => {
+  const { totalOrdersCount, totalHoldOrdersCount } = useLoaderData();
+  console.log('totalHoldOrdersCount:', totalHoldOrdersCount)
+  console.log('totalOrdersCount:', totalOrdersCount)
   const form = useForm({
     resolver: zodResolver(onlineOrderSchema),
     defaultValues: {
@@ -115,12 +120,21 @@ const OnlineOrder = () => {
       </Form>
       <PreviousBills type="online" />
       <div className="flex gap-3">
-      {/* <CountCard title="Total Tables" icon={Icon1} className="border-2 border-[#FF9068]" /> */}
-      {/* <CountCard title="Tables Available" icon={Icon} className="border-2 border-[#1BD276]" /> */}
-      <CountCard title="Orders on Hold" url="orders-on-hold" icon={Icon2} className="border-2 border-[#5A57D0]" />
+        <CountCard title="Total Orders" Count={totalOrdersCount} textColor1={"text-486072-color"} textColor2={"text-color-CB5124"}  url={`total-orders?total-orders=${totalOrdersCount}`} icon={Icon1} className="border-2 border-color-FF9068" />
+        <CountCard title="Orders on Hold" Count={totalHoldOrdersCount} textColor1={"text-486072-color"} textColor2={"text-color-2321A8"} url="orders-on-hold" icon={Icon2} className="border-2 border-[#7876F6]" />
       </div>
     </div>
   );
 };
 
 export default OnlineOrder;
+
+export const getTotalAndHoldOrdersCountForOnline = async () => {
+  try {
+    const { data } = await GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline("online");
+    // console.log('data:', data)
+    return { totalOrdersCount : data?.totalOrdersCount || 0, totalHoldOrdersCount : data?.totalholdOrdersCount}
+  } catch(error) {
+    console.log('table loader error:', error)
+  }
+}

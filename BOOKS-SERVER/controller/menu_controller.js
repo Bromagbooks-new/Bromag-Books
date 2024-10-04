@@ -10,6 +10,7 @@ const others_menu_item_model = require("../model/others_menu_item_model");
 const bromag_menu_items = require("../model/bromag_menu_items");
 const Cuisine = require("../model/cuisine_model"); // Replace with the correct path to your model
 const restaurant_menu_model = require("../model/restaurant_menu_model");
+
 const MenuItem = require('../model/menu_item_model'); // Replace with the correct path to your model
 
 const mongoose = require("mongoose");
@@ -150,7 +151,7 @@ exports.addMenuItem = async (req, res) => {
 
     const restaurant = req.restaurant;
 
-    const {data} = req.body; 
+    const { data } = req.body;
 
     const {
       name,
@@ -177,16 +178,16 @@ exports.addMenuItem = async (req, res) => {
 
     const file = req.file;
     const dirPath = path.join("uploads", "menu", "itemImages");
-      const fileName = `${restaurant}/${file.filename}`;
-      const imagePath = path.join(dirPath, fileName);
-      // const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
+    const fileName = `${restaurant}/${file.filename}`;
+    const imagePath = path.join(dirPath, fileName);
+    // const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
 
-      await helpers.uploadFileLocally(file, imagePath);
+    await helpers.uploadFileLocally(file, imagePath);
 
-      helpers.getFileUrlLocally(imagePath);
-      const relativeImagePath = `/${imagePath.replace(/\\/g, "/")}`;
+    helpers.getFileUrlLocally(imagePath);
+    const relativeImagePath = `/${imagePath.replace(/\\/g, "/")}`;
 
-      helpers.deleteFileLocally(file.path);
+    helpers.deleteFileLocally(file.path);
 
     // Create a new MenuItem document
     const newMenuItem = new MenuItem({
@@ -223,7 +224,7 @@ exports.getAllMenuItems = async (req, res) => {
     const restaurant = req.restaurant;
 
     // Fetch all menu items from the database
-    const menuItems = await MenuItem.find({restaruntId: restaurant});
+    const menuItems = await MenuItem.find({ restaruntId: restaurant });
 
     return res.status(200).json({
       status: "SUCCESS",
@@ -1770,3 +1771,42 @@ exports.updateMenu = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
+
+exports.updateMenuItemAvailableStatus = async (req, res) => {
+  try {
+    // console.log('req.body:', req.body)
+    const { id, availableStatus } = req.body
+    const isRestaurantId = req.restaurant;
+    // console.log('isRestaurantId:', isRestaurantId)
+
+    if (isRestaurantId) {
+      const isExistingMenuItem = await MenuItem.findOne({ restaruntId: isRestaurantId, _id: id });
+      // console.log('isExistingMenuItem:', isExistingMenuItem)
+      if (!isExistingMenuItem) {
+        return res.status(404).send({
+          success: false,
+          message: "Item is not available!"
+        })
+      }
+
+      if(isExistingMenuItem.quantity === 0) {
+        return res.status(406).send({
+          success : false,
+          message : "Quantity is 0, Please add some quantity to open this!"
+        })
+      }
+
+      await MenuItem.findOneAndUpdate({ restaruntId: isRestaurantId, _id: id }, { availableStatus : availableStatus })
+      // console.log('updateExistingMenuItem:', updateExistingMenuItem)
+      console.log("Here");
+      return res.status(201).send({
+        success: true,
+        message : `Menu item has been ${availableStatus ? "opened" : "closed"}!`
+      })
+    } else {
+      res.status(401).send({ success: false, message: "session expired" });
+    }
+  } catch (error) {
+
+  }
+}

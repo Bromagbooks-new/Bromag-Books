@@ -17,7 +17,7 @@ const MenuCard = ({ handleToggleChange, updateQuantity, onDelete, ...data }) => 
 
   const navigate = useNavigate();
   // console.log(props,"ui am oproppp");
-  console.log(data.plateform,"plateform");
+  // console.log(data.plateform,"plateform");
 
   const handleToggleChangefn = async () => {
     try {
@@ -29,7 +29,7 @@ handleToggleChange(data.itemId);
 
       if (!response.success) {
         handleToggleChange(data.itemId);
-        console.error("Failed to update isShared property");
+        // console.error("Failed to update isShared property");
       }
 
     } catch (error) {
@@ -89,7 +89,7 @@ handleToggleChange(data.itemId);
 
   const handleMenuDrop = async (menuId,plateform) => {
     try {
-      console.log("calledddd delete");
+      // console.log("calledddd delete");
       const response = await DeleteMenu(menuId,plateform);
       onDelete();
 

@@ -20,7 +20,7 @@ import { toastError } from "@/helpers/helpers";
 import { FormLabel } from "../ui/form";
 
 const AddAggregatorForMenu = ({ availableAggregators }) => {
-  console.log(availableAggregators);
+  // console.log(availableAggregators);
   const form = useFormContext();
   const aggregators = form.watch("aggregators");
 
@@ -59,7 +59,7 @@ const AddAggregatorForMenu = ({ availableAggregators }) => {
   const [portionDiscountPrice, setPortionDiscountPrice] = useState();
 
   const handleAddPortion = (aggregator) => {
-    console.log(aggregator);
+    // console.log(aggregator);
     setShowPortionInput(aggregator.aggregator);
     setPortionInput("");
     setPortionInputPrice(0);
@@ -78,12 +78,12 @@ const AddAggregatorForMenu = ({ availableAggregators }) => {
   };
 
   const handleConfirmPortion = (aggregator) => {
-    console.log(aggregators);
+    // console.log(aggregators);
     const currentAggregator = aggregators.filter(
       (agg) => agg.aggregator === aggregator.aggregator
     )[0];
 
-    console.log(currentAggregator);
+    // console.log(currentAggregator);
 
     if (!currentAggregator) return;
 

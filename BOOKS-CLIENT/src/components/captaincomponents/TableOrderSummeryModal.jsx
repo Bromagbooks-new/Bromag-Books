@@ -68,7 +68,7 @@ const TableOrderSummeryModal = (props) => {
       setUploading(true);
 
       // const response = await PrintBillAtCaptain(NeworderedData);
-      console.log(posManager);
+      // console.log(posManager);
 
       if(posManager === '') {
         toastError("Kindly select a POS");

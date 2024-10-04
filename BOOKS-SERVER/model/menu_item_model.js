@@ -64,7 +64,12 @@ const menuItemSchema = new mongoose.Schema({
   restaruntId: {
     type: String,
     required: true
-  } 
+  },
+  availableStatus : {
+    type : Boolean,
+    default : true,
+    enum : [true, false]
+  }
 }, {
   timestamps: true, // Adds createdAt and updatedAt fields
 });

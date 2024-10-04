@@ -20,10 +20,12 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import Icon1 from '@/assets/images/billing-management/Icon-1.svg'
 import Icon2 from '@/assets/images/billing-management/Icon-2.svg'
 import { GenerateBill } from "@/config/routeApi/owner";
-import { useNavigate, useNavigation } from "react-router-dom";
+import { useNavigate, useNavigation, useLoaderData } from "react-router-dom";
 import { toastError } from "@/helpers/helpers";
+import { GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline } from "@/config/routeApi/owner";
 
 const onlineOrderSchema = z.object({
   customerName: z
@@ -34,6 +36,10 @@ const onlineOrderSchema = z.object({
 });
 
 const TakeawayOrder = () => {
+  const { totalOrdersCount, totalHoldOrdersCount } = useLoaderData();
+  console.log('totalHoldOrdersCount:', totalHoldOrdersCount)
+  console.log('totalOrdersCount:', totalOrdersCount)
+
   const form = useForm({
     resolver: zodResolver(onlineOrderSchema),
     defaultValues: {
@@ -49,11 +55,11 @@ const TakeawayOrder = () => {
     console.log(data);
     try {
 
-      const response = await GenerateBill({...data, mode: "takeaway"});
-      
+      const response = await GenerateBill({ ...data, mode: "takeaway" });
+
       // console.log(response.data);
-      if(response.data.status === "BILL_GENERATED") {
-        
+      if (response.data.status === "BILL_GENERATED") {
+
         const billId = response.data.billId;
         console.log(billId);
 
@@ -63,7 +69,7 @@ const TakeawayOrder = () => {
         toastError(response.data.error);
         return;
       }
-    } catch(error) {
+    } catch (error) {
       console.error(error);
       toastError("Internal Server Eerror");
     }
@@ -134,9 +140,22 @@ const TakeawayOrder = () => {
         </form>
       </Form>
       <PreviousBills type="takeaway" />
-      <CountCard title="Orders on Hold" url="orders-on-hold" icon={Icon2} className="border-2 border-[#5A57D0]" />
+      <div className="flex gap-3">
+        <CountCard title="Total Orders" Count={totalOrdersCount} textColor1={"text-486072-color"} textColor2={"text-color-CB5124"}  url={`total-orders?total-orders=${totalOrdersCount}`} icon={Icon1} className="border-2 border-color-FF9068" />
+        <CountCard title="Orders on Hold" Count={totalHoldOrdersCount} textColor1={"text-486072-color"} textColor2={"text-color-2321A8"} url="orders-on-hold" icon={Icon2} className="border-2 border-[#7876F6]" />
+      </div>
     </div>
   );
 };
 
 export default TakeawayOrder;
+
+export const getTotalAndHoldOrdersCountForTakeAway = async () => {
+  try {
+    const { data } = await GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline("takeaway");
+    // console.log('data:', data)
+    return { totalOrdersCount : data?.totalOrdersCount || 0, totalHoldOrdersCount : data?.totalholdOrdersCount}
+  } catch(error) {
+    console.log('table loader error:', error)
+  }
+}

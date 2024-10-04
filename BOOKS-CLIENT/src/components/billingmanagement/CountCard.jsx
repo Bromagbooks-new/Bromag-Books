@@ -3,7 +3,7 @@ import trend from "@/assets/images/trend.svg";
 import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
-const CountCard = ({ title, id, icon,  url, className }) => {
+const CountCard = ({ title, id, icon,  url, className, textColor2, textColor1, Count }) => {
 
   return (
     <Link
@@ -14,10 +14,10 @@ const CountCard = ({ title, id, icon,  url, className }) => {
     >
       <>
         <div className="flex justify-between items-center">
-          <p className="font-semibold text-sm">{title}</p>
+          <p className={`font-semibold text-sm ${textColor1}`}>{title}</p>
         </div>
         <div className="flex justify-between items-center">
-          <p className={cn("text-2xl font-bold text-gray-500")}>12345</p>
+          <p className={cn(`text-2xl font-bold`, textColor2)}>{ Count }</p>
           <img src={icon} className="w-16 h-16 relative bottom-4" />
         </div>
       </>

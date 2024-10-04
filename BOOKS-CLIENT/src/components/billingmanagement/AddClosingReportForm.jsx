@@ -46,7 +46,7 @@ const AddClosingReportForm = ({netAmount}) => {
   const handleSubmit = async () => {
     try {
 
-      console.log(total, roundOffAmount);
+      // console.log(total, roundOffAmount);
       if(total !== roundOffAmount) {
         toastError("Total Closing Balance should match with Available Balance");
         return;

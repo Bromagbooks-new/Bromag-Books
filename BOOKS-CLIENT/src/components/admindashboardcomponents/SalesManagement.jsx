@@ -44,11 +44,11 @@ const SalesManagement = ()=> {
 
     useEffect(()=> {
         const handleSalesDashboard = async (dates) => {
-            console.log("here");
+            // console.log("here");
             try {
-              console.log("here");
+              // console.log("here");
               const response = await SalesDashboard(dates || {});
-              console.log(response.data);
+              // console.log(response.data);
         
               if (response.data.success) {
                 // data as cards
@@ -62,7 +62,7 @@ const SalesManagement = ()=> {
                     {title: 'Dine-in Sales', value: response.data.totalDineInPerDay || 0},
                 ]);
 
-                console.log(response.data.twoHourlySalesData);
+                // console.log(response.data.twoHourlySalesData);
                 setTwoHourlySalesData(response.data.twoHourlySalesData);
 
 

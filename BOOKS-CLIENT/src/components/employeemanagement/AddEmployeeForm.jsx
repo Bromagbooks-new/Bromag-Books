@@ -30,7 +30,7 @@ const AddEmployeeForm = () => {
   });
 
   const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
+    // console.log(acceptedFiles);
     form.setValue("idProof", acceptedFiles[0]);
     // Do something with the files
   }, []);

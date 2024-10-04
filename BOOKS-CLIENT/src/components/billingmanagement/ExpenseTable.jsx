@@ -19,6 +19,7 @@ const ExpenseTable = ({ reports }) => {
   const [toDate, setToDate] = useState("");
   const [searchDate, setSearchDate] = useState("");
   const [filteredReports, setFilteredReports] = useState(reports);
+  // console.log('filteredReports:', filteredReports)
 
   const handleSearch = () => {
     let filtered = reports;

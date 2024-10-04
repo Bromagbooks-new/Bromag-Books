@@ -1,5 +1,6 @@
 const express = require("express");
 const userRouter = express.Router();
+const rateLimit = require("express-rate-limit");
 //controllers
 const controller = require("../controller/access_controller");
 const billingController = require("../controller/billing_controller");
@@ -14,9 +15,16 @@ const interceptor = require("../middleware/interceptor");
 
 const upload = require("../utils/uploaders");
 
+// Rate limiting middleware
+const limiter = rateLimit({
+  windowMs : 15 * 60 * 1000, // 15 minutes
+  max : 100, // Limit each IP to 100 requests per windowMs
+  message : "Too many requests from this IP, please try again later." 
+})
+
 /* restaurant */
 userRouter.get("/accessRestaurantHome", controller.accessRestaurantHome);
-userRouter.post("/login", controller.verifyLogin);
+userRouter.post("/login",limiter, controller.verifyLogin);
 userRouter.post("/verifyToken", controller.verifyToken);
 userRouter.post("/demo-request", controller.storeDemoRequest);
 userRouter.post("/user-query", controller.storeUserRequest);
@@ -97,6 +105,7 @@ userRouter.post(
 
 userRouter.post(
   "/generateBill",
+  limiter,
   interceptor.adminAuth,
   billingController.generateBill
 );
@@ -125,6 +134,38 @@ userRouter.post(
   interceptor.adminAuth,
   billingController.deleteBill
 );
+userRouter.get(
+  "/getTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline",
+  interceptor.adminAuth,
+  billingController.getTotalAndHoldOrdersCountEitherForTakeAwayOrForOnlineController
+)
+userRouter.get(
+  "/getTotalBillsEitherForTakeAwayOrOnlineOrders",
+  interceptor.adminAuth,
+  billingController.getTotalBillsEitherForTakeAwayOrOnlineOrdersController
+)
+
+// Get Tables Hold And Available Count
+userRouter.get(
+  "/getTablesHoldAndAvailableCount",
+  interceptor.adminAuth,
+  billingController.getTablesHoldAndAvailableCount
+)
+
+// Get Hold Table Data
+userRouter.get(
+  "/getTablesOnHoldData",
+  interceptor.adminAuth,
+  billingController.getTablesOnHoldDataController
+)
+
+// Get Hold And Available Table Data
+userRouter.get(
+  "/getHoldAndAvailableTableData",
+  interceptor.adminAuth,
+  billingController.getHoldAndAvailableTableDataController
+)
+
 userRouter.post(
   "/addOpeningReport",
   interceptor.adminAuth,
@@ -232,6 +273,12 @@ userRouter.get(
   interceptor.adminAuth,
   menuController.getAllMenuItems
 );
+
+userRouter.put(
+  "/updateMenuItemAvailableStatus",
+  interceptor.adminAuth,
+  menuController.updateMenuItemAvailableStatus
+)
 
 userRouter.post(
   "/addMenuCategory",
@@ -399,6 +446,42 @@ userRouter.post(
   interceptor.adminAuth,
   tableController.addTableData
 ); //table management
+
+// New router addNewTableData() for table management without captain
+userRouter.post(
+  "/addNewTableData/",
+  interceptor.adminAuth,
+  tableController.addNewTableData
+)
+
+// Fetch all table data
+userRouter.get(
+  "/getNewTableData",
+  interceptor.adminAuth,
+  tableController.getNewTableData
+)
+
+// Fetch all table count
+userRouter.get(
+  "/getNewTableDatCount/",
+  interceptor.adminAuth,
+  tableController.getNewTableDatCount
+)
+
+// Fetch single table data
+userRouter.get(
+  "/getSingleTableInfo/:tableId",
+  interceptor.adminAuth,
+  tableController.getSingleTableInfo
+)
+
+// Update sngle table data
+userRouter.put(
+  "/updateTableForTableManagement/:tableId",
+  interceptor.adminAuth,
+  tableController.updateTableForTableManagement
+)
+
 userRouter.get(
   "/getTableDataAtAdmin",
   interceptor.adminAuth,

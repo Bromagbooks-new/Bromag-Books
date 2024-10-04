@@ -61,12 +61,12 @@ const QueryForm = () => {
   });
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
     try {
       const response = await storeUserQuery(data);
 
       if(response.status == 200) {
-          console.log(response.data.message);
+          // console.log(response.data.message);
           form.reset();
       }
 

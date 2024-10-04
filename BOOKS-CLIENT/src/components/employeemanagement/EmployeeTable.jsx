@@ -23,7 +23,7 @@ import {
 // import ExpenseBillDialog from "./ExpenseBillDialog";
 
 const EmployeeTable = ({ employees }) => {
-  console.log(employees);
+  // console.log(employees);
   return (
     <div className="flex flex-col gap-10 bg-white rounded-xl p-4">
       <div className="flex justify-between items-end">

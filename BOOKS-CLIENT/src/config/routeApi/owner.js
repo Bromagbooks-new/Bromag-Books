@@ -9,7 +9,7 @@ const EmployDetails = async () => {
   }
 };
 // Get all the employees
- const getAllRegisteredPos = async () => {
+const getAllRegisteredPos = async () => {
   try {
     return await restaurantOwnerAxiosInstance.get("getAllRegisteredPos");
   } catch (err) {
@@ -102,7 +102,7 @@ const AddEmployeeAccess = async (
 const fetchAcessDetail = async (ID) => {
   try {
     return await restaurantOwnerAxiosInstance.get(`fetchAcessDetail/${ID}`);
-  } catch (err) {}
+  } catch (err) { }
 };
 const updateEmployeeAccess = async ({
   username,
@@ -381,217 +381,285 @@ export const StockDashboard = async () => {
 };
 
 
-const GenerateBill = async (data)=> {
+const GenerateBill = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateBill", data);
     return response;
-  } catch(error) {
-    console.error(error);
+  } catch (error) {
+    console.error("error GenerateBill:", error);
+    throw error
   }
 }
-const FetchBill = async (data)=> {
+const FetchBill = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("fetchBill", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const FetchHoldBills = async (data)=> {
+const FetchHoldBills = async (data) => {
   try {
-    const response = await restaurantOwnerAxiosInstance.get("fetchHoldBills", data);
+    const response = await restaurantOwnerAxiosInstance.get(`fetchHoldBills?type=${data}`, data);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+const FetchCompletedBills = async (data) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get(`fetchCompletedBills?type=${data}`);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+const GetTotalBillsEitherForTakeAwayOrOnlineOrders = async (page, type) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get(`getTotalBillsEitherForTakeAwayOrOnlineOrders?page=${page}&type=${type}`);
     return response;
   } catch(error) {
-    console.error(error);
+    console.error("error in GetTotalBillsEitherForTakeAwayOrOnlineOrders owner.js:", error);
+    throw error
   }
 }
-const FetchCompletedBills = async (data)=> {
-  try {
-    const response = await restaurantOwnerAxiosInstance.get("fetchCompletedBills", data);
-    return response;
-  } catch(error) {
-    console.error(error);
-  }
-}
-const UpdateBill = async (data)=> {
+const UpdateBill = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.patch("updateBill", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const DeleteBill = async (data)=> {
+const DeleteBill = async (data) => {
   try {
-    console.log("HERERE");
+    // console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.post("deleteBill", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const AddOpeningReport = async (data)=> {
+
+// Get Total And Hold Orders Bill Count Either For TakeAway or For Online Orders
+const GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline = async (data) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get(`getTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline?type=${data}`);
+    return response;
+  } catch(error) {
+    console.error("Error in GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline owner.js :", error);
+    throw error;
+  }
+}
+
+// Get Tables Hold And Available Count
+const GetTablesHoldAndAvailableCount = async (data) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getTablesHoldAndAvailableCount", data);
+    return response;
+  } catch (error) {
+    console.error("Error in GetTablesHoldAndAvailableCount owner.js :", error);
+    throw error;
+  }
+}
+
+// Get Hold Table Data
+const GetTablesOnHoldData = async (data) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getTablesOnHoldData", data);
+    return response;
+  } catch (error) {
+    console.error("Error in GetTablesOnHoldData owner.js :", error);
+    throw error;
+  }
+}
+
+// Get Hold And Available Table Data
+const GetHoldAndAvailableTableData = async (data) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getHoldAndAvailableTableData", data);
+    return response;
+  } catch (error) {
+    console.error("Error in GetHoldAndAvailableTableData owner.js :", error);
+    throw error;
+  }
+}
+
+const AddOpeningReport = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.post("addOpeningReport", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const GetOpeningReports = async (data)=> {
+const GetOpeningReports = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.get("getOpeningReports", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const IsOpeningReportCreatedToday = async (data)=> {
+const IsOpeningReportCreatedToday = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.get("isOpeningReportCreatedToday", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
 
-const AddExpense = async (data)=> {
+const AddExpense = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.post("addExpense", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const GetExpenses = async (data)=> {
+const GetExpenses = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.get("getExpenses", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
 
-const AddClosingReport = async (data)=> {
+const AddClosingReport = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.post("addClosingReport", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const GetClosingReports = async (data)=> {
+const GetClosingReports = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.get("getClosingReports", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const IsClosingReportCreatedToday = async (data)=> {
+const IsClosingReportCreatedToday = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.get("isClosingReportCreatedToday", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
 
-const GetPassbookData = async (data)=> {
+const GetPassbookData = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.post("getPassbookData", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const GetCardAnalytics = async (data)=> {
+const GetCardAnalytics = async (data) => {
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.post("getCardAnalytics", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const GetDashboardAnalytics = async (data)=> {
+const GetDashboardAnalytics = async (data) => {
+  console.log('data2:', data)
   try {
     console.log("HERERE");
     const response = await restaurantOwnerAxiosInstance.post("getDashboardAnalytics", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
 
-const GenerateKOT = async (data)=> {
+const GenerateKOT = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
 
-const AddAggregator = async (data)=> {
+const AddAggregator = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("addAggregator", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const GetAllAggregators = async (data)=> {
+const GetAllAggregators = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.get("getAllAggregators", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
 
 
-const AddCuisine = async (data)=> {
+const AddCuisine = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("addCuisine", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const GetAllCuisines = async (data)=> {
+const GetAllCuisines = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.get("getAllCuisines", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
+    throw error;
   }
 }
 
 
-const AddMenuItem = async (data)=> {
+const AddMenuItem = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("addMenuItem", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }
-const GetAllMenuItems = async (data)=> {
+const GetAllMenuItems = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.get("getAllMenuItems", data);
     return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const UpdateMenuItemAvailableStatus = async (data) => {
+  // console.log('data:', data)
+  try {
+    const response = await restaurantOwnerAxiosInstance.put("updateMenuItemAvailableStatus", data);
+    return response;
   } catch(error) {
     console.error(error);
+    throw error;
   }
 }
 
@@ -653,7 +721,7 @@ const MenuData = async () => {
 
 export const CustomerDetailssearchQuery = async (searchquery) => {
   try {
-    
+
     return await restaurantOwnerAxiosInstance.get(
       `customerDetail/${searchquery}`
     );
@@ -759,8 +827,8 @@ export const UpdateOnlineAggregatorPrices = async ({
 }) => {
   try {
 
-    
-   const data= {
+
+    const data = {
       plateform, itemId, actualPrice, discountPrice
     }
 
@@ -769,7 +837,7 @@ export const UpdateOnlineAggregatorPrices = async ({
 
     const response = await restaurantOwnerAxiosInstance.patch(
       "updateOnlineAggregatorPrices",
-      {data}
+      { data }
     );
     return response;
   } catch (error) {
@@ -887,11 +955,11 @@ const getMenuById = async (menuId, plateform) => {
 };
 
 
-export const GetRestaurantDetail = async ()=>{
+export const GetRestaurantDetail = async () => {
   try {
     return await restaurantOwnerAxiosInstance.get("GetRestaurantDetail");
-  } catch(err) {
-console.log(err);
+  } catch (err) {
+    console.log(err);
   }
 }
 
@@ -901,7 +969,7 @@ const getAllSalesReport = async (POSManager, date) => {
     return await restaurantOwnerAxiosInstance.get("getAllSalesReport", {
       params: { POSManager, date },
     });
-  } catch {}
+  } catch { }
 };
 
 const updateMenu = async (menuId, data) => {
@@ -1013,6 +1081,64 @@ const AddTableData = async (data) => {
   }
 };
 
+// addNewTableData() for table management without captain
+const AddNewTableData = async (data) => {
+  try {
+    console.log('data2:', data)
+    const response = await restaurantOwnerAxiosInstance.post("addNewTableData", data);
+    // console.log('response4:', response)
+    return response;
+  } catch (error) {
+    // console.log("error4 : ", error);
+    throw error;
+  }
+}
+
+// getNewTableData() for table management without captain
+const GetNewTableData = async (page, sortBy) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get(`getNewTableData?page=${page}&sortBy=${sortBy}`);
+    return response;
+  } catch (error) {
+    console.log("error in GetNewTableData :", error);
+    throw error
+  }
+}
+
+// getNewTableDatCount() for table management without captain
+const GetNewTableDatCount = async (data) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get(`getNewTableDatCount`, data);
+    return response;
+  } catch (error) {
+    console.log("error in GetNewTableDatCount :", error);
+    throw error
+  }
+}
+
+// get single table data
+
+const GetSingleTableInfo = async (tableId) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get(`getSingleTableInfo/${tableId}`, tableId);
+    return response;
+  } catch (error) {
+    console.error("error in GetSingleTableInfo :", error);
+    throw error
+  }
+}
+
+const UpdateTableForTableManagement = async (tableId, data) => {
+  try {
+    console.log('data4:', tableId, data)
+    const response = await restaurantOwnerAxiosInstance.put(`updateTableForTableManagement/${tableId}`, data);
+    return response;
+  } catch (error) {
+    console.error("error in UpdateTableForTableManagement :", error);
+    throw error
+  }
+}
+
 const TableDataAtAdmin = async () => {
   try {
     const response = await restaurantOwnerAxiosInstance.get(
@@ -1052,7 +1178,7 @@ const UpdateTableData = async (tableId, data) => {
     );
     return response;
 
-    
+
   } catch (error) {
     console.log(error);
   }
@@ -1212,6 +1338,11 @@ export {
   TotalSalesData,
   SalesDashboard,
   AddTableData,
+  AddNewTableData,
+  GetNewTableData,
+  GetNewTableDatCount,
+  GetSingleTableInfo,
+  UpdateTableForTableManagement,
   TableDataAtAdmin,
   getAllSalesReport,
   UpdateTableActive,
@@ -1235,9 +1366,14 @@ export {
   FetchBill,
   FetchHoldBills,
   FetchCompletedBills,
+  GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline,
+  GetTotalBillsEitherForTakeAwayOrOnlineOrders,
   UpdateBill,
   GenerateKOT,
   DeleteBill,
+  GetTablesHoldAndAvailableCount,
+  GetTablesOnHoldData,
+  GetHoldAndAvailableTableData,
   AddOpeningReport,
   GetOpeningReports,
   IsOpeningReportCreatedToday,
@@ -1254,5 +1390,6 @@ export {
   AddCuisine,
   GetAllCuisines,
   AddMenuItem,
-  GetAllMenuItems
+  GetAllMenuItems,
+  UpdateMenuItemAvailableStatus
 };

@@ -105,10 +105,10 @@ const AddToCartCapMenu = ({
   }, [sortingOption, menu, searchTerm]);
 
   useEffect(() => {
-    console.log("Fetching menu data");
+    // console.log("Fetching menu data");
     setSelectedItems([]);
     handleMenuData();
-    console.log(clearMenuSignal);
+    // console.log(clearMenuSignal);
   }, [selectedCategory, clearMenuSignal]);
 
   useEffect(() => {
@@ -170,7 +170,7 @@ const AddToCartCapMenu = ({
 
   // Increase quantity handler
   const setIncrease = (itemId, productStock) => {
-    console.log(productStock);
+    // console.log(productStock);
 
     if (selectedItems.includes(itemId)) {
      return toastError("Uncheck to Change Quantity")

@@ -32,7 +32,7 @@ const AddExpenseReportForm = () => {
   });
 
   const onDrop = useCallback((acceptedFiles) => {
-    console.log(acceptedFiles);
+    // console.log(acceptedFiles);
     form.setValue("bill", acceptedFiles[0]);
     // Do something with the files
   }, []);

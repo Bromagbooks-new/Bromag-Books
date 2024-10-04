@@ -9,22 +9,25 @@ import { Link, useLoaderData } from "react-router-dom";
 
 const Order = () => {
   const [selectedCusine, setSelectedCusine] = useState("All");
-
   const [billItems, setBillItems] = useState([]);
 
-  
+  console.log('billItems:', billItems)
+
   const addItem = (itemId) => {
+    console.log('itemId:', itemId)
     const foundItems = billItems.filter((billItem) => billItem._id === itemId);
     let foundItem = {};
     if (foundItems.length === 0) {
       const newItem = filteredMenuItems.filter(
         (item) => item._id === itemId
       )[0];
+      console.log('newItem:', newItem)
 
       if (newItem.quantity < 1) return;
 
       const currentAggregatorData = newItem.aggregators[0];
-      console.log(currentAggregatorData);
+      console.log('currentAggregatorData:', currentAggregatorData)
+      // console.log(currentAggregatorData);
 
       foundItem = {
         name: newItem?.name,
@@ -39,7 +42,7 @@ const Order = () => {
       const newItem = filteredMenuItems.filter(
         (item) => item._id === itemId
       )[0];
-      console.log(newItem);
+      // console.log(newItem);
       foundItem = foundItems[0];
       if (foundItem.quantity >= newItem.quantity) return;
       foundItem.quantity += 1;
@@ -77,14 +80,16 @@ const Order = () => {
   const [categories, setCategories] = useState([]);
 
   const { data } = useLoaderData();
+  // console.log('data useLoaderData:', data)
   useEffect(() => {
-    console.log(data);
+    // console.log(data);
     const getMenuData = async () => {
       const categoriesData = await GetAllCuisines();
-      console.log(categoriesData);
+      // console.log(categoriesData);
       setCategories(categoriesData.data.cuisines);
       const menuData = await GetAllMenuItems();
-      console.log(menuData);
+      // console.log('menuData getMenuData:', menuData)
+      // console.log(menuData);
       setMenuItems(menuData.data.data);
       setFilteredMenuItems(menuData.data.data);
     };
@@ -92,6 +97,7 @@ const Order = () => {
   }, []);
 
   const [filteredMenuItems, setFilteredMenuItems] = useState([]);
+  console.log('filteredMenuItems:', filteredMenuItems)
 
   useEffect(() => {
     if (selectedCusine === "All") {
@@ -104,10 +110,13 @@ const Order = () => {
     setFilteredMenuItems(filteredItems);
   }, [selectedCusine]);
 
-  useEffect(() => console.log(filteredMenuItems), [filteredMenuItems]);
+  // useEffect(() => 
+  //   console.log(filteredMenuItems), 
+  // [filteredMenuItems]);
 
   const handleSelectCusine = (cusine) => {
-    console.log(cusine);
+
+    // console.log(cusine);
     if (cusine.name === selectedCusine) return;
     setSelectedCusine(cusine.name);
   };
@@ -163,7 +172,7 @@ const Order = () => {
                 const quantity = selectedItem?.quantity || 0;
 
                 const currentAggregatorData = item.aggregators[0];
-                console.log(currentAggregatorData);
+                // console.log(currentAggregatorData);
 
                 return (
                   <ItemCard
@@ -199,11 +208,11 @@ export default Order;
 export const orderLoader = async ({ params, request }) => {
   const [, searchParams] = request.url.split("?");
   const searchTerm = new URLSearchParams(searchParams).get("id");
-  console.log("Seracrch Term", searchTerm);
+  // console.log("Seracrch Term", searchTerm);
 
   const response = await FetchBill({ billId: searchTerm });
 
-  console.log(response.data);
+  // console.log("response.data :", response.data);
 
   return response;
 };

@@ -1,41 +1,63 @@
 import { Search } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { FetchBill, GetAllCuisines, GetAllMenuItems } from "@/config/routeApi/owner";
+import { GetAllCuisines, GetAllMenuItems, UpdateMenuItemAvailableStatus } from "@/config/routeApi/owner";
 import { useEffect, useState } from "react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
 import ItemCard from "../menumanagement/ItemCard";
+import { useCallback } from "react";
+import { toastError, toastSuccess } from "@/helpers/helpers";
 
 const MenuDisplay = () => {
   const [filter, setFilter] = useState("all");
   const [menuItems, setMenuItems] = useState([]);
   const [cuisines, setCuisines] = useState([]);
+
+  // console.log('cuisines:', cuisines)
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const getMenuData = async () => {
-      try {
-        const categoriesData = await GetAllCuisines();
-        setCuisines(categoriesData.data.cuisines);
-        
-        const menuData = await GetAllMenuItems();
-        setMenuItems(menuData.data.data);
-      } catch (error) {
-        console.error("Failed to fetch menu data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
     getMenuData();
   }, []);
 
+  const getMenuData = async () => {
+    try {
+      const categoriesData = await GetAllCuisines();
+      setCuisines(categoriesData.data.cuisines);
+      const menuData = await GetAllMenuItems();
+      setMenuItems(menuData.data.data);
+    } catch (error) {
+      console.error("Failed to fetch menu data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateMenuItemAvailableStatus = useCallback(async (id, availableStatus) => {
+    try {
+      // console.log('availableStatus:', availableStatus)
+      // console.log('id:', id)
+      const { data } = await UpdateMenuItemAvailableStatus({ id, availableStatus })
+      // console.log('data:', data)
+      if(data?.success) {
+        toastSuccess(data?.message);
+        getMenuData();
+      }
+    } catch (error) {
+      console.log('error updateMenuItemAvailableStatus:', error)
+      toastError(error?.response?.data?.message);
+    }
+  }, [])
+
   const filteredMenu = menuItems.filter((item) => {
     const matchesFilter = filter === "all" || item.cuisine === filter;
+    // console.log('matchesFilter:', matchesFilter)
     const matchesSearch = item.name.toLowerCase().includes(searchTerm.toLowerCase());
+    // console.log('matchesSearch:', matchesSearch)
     return matchesFilter && matchesSearch;
   });
+  // console.log('filteredMenu:', filteredMenu)
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -101,6 +123,8 @@ const MenuDisplay = () => {
             discountedPrice={item.aggregators[0]?.discountedPrice}
             available={item.quantity}
             itemId={item._id}
+            availableStatus={item.availableStatus}
+            updateMenuItemAvailableStatus={updateMenuItemAvailableStatus}
           />
         ))}
       </div>

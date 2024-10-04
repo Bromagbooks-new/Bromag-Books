@@ -61,7 +61,7 @@ const ViewBill = ({ bill, billItems, instructions, paymentMode }) => {
             </div>
           </div>
           <p className="text-2xl text-center font-semibold">INVOICE</p>
-          <div className="w-1/3 flex gap-2 p-2 justify-end text-gray-600 opacity-0">
+          <div className="w-1/3 flex gap-2 p-2 justify-end text-gray-600">
             <EyeIcon className="w-5 h- cursor-pointer" />
             <DownloadIcon className="w-5 h-5 cursor-pointer" />
             <Share2Icon className="w-5 h-5 cursor-pointer" />

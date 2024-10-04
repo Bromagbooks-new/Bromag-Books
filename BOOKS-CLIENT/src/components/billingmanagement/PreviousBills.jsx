@@ -66,16 +66,18 @@ const PreviousBills = ({ type }) => {
 
   useEffect(() => {
     const fetchBills = async () => {
-      console.log("Here");
+      // console.log("Here");
       try {
-        const response = await FetchCompletedBills();
-        console.log(response.data);
+        const response = await FetchCompletedBills(type);
+        // console.log(response.data);
 
         if (response.status === 200) {
           const bills = response.data.bill;
-          const filteredBills = bills.filter((bill) => bill.mode === type);
-          console.log(filteredBills);
-          setBills(filteredBills);
+          // console.log('bills:', bills)
+          // const filteredBills = bills.filter((bill) => bill.mode === type);
+          // console.log('filteredBills:', filteredBills)
+          // console.log(filteredBills);
+          setBills(bills);
         }
       } catch (error) {
         console.error(error);
@@ -88,7 +90,7 @@ const PreviousBills = ({ type }) => {
   return (
     <div className="rounded-xl w-[22%] right-2 top-[14%] fixed h-[85%] bg-white shadow-md">
       <div className="rounded-t-lg bg-gray-900 text-lg px-4 h-10 flex items-center text-white">
-        Previous Bills
+        Latest {bills?.length} Bills
       </div>
       <ScrollArea className="h-[93%]">
         {bills.map((bill) => (

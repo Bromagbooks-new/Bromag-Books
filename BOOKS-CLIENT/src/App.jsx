@@ -57,6 +57,10 @@ import {
   TableDetails,
   CaptainPassbook,
   CaptainManagement,
+  TableManagement,
+  AddTableForTableManagement,
+  UpdateTableInTableManagement,
+  OrderOnHoldForTakeAway
 } from "./pages/admindashboardpages";
 
 import {
@@ -112,8 +116,8 @@ import Features from "./pages/Features";
 import BookADemo from "./pages/BookADemo";
 import DemoBooked from "./pages/DemoBooked";
 import BillingManagement, { billingManagementLoader } from "./pages/admindashboardpages/billingmanagement/BillingManagement";
-import OnlineOrder from "./pages/admindashboardpages/billingmanagement/OnlineOrder";
-import TakeawayOrder from "./pages/admindashboardpages/billingmanagement/TakeawayOrder";
+import OnlineOrder, { getTotalAndHoldOrdersCountForOnline } from "./pages/admindashboardpages/billingmanagement/OnlineOrder";
+import TakeawayOrder, { getTotalAndHoldOrdersCountForTakeAway } from "./pages/admindashboardpages/billingmanagement/TakeawayOrder";
 import DineinOrder from "./pages/admindashboardpages/billingmanagement/DineinOrder";
 import OrderCharts, { orderChartsLoader } from "./components/billingmanagement/OrderCharts";
 import Order, { orderLoader } from "./pages/admindashboardpages/billingmanagement/Order";
@@ -132,7 +136,17 @@ import Aggregators, { aggregatorsLoader } from "./pages/admindashboardpages/menu
 import EmployeeManagement from "./pages/admindashboardpages/employeemanagement/EmployeeManagement";
 import AddEmployee from "./pages/admindashboardpages/employeemanagement/AddEmployee";
 import Employees from "./pages/admindashboardpages/employeemanagement/Employees";
-
+import { totalCountOfAddedTableDataLoader } from "./pages/admindashboardpages/tablemanagement/TableManagement";
+import { totalOrderDetailsForSelectedTable } from "./pages/admindashboardpages/tablemanagement/UpdateTableInTableManagement";
+import TablesOnHold from "./pages/admindashboardpages/billingmanagement/TablesOnHold";
+import TableOnHoldAndAvailable from "./pages/admindashboardpages/billingmanagement/TableOnHoldAndAvailable";
+import { getTablesOnHoldDataFn } from "./pages/admindashboardpages/billingmanagement/TablesOnHold";
+import { getHoldAndAvailableTableDataFn } from "./pages/admindashboardpages/billingmanagement/TableOnHoldAndAvailable";
+import { fetchHoldBillsFn } from "./pages/admindashboardpages/billingmanagement/OrderOnHoldForTakeAway";
+import TotalOrdersForTakeAway from "./pages/admindashboardpages/billingmanagement/TotalOrdersForTakeAway";
+import OrderOnHoldForOnline, { fetchHoldBillsForOnlineFn } from "./pages/admindashboardpages/billingmanagement/OrderOnHoldForOnline";
+import TotalOrdersForOnline from "./pages/admindashboardpages/billingmanagement/TotalOrdersForOnline";
+import UpdateOrder from "./pages/admindashboardpages/billingmanagement/UpdateOrder";
 
 const router = createBrowserRouter([
   {
@@ -236,23 +250,56 @@ const router = createBrowserRouter([
               },
               {
                 path: 'online-order',
-                element: <OnlineOrder />
+                element: <OnlineOrder />,
+                loader : getTotalAndHoldOrdersCountForOnline
               },
               {
                 path: 'takeaway-order',
-                element: <TakeawayOrder />
+                element: <TakeawayOrder />,
+                loader : getTotalAndHoldOrdersCountForTakeAway
               },
               {
                 path: 'dinein-order',
                 element: <DineinOrder />
-              },
-              
+              }
             ]
+          },
+          {
+            path : "billing-management/dinein-order/tables-on-hold",
+            element : <TablesOnHold />,
+            loader : getTablesOnHoldDataFn
+          },
+          {
+            path : "billing-management/dinein-order/tables-on-hold-and-available",
+            element : <TableOnHoldAndAvailable />,
+            loader : getHoldAndAvailableTableDataFn
+          },
+          {
+            path : "billing-management/takeaway-order/orders-on-hold",
+            element : <OrderOnHoldForTakeAway />,
+            loader : fetchHoldBillsFn
+          },
+          {
+            path : "billing-management/takeaway-order/total-orders",
+            element : <TotalOrdersForTakeAway />
+          },
+          {
+            path : "billing-management/online-order/orders-on-hold",
+            element : <OrderOnHoldForOnline />,
+            loader : fetchHoldBillsForOnlineFn
+          },
+          {
+            path : "billing-management/online-order/total-orders",
+            element : <TotalOrdersForOnline />
           },
           {
             path: 'billing-management/order',
             loader: orderLoader,
             element: <Order />
+          },
+          {
+            path: 'billing-management/update-order',
+            element: <UpdateOrder />
           },
           {
             path: 'billing-management/opening-report',
@@ -522,6 +569,34 @@ const router = createBrowserRouter([
           //     },
           //   ],
           // },
+          {
+            path: "table-management",
+            element: <Outlet />,
+            children: [
+              {
+                index : true,
+                element : <TableManagement />,
+                loader : totalCountOfAddedTableDataLoader
+              },
+              {
+                path: "add-table",
+                element: <AddTableForTableManagement />
+              },
+              {
+                path: "table-details",
+                element: <TableDetails />
+              },
+              {
+                path: "update-table/:tableId",
+                element: <UpdateTableInTableManagement />,
+                loader : totalOrderDetailsForSelectedTable
+              },
+              {
+                path: "captain-passbook",
+                element: <CaptainPassbook />
+              },
+            ],
+          },
           // {
           //   path: "settings",
           //   element: <Outlet />,

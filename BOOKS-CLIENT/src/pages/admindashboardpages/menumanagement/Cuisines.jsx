@@ -13,6 +13,7 @@ import CuisinesTable from "@/components/menumanagement/CuisinesTable.jsx";
 
 const Cuisines = () => {
   const { cuisines } = useLoaderData();
+  console.log('cuisines:', cuisines)
   // console.log(reports);
   // console.log(isCreatedToday);
 

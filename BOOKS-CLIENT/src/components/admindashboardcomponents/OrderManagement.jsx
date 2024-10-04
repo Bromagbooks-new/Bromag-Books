@@ -45,11 +45,11 @@ const OrderManagement = ()=> {
 
     useEffect(()=> {
         const handleSalesDashboard = async (dates) => {
-            console.log("here");
+            // console.log("here");
             try {
-              console.log("here");
+              // console.log("here");
               const response = await OrderDataAtAdmin();
-              console.log({...response.data, CompleteOrder: []});
+              // console.log({...response.data, CompleteOrder: []});
         
               if (response.data.success) {
                 // data as cards
@@ -63,7 +63,7 @@ const OrderManagement = ()=> {
                   {title: 'Dine-in Orders', value: response.data.DineInPerHour},
               ]);
 
-                console.log(response.data.twoHourlySalesData);
+                // console.log(response.data.twoHourlySalesData);
                 setTwoHourlyOrdersData(response.data.twoHourlyOrderData);
 
 

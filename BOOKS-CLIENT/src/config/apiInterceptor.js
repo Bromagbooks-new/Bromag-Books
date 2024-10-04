@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 const TIMEOUT_DURATION = 110000;
 
 const createAxiosInstanceWithInterceptorUser = (baseURL, token) => {
+  // console.log('baseURL:', baseURL);
   const instance = axios.create({
     baseURL: baseURL,
     timeout: TIMEOUT_DURATION,
@@ -13,6 +14,7 @@ const createAxiosInstanceWithInterceptorUser = (baseURL, token) => {
   instance.interceptors.request.use(
     (config) => {
       let details;
+      // console.log('details1:', details)
 
       if (token === "restaurant") {
         details = localStorage.getItem("restaurant");
@@ -28,6 +30,7 @@ const createAxiosInstanceWithInterceptorUser = (baseURL, token) => {
         config.headers["Authorization"] = `${details}`;
       }
 
+      // console.log('config1:', config)
       return config;
     },
     (error) => {
@@ -36,8 +39,12 @@ const createAxiosInstanceWithInterceptorUser = (baseURL, token) => {
   );
 
   instance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      // console.log('response1:', response)
+      return response
+    },
     (error) => {
+      // console.log('error2:', error)
       if (error.response) {
         if (error.response.status === 401) {
           // window.location.href = '/error404';
@@ -55,6 +62,7 @@ const createAxiosInstanceWithInterceptorUser = (baseURL, token) => {
     }
   );
 
+  // console.log('instance:', instance)
   return instance;
 };
 

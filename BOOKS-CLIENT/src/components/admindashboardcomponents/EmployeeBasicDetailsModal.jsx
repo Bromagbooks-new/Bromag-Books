@@ -39,7 +39,7 @@ h4{
 
 const EmployeeBasicDetailsModal = (props) => {
 
-  console.log(props,"I am prop");
+  // console.log(props,"I am prop");
   return (
     <Wrapper width="700px" centered {...props}>
       <div className="modal-content">

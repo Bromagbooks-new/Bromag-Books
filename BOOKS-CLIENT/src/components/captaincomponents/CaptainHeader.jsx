@@ -23,7 +23,7 @@ const CaptainHeader = ({ openSidebar }) => {
         // const response = await GetCapDashboard();
         const response = await capDashboard();
 
-console.log(response,"header response");
+// console.log(response,"header response");
         if (response.data.success) {
           setRestaurant(response.data.RestaurantData)
           setCapData(response.data.ManagerData);

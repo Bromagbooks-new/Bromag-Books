@@ -39,6 +39,7 @@ const chartConfig = {
 };
 
 export function Chart({data}) {
+  console.log('data:', data)
   let ordersData = [
       { mode: "Take Away", percent: 60, fill: "#3EE54F" },
     { mode: "Online", percent: 30, fill: "#FADF53" },
@@ -46,12 +47,12 @@ export function Chart({data}) {
   ];
 
   Object.keys(data).forEach(key=> {
-    if(key==='online') ordersData[1].percent = data[key];
-    if(key==='takeaway') ordersData[0].percent = data[key];
-    if(key==='dinein') ordersData[2].percent = data[key];
+    if(key==='online') ordersData[1].percent = data[key] || 10;
+    if(key==='takeaway') ordersData[0].percent = data[key] || 20;
+    if(key==='dinein') ordersData[2].percent = data[key] || 15;
   });
 
-  console.log(ordersData);
+  // console.log(ordersData);
 
   return (
     <div className="flex flex-col w-1/3">
@@ -80,9 +81,10 @@ export function Chart({data}) {
 const OrderCharts = () => {
 
   const stats = useLoaderData();
-  console.log(stats);
+  // console.log(stats);
 
   const [filter, setFilter] = useState("monthly");
+  console.log('filter:', filter)
 
   let filtredStats = stats.monthlyStats;
 
@@ -161,6 +163,7 @@ export const orderChartsLoader = async ()=> {
 
   try {
     const response = await GetDashboardAnalytics({date: new Date()});
+    console.log('response1:', response)
 
     if(response.status === 200) {
       // console.log(response.data);

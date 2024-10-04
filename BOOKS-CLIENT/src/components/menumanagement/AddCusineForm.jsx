@@ -34,11 +34,11 @@ const AddCusineForm = () => {
   const navigate = useNavigate();
 
   const onSubmit = async (data) => {
-    console.log(data);
+    // console.log(data);
 
     try {
       const response = await AddCuisine(data);
-      console.log(response);
+      // console.log(response);
 
       if(response.status === 200) {
         if(response.data.status === 'CUISINE_EXISTS') {
@@ -51,7 +51,7 @@ const AddCusineForm = () => {
         console.log(response.data.message);
         
         toastSuccess("Cuisine Added Successfully");
-        navigate('/dashboard/menu-management');
+        navigate('/dashboard/menu-management/cuisines');
 
       }
 

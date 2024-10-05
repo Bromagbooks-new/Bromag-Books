@@ -224,7 +224,7 @@ exports.getAllMenuItems = async (req, res) => {
     const restaurant = req.restaurant;
 
     // Fetch all menu items from the database
-    const menuItems = await MenuItem.find({ restaruntId: restaurant });
+    const menuItems = await MenuItem.find({ restaruntId: restaurant, availableStatus : true });
 
     return res.status(200).json({
       status: "SUCCESS",

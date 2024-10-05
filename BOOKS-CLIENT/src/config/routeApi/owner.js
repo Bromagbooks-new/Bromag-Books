@@ -396,6 +396,7 @@ const FetchBill = async (data) => {
     return response;
   } catch (error) {
     console.error(error);
+    throw error
   }
 }
 const FetchHoldBills = async (data) => {

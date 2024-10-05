@@ -146,7 +146,7 @@ import { fetchHoldBillsFn } from "./pages/admindashboardpages/billingmanagement/
 import TotalOrdersForTakeAway from "./pages/admindashboardpages/billingmanagement/TotalOrdersForTakeAway";
 import OrderOnHoldForOnline, { fetchHoldBillsForOnlineFn } from "./pages/admindashboardpages/billingmanagement/OrderOnHoldForOnline";
 import TotalOrdersForOnline from "./pages/admindashboardpages/billingmanagement/TotalOrdersForOnline";
-import UpdateOrder from "./pages/admindashboardpages/billingmanagement/UpdateOrder";
+import UpdateOrder, { getOrderDetails } from "./pages/admindashboardpages/billingmanagement/UpdateOrder";
 
 const router = createBrowserRouter([
   {
@@ -299,7 +299,8 @@ const router = createBrowserRouter([
           },
           {
             path: 'billing-management/update-order',
-            element: <UpdateOrder />
+            element: <UpdateOrder />,
+            loader : getOrderDetails
           },
           {
             path: 'billing-management/opening-report',

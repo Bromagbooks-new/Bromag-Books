@@ -101,7 +101,7 @@ exports.fetchBill = async (req, res) => {
 
     const billId = req.body.billId;
 
-    const bill = await bill_model.findById(billId);
+    const bill = await bill_model.findOne({ _id : billId, restrauntId : isRestaurant });
 
     res.status(200).json({
       status: "BILL_FETCHED",
@@ -110,6 +110,7 @@ exports.fetchBill = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+    
     res
       .status(500)
       .json({ status: "FAILED", message: "Internal Server Error" });

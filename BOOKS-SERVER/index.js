@@ -52,7 +52,9 @@ app.use(cors());
 
 // Routers
 const User = require("./router/user");
+const KotRouter = require("./router/kot.routers.js");
 app.use("/", User);
+app.use("/api/v1/kot", KotRouter);
 
 const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {

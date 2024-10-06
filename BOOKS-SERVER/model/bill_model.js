@@ -43,65 +43,60 @@ const billSchema = mongoose.Schema({
   mode: { type: String, required: true },
   tableNo: {
     type: Number,
-
   },
   aggregator: {
     type: String,
-
   },
   aggregatorOrderId: {
     type: String,
-
   },
   customerName: {
     type: String,
-
   },
   customerPhone: {
     type: String,
-
   },
   customerEmail: {
     type: String,
-
   },
   items: [
     new mongoose.Schema({
-      name: String,
-      quantity: Number,
-      actualPrice: Number,
-      discountPrice: Number,
-      itemId: String,
+      actualPrice : Number,
+      aggregatorId : String,
+      cuisine : String,
+      discountPrice : Number,
+      itemId : String,
+      name : String,
+      portion : String,
+      quantity : Number,
+      subCuisine : String
     }),
   ],
-  instructions: [String],
+  instructions: [
+    {
+      type : String
+    }
+  ],
   grossValue: {
     type: Number,
-
   },
   discount: {
     type: Number,
-
   },
   netValue: {
     type: Number,
-
   },
   taxes: {
     type: Number,
-
   },
   roundOff: {
     type: Number,
-
   },
   total: {
     type: Number,
-
   },
   paymentMode: {
     type: String,
-
   },
   status: String,
 });

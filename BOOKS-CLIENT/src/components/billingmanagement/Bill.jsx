@@ -110,6 +110,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   const [showInstruction, setShowIntruction] = useState(false);
 
   const handleInstructionInput = (instruction) =>
+    
     setInputInstruction(instruction);
 
   const addInstruction = () => {

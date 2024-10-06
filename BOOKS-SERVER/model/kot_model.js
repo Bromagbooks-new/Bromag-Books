@@ -3,113 +3,102 @@ const { menuSchema } = require("./menu_model");
 // console.log(menuSchema);
 
 const kotSchema = mongoose.Schema({
-  restrauntId: {type: String, required: true},
-  restrauntName: String,
-  restrauntEmail: String,
-  restrauntAddress:  [
-    {
-      building: {
-        type: String,
-        required: true,
-      },
-      city: {
-        type: String,
-        required: true,
-      },
-      pin: {
-        type: Number,
-        required: true,
-      },
-      district: {
-        type: String,
-        required: true,
-      },
-      state: {
-        type: String,
-        required: true,
-      },
-      phone: {
-        type: Number,
-        required: true,
-      },
-    },
-  ],
-  billNo: {type: String, required: true},
-  kotNo: {type: String, required: true},
-  billId: {type: String, required: true},
+  restrauntId: { 
+    type: mongoose.ObjectId, 
+    ref : "restaurant",
+    required: true 
+  },
+  billNo: { 
+    type: String, 
+
+    required: true
+  },
+  kotNo: { 
+    type: String, 
+    required: true 
+  },
+  billId: { 
+    type: mongoose.ObjectId, 
+    ref : "billingorders",
+    required: true 
+  },
   date: {
     type: Date,
     default: Date.now,
   },
-  mode: {type: String, required: true},
-  tableNo: {
-    type: Number,
-    
-  },
-  aggregator: {
-    type: String,
-    
-  },
-  aggregatorOrderId: {
-    type: String,
-    
-  },
-  customerName: {
-    type: String,
-    
-  },
-  customerPhone: {
-    type: String,
-    
-  },
-  customerEmail: {
-    type: String,
-    
-  },
+  // aggregator: {
+  //   type: String,
+
+  // },
+  // aggregatorOrderId: {
+  //   type: String,
+
+  // },
   items: [
     new mongoose.Schema({
-      name: String,
-      quantity: Number,
-      actualPrice: Number,
-      discountPrice: Number,
-      itemId: String,
+      actualPrice : Number,
+      aggregatorId : String,
+      cuisine : String,
+      discountPrice : Number,
+      itemId : String,
+      name : String,
+      portion : String,
+      quantity : Number,
+      subCuisine : String
     }),
   ],
-  instructions: [String],
-  status: {type: String, required: true},
+  instructions: [
+    {
+      type : String
+    }
+  ],
+  status: { 
+    type: String, 
+    required: true,
+    default : "HOLD",
+    enum : ["COMPLETED", "HOLD", "CANCELLED"]
+  },
 });
 
 kotSchema.statics.generateKOTNo = async function (
-  restrauntId
+  restrauntId,
+  restaurantName,
+  billNo
 ) {
-  const today = new Date();
-  const dateString = today.toISOString().split("T")[0]; // Get date in YYYY-MM-DD format
+  // console.log('restaurantName:', restaurantName)
+  // console.log('billNo:', billNo)
+  const restaurantCode = restaurantName.substring(0, 3).toUpperCase() + billNo; // RAT0035 RAT
+  // console.log('restaurantCode:', restaurantCode)
+  // const today = new Date();
+  // const dateString = today.toISOString().split("T")[0]; // Get date in YYYY-MM-DD format
+  // console.log('dateString:', dateString)
   // console.log(restaurantName);
   // const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
 
   // Find the last order for this restaurant from today
-  const lastOrder = await this.findOne({
-    restaurantId: restrauntId,
-    date: { $gte: new Date(dateString) },
+  const lastUniqueKotId = await this.findOne({
+    restrauntId: restrauntId,
+    // date: { $gte: new Date(dateString) },
     // $or: [
     //   { orderStatus: 'Success' },
     //   { orderMode: { $in: ['Swiggy', 'Zomato', 'Bromag', 'others'] } }
     // ],
   }).sort({ date: -1 });
 
-  console.log(lastOrder);
-  let count = 0;
-  if (lastOrder && lastOrder.billId) {
+  // console.log('lastUniqueKotId:', lastUniqueKotId)
+  // console.log(lastUniqueKotId);
+  let count = 1;
+  if (lastUniqueKotId && lastUniqueKotId.kotNo) {
     // Extract the count from the last bill ID
-    const lastBillId = lastOrder.billId;
-    const lastCount = lastBillId
-      ? parseInt(lastOrder.billId?.substring(3), 10)
+    const lastKotId = lastUniqueKotId.kotNo;
+    const lastCount = lastKotId?.split("#")[0]
+      ? parseInt(lastKotId?.substring(3), 10)
       : 1;
     count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999 range
   }
 
   // Format the bill ID
-  const billId = `${"KOT"}${count.toString().padStart(4, "0")}`;
+  const billId = `${"KOT"}${count.toString().padStart(4, "0")}#${restaurantCode}`;
   return billId;
 };
 

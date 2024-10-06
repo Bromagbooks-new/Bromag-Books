@@ -94,7 +94,7 @@ const UpdateOrder = () => {
     const getAllMenuItems = async () => {
         try {
             const { data } = await GetAllMenuItems();
-            // console.log('data getAllMenuItems:', data)
+            console.log('data getAllMenuItems:', data)
             setMenuItems(data?.data)
             setFilteredMenuItems(data?.data);
         } catch (error) {
@@ -119,6 +119,11 @@ const UpdateOrder = () => {
         // console.log('data:', data)
         setSelectedCusine(data?.name)
     }
+
+    const handleBillItemsWhenKotMovedToKitchen = useCallback(() => {
+        setBillItems([]);
+        getAllMenuItems();
+    },[])
 
     return (
         <div className="py-4 w-full h-full flex flex-col gap-3 font-roboto">
@@ -207,6 +212,7 @@ const UpdateOrder = () => {
                                 billItems={billItems}
                                 addItem={addItem}
                                 subtractItem={subtractItem}
+                                handleBillItemsWhenKotMovedToKitchen={handleBillItemsWhenKotMovedToKitchen}
                             />
                         </div>
                     </ScrollArea>
@@ -229,7 +235,7 @@ export const getOrderDetails = async ({ params, request }) => {
         const searchTerm = new URLSearchParams(searchParams).get("id");
         // console.log('searchTerm:', searchTerm)
         const { data } = await FetchBill({ billId : searchTerm });
-        console.log('data:', data?.bill)
+        // console.log('data:', data?.bill)
         return { billData : data?.bill }
     } catch (error) {   
         console.log('error:', error)

@@ -1,6 +1,8 @@
+
 const kot_model = require("../model/kot_model");
 const restaurant_model = require("../model/restaurant_model");
 const menu_item_model = require("../model/menu_item_model");
+const billModel = require("../model/bill_model");
 
 exports.generateKOT = async (req, res) => {
   try {
@@ -9,6 +11,7 @@ exports.generateKOT = async (req, res) => {
 
     const { billData } = req.body;
     // console.log(billData);
+
 
     const { items } = billData;
 
@@ -20,8 +23,8 @@ exports.generateKOT = async (req, res) => {
     console.log(newKOT);
     newKOT.save();
 
-    const promises =  items.map(async (item) => {
-      return await  menu_item_model.findOneAndUpdate(
+    const promises = items.map(async (item) => {
+      return await menu_item_model.findOneAndUpdate(
         {
           _id: item._id,
         },
@@ -30,8 +33,8 @@ exports.generateKOT = async (req, res) => {
     });
 
     console.log("UPDATESSS", promises);
-     const updates = await Promise.all(promises);
-     console.log("UPDATESSS", updates);
+    const updates = await Promise.all(promises);
+    console.log("UPDATESSS", updates);
 
     res.status(201).json({
       status: "KOT_GENERATED",
@@ -45,3 +48,152 @@ exports.generateKOT = async (req, res) => {
       .json({ status: "FAILED", message: "Internal Server Error" });
   }
 };
+
+exports.getKotUniqueIdController = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+    // console.log('isRestaurant:', isRestaurant)
+    const { name, street } = req.body;
+    let subStreet = street.substring(3)
+    // console.log(' req.body:',  req.body)
+    // console.log('subStreet:', subStreet)
+    // console.log('name:', name)
+
+    const generateUniqueKotId = await kot_model.generateKOTNo(isRestaurant, name, subStreet);
+
+    res.status(201).send({
+      success: true,
+      getKotUniqueId: generateUniqueKotId
+    })
+
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong! Please again letter!"
+    })
+  }
+}
+
+exports.createNewKotController = async (req, res) => {
+  try {
+    // console.log("req.body :", req.body);
+    const { billId, billItems, kotUniqueId, instructions } = req.body;
+    const isRestaurant = req.restaurant;
+    // console.log('billId, billItems, kotUniqueId, instructions:', billId, billItems, kotUniqueId, instructions)
+
+    const existingKotWithSameIdForRespectiveRestarunt = await kot_model.findOne({ restrauntId: isRestaurant, billId: billId, kotNo: kotUniqueId });
+    // console.log('existingKotWithSameIdForRespectiveRestarunt:', existingKotWithSameIdForRespectiveRestarunt)
+
+    if (existingKotWithSameIdForRespectiveRestarunt) {
+      return res.status(406).send({
+        success: false,
+        message: "Please provide unique kotId! This kotId is already existed!"
+      })
+    }
+
+    const findBill = await billModel.findOne({ restrauntId: isRestaurant, _id: billId })
+    // console.log('findBill:', findBill)
+
+    if (!findBill) {
+      return res.status(404).send({
+        success: false,
+        message: "Bill is not found!"
+      })
+    }
+
+    const newKot = await new kot_model({
+      restrauntId: isRestaurant,
+      billNo: findBill?.billNo,
+      kotNo: kotUniqueId,
+      billId: billId,
+      items: billItems,
+      instructions: instructions ? instructions : [],
+      status: "HOLD"
+    }).save();
+
+    const object = {};
+    if (newKot) {
+      for(let i = 0; i<billItems?.length; i++) {
+        if(object[billItems[i].itemId]) {
+          if(billItems[i].portion === "full") {
+            object[billItems[i].itemId] += billItems[i].quantity * 2
+          } else if(billItems[i].portion === "half") {
+            object[billItems[i].itemId] += billItems[i].quantity
+          }
+        } else {
+          if(billItems[i].portion === "full") {
+            object[billItems[i].itemId] = billItems[i].quantity * 2
+          } else if(billItems[i].portion === "half") {
+            object[billItems[i].itemId] = billItems[i].quantity
+          }
+        }
+      }
+      // const object = billItems.reduce((acc, item) => {
+      //   const multiplier = item.portion === "full" ? 2 : item.portion === "half" ? 1 : 1;
+      //   acc[item.itemId] = (acc[item.itemId] || 0) + item.quantity * multiplier;
+      //   return acc;
+      // }, {});
+    } else {
+      return res.status(500).send({
+        success: false,
+        message: "Something went wrong! Please again letter!"
+      })
+    }
+
+    // const updatePromises = Object.entries(object).map(([id, quantity], index) => {
+    //   return menu_item_model.updateOne(
+    //     {
+    //       restaruntId : isRestaurant,
+    //       _id : id
+    //     },
+    //     {
+    //       $inc : { quantity : -quantity }
+    //     }
+    //   )
+    // })
+
+    const updatePromises = Object.entries(object).map(([id, quantity], index) => {
+      return menu_item_model.updateOne(
+        {
+          restaruntId : isRestaurant,
+          _id : id
+        },
+        [
+          {
+            $set : {
+              quantity : { $max : [0, { $subtract : [ "$quantity", quantity ]}]},
+              availableStatus : { $cond : [{ $eq : [{ $subtract : [ "$quantity", quantity ]}, 0]}, false, "$availableStatus"]}
+            }
+          }
+        ]
+      )
+    })
+
+    /* 
+      Promise.all(updatePromises).then((result) => console.log("result :", result)).catch((error) => console.log("error :", error))
+    */
+    const updateStatus = await Promise.all(updatePromises);
+    console.log('updateStatus:', updateStatus);
+
+    if(!updateStatus[0]?.acknowledged) {
+      return res.status(500).send({
+        success: false,
+        message: "Something went wrong! Please again letter!"
+      })
+    }
+
+    
+
+    return res.status(201).send({
+      success: true,
+      newKot: newKot,
+      message: "Kot has been sent to kitchen! Thank you for order!",
+      updateStatus : updateStatus
+    })
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Something went wrong! Please again letter!"
+    })
+  }
+}

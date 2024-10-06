@@ -77,7 +77,8 @@ module.exports = {
         'color-2321A8': '#2321A8',
         'color-FF9068': '#FF9068',
         'color-2B77AD': '#2B77AD',
-        'color-13BF2F': '#13BF2F'
+        'color-13BF2F': '#13BF2F',
+        'color-FF4141': '#FF4141'
       },
       fontWeight: {
         'font-thin': 100,

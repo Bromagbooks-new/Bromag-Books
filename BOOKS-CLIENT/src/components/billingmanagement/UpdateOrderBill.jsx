@@ -14,21 +14,22 @@ import { Button } from "../ui/button";
 import { useState, useMemo, memo, useCallback, useEffect } from "react";
 import { Input } from "../ui/input";
 import { DeleteBill, GenerateKOT, UpdateBill } from "@/config/routeApi/owner";
-import { CreateNewKotAPI } from "@/config/routeApi/Owner/kot.owner.api";
-import { GetKotUniqueIdAPI } from "@/config/routeApi/Owner/kot.owner.api";
+import { CreateNewKotAPI, GetKotUniqueIdAPI } from "@/config/routeApi/Owner/kot.owner.api";
+import { UpdateBillWithCompleteStatusAPI, UpdateBillWithHoldStatusAPI, DeleteOrderBillAPI } from "@/config/routeApi/Owner/billing.owner.api";
 import { toastError, toastSuccess } from "@/helpers/helpers";
 import { redirect, useNavigate } from "react-router-dom";
 import { Dialog, DialogTrigger } from "../ui/dialog";
 // import ViewBill from "./ViewBill";
 // import DownloadBill from "./DownloadBill";
 import ViewKOT from "./ViewKOT";
+import ViewBillByMe from "./ViewBillByMe";
 
 const UpdateOrderBill = memo(({ bill, billItems, addItem, subtractItem, handleBillItemsWhenKotMovedToKitchen }) => {
     // console.log('billItems:', billItems)
     // console.log('bill:', bill)
     const [instructions, setInstructions] = useState([]);
     // console.log('instructions:', instructions)
-    const [printBillStatus, setPrintBillStatus] = useState(false);
+    const [printBillStatus, setPrintBillStatus] = useState(!!(bill?.items?.length));
     const navigate = useNavigate();
     const [paymentMode, setPaymentMode] = useState("cash");
     // console.log('paymentMode:', paymentMode)
@@ -38,7 +39,7 @@ const UpdateOrderBill = memo(({ bill, billItems, addItem, subtractItem, handleBi
     // console.log('isDialogOpen:', isDialogOpen)
     const [kotUniqueId, setKotUniqueId] = useState("")
     // console.log('isDialogOpen:', isDialogOpen)
-    const address = bill.restrauntAddress[0];
+    const address = bill?.restrauntAddress[0];
     const printAddress = `${address.building}, ${address.district}, ${address.city}, ${address.state}`;
 
     const valueCalculator = useMemo(() => {
@@ -113,7 +114,8 @@ const UpdateOrderBill = memo(({ bill, billItems, addItem, subtractItem, handleBi
                 billId: bill?._id,
                 billItems: billItems,
                 kotUniqueId: kotUniqueId,
-                instructions: instructions
+                instructions: instructions,
+                paymentMode: paymentMode
             })
             // console.log('data:', data)
             if (data?.success) {
@@ -122,18 +124,70 @@ const UpdateOrderBill = memo(({ bill, billItems, addItem, subtractItem, handleBi
                 getKotUniqueIdFn();
                 setPrintBillStatus(true);
                 setIsDialogOpen(false);
+                setInstructions([]);
             }
         } catch (error) {
             console.error("error in handleCreateNewKotAPI :", error);
 
         }
-    },[billItems, kotUniqueId, instructions])
+    }, [billItems, kotUniqueId, instructions])
+
+    const handlePrintBill = async () => {
+        try {
+            const { data } = await UpdateBillWithCompleteStatusAPI({
+                billId: bill?._id,
+                status: "COMPLETED"
+            })
+            // console.log('data:', data)
+            if (data?.success) {
+                toastSuccess(data?.message);
+                setTimeout(() => {
+                    navigate("/dashboard/billing-management")
+                }, 2000)
+            }
+        } catch (error) {
+            console.error("error in handlePrintBill :", error);
+        }
+    }
+
+    const handleHoldBill = async () => {
+        try {
+            const { data } = await UpdateBillWithHoldStatusAPI({
+                billId: bill?._id,
+                status: "HOLD"
+            })
+            console.log('data:', data)
+            if (data?.success) {
+                toastSuccess(data?.message);
+                setTimeout(() => {
+                    navigate("/dashboard/billing-management")
+                }, 2000)
+            }
+        } catch (error) {
+            console.error("error in handlePrintBill :", error);
+        }
+    }
+
+    const handleDeleteBill = async () => {
+        try {
+            const { data } = await DeleteOrderBillAPI(bill?._id)
+            console.log('data:', data)
+            if (data?.success) {
+                toastSuccess(data?.message);
+                setTimeout(() => {
+                    navigate("/dashboard/billing-management")
+                }, 2000)
+            }
+        } catch (error) {
+            console.error("error in handlePrintBill :", error);
+        }
+    }
 
     return (
         <div className="rounded-2xl w-full px-0 py-4 flex flex-col justify-between gap-3 bg-white shadow">
             <div className="w-full flex flex-col gap-6">
                 <div className="flex flex-col justify-center items-center">
-                    <p className="text-xl font-semibold">{bill.restrauntName}</p>
+                    <p className="text-xl font-semibold">{bill?.restrauntName}</p>
                     <p className="text-xs text-gray-500 w-1/2 text-center">
                         {printAddress}
                     </p>
@@ -147,9 +201,9 @@ const UpdateOrderBill = memo(({ bill, billItems, addItem, subtractItem, handleBi
                             <p className="">Bill No</p>
                         </div>
                         <div className="flex flex-col">
-                            <p className="">: {new Date(bill.date).toLocaleDateString()}</p>
-                            <p className="">: {new Date(bill.date).toLocaleTimeString()}</p>
-                            <p className="">: {bill.billNo}</p>
+                            <p className="">: {new Date(bill?.date).toLocaleDateString()}</p>
+                            <p className="">: {new Date(bill?.date).toLocaleTimeString()}</p>
+                            <p className="">: {bill?.billNo}</p>
                         </div>
                     </div>
                     <p className="text-2xl text-center font-semibold">INVOICE</p>
@@ -327,9 +381,9 @@ const UpdateOrderBill = memo(({ bill, billItems, addItem, subtractItem, handleBi
                             <p className="">Order Mode</p>
                         </div>
                         <div className="flex flex-col">
-                            <p className="">: {bill.customerName}</p>
-                            <p className="">: {bill.customerPhone}</p>
-                            <p className="">: {bill.mode}</p>
+                            <p className="">: {bill?.customerName}</p>
+                            <p className="">: {bill?.customerPhone}</p>
+                            <p className="">: {bill?.mode}</p>
                         </div>
                     </div>
                 )}
@@ -358,12 +412,23 @@ const UpdateOrderBill = memo(({ bill, billItems, addItem, subtractItem, handleBi
 
             <div className="flex flex-col gap-3">
                 <div className="flex gap-2 justify-center text-sm border-dashed border-b pb-2 border-gray-500 p-2">
-                    <Button
-                        onClick={"handleCancelBill"}
-                        className="text-center px-2 h-10 w-[8rem] flex text-[12px] font-normal justify-center items-center rounded-3xl border-2 bg-color-FF4141 text-white"
-                    >
-                        CANCEL BILL
-                    </Button>
+                    {
+                        bill?.items?.length > 0 ? (
+                            <Button
+                                onClick={"handleCancelBill"}
+                                className="text-center px-2 h-10 w-[8rem] flex text-[12px] font-normal justify-center items-center rounded-3xl border-2 bg-color-FF4141 text-white"
+                            >
+                                CANCEL BILL
+                            </Button>
+                        ) : (
+                            <Button
+                                onClick={handleDeleteBill}
+                                className="text-center px-2 h-10 w-[8rem] flex text-[12px] font-normal justify-center items-center rounded-3xl border-2 bg-color-FF4141 text-white"
+                            >
+                                DELETE BILL
+                            </Button>
+                        )
+                    }
                     <Dialog open={isDialogOpen}>
                         <DialogTrigger>
                             <Button
@@ -385,17 +450,32 @@ const UpdateOrderBill = memo(({ bill, billItems, addItem, subtractItem, handleBi
                         />
                     </Dialog>
                     <Button
-                        onClick={"handleHoldBill"}
-                        className="text-center px-2 h-10 w-[7rem] text-[12px] flex justify-center items-center rounded-3xl border-2 bg-white text-color-1F303C"
+                        disabled={!printBillStatus}
+                        onClick={handleHoldBill}
+                        className="text-center px-2 h-10 w-[7rem] text-[12px] font-normal flex justify-center items-center rounded-3xl border-2 bg-color-FF4141 text-white"
                     >
                         HOLD ORDER
                     </Button>
                 </div>
-                <div className="flex justify-center">
+                <div className="border-0 w-full gap-3 flex justify-center">
+                    <Dialog>
+                        <DialogTrigger>
+                            <Button
+                                disabled={!printBillStatus}
+                                className="bg-[#486072] rounded-3xl w-[12rem]  flex justify-center items-center text-white py-1 h-8 "
+                            >
+                                View BILL
+                            </Button>
+                        </DialogTrigger>
+                        <ViewBillByMe
+
+                            bill={bill}
+                        />
+                    </Dialog>
                     <Button
                         disabled={!printBillStatus}
-                        onClick={"handlePrintBill"}
-                        className="bg-[#486072] rounded-3xl w-5/6  flex justify-center items-center text-white py-1 h-8 "
+                        onClick={handlePrintBill}
+                        className="bg-[#486072] rounded-3xl w-[12rem]  flex justify-center items-center text-white py-1 h-8 "
                     >
                         PRINT BILL
                     </Button>

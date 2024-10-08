@@ -42,6 +42,14 @@ const ItemCard = memo(({
     updateMenuItemAvailableStatus(itemId, !isAvailable);
   };
 
+  const handleDeleteItem = async () => {
+    try {
+
+    } catch(error) {
+      
+    }
+  }
+
   return (
     <div className={`flex gap-1 items-center w-[24rem] h-[12rem] rounded-xl shadow bg-white p-2 ${!availableStatus ? "opacity-50" : ""}`}>
       <div className="w-36 rounded-xl h-full">
@@ -82,7 +90,7 @@ const ItemCard = memo(({
           <Button variant="icon" className="px-3 h-8 bg-landing-secondary hover:bg-landing-primary">
             <PencilLine className="w-4 h-4" />
           </Button>
-          <Button variant="icon" className="px-3 h-8 bg-red-500 hover:bg-landing-primary">
+          <Button onClick={handleDeleteItem} variant="icon" className="px-3 h-8 bg-red-500 hover:bg-landing-primary">
             <Trash className="w-4 h-4" />
           </Button>
         </div>

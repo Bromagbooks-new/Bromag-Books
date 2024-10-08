@@ -101,7 +101,7 @@ exports.fetchBill = async (req, res) => {
 
     const billId = req.body.billId;
 
-    const bill = await bill_model.findOne({ _id : billId, restrauntId : isRestaurant });
+    const bill = await bill_model.findOne({ _id: billId, restrauntId: isRestaurant });
 
     res.status(200).json({
       status: "BILL_FETCHED",
@@ -110,7 +110,7 @@ exports.fetchBill = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    
+
     res
       .status(500)
       .json({ status: "FAILED", message: "Internal Server Error" });
@@ -127,8 +127,8 @@ exports.fetchHoldBills = async (req, res) => {
     const bills = await bill_model.find({
       restrauntId: isRestaurant,
       status: "HOLD",
-      mode : type
-    }).sort({date : -1});
+      mode: type
+    }).sort({ date: -1 });
 
     res.status(200).json({
       status: "BILL_FETCHED",
@@ -145,7 +145,7 @@ exports.fetchHoldBills = async (req, res) => {
 exports.fetchCompletedBills = async (req, res) => {
   try {
     const isRestaurant = req.restaurant;
-    const { type }  = req.query
+    const { type } = req.query
     // console.log(isRestaurant);
     // console.log('req.body:', req.query)
 
@@ -156,7 +156,7 @@ exports.fetchCompletedBills = async (req, res) => {
       .find({
         restrauntId: isRestaurant,
         status: "COMPLETED",
-        mode : type
+        mode: type
       })
       .sort({ date: -1 }).limit(50);
 
@@ -278,17 +278,17 @@ exports.getTotalBillsEitherForTakeAwayOrOnlineOrdersController = async (req, res
     const limit = 10;
     const skip = (page - 1) * limit;
 
-    if(isRestaurant) {
-      const totalOrdersBillData = await bill_model.find({ mode : type, restrauntId : isRestaurant }).sort({ date : -1 }).skip(skip).limit(limit);
+    if (isRestaurant) {
+      const totalOrdersBillData = await bill_model.find({ mode: type, restrauntId: isRestaurant }).sort({ date: -1 }).skip(skip).limit(limit);
 
       res.status(200).send({
-        success : true,
+        success: true,
         totalOrdersBillData
       });
     } else {
-      return res.status(401).json({ success : false, message : "session expired please do login again!" })
+      return res.status(401).json({ success: false, message: "session expired please do login again!" })
     }
-  } catch(error) {
+  } catch (error) {
     console.error("error in getTotalBillsEitherForTakeAwayOrOnlineOrdersController :", error.message);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
@@ -561,43 +561,43 @@ exports.getHoldAndAvailableTableDataController = async (req, res) => {
     const pipeline = [
       {
         $match: {
-          restaurant : new mongoose.Types.ObjectId(isRestaurant)
+          restaurant: new mongoose.Types.ObjectId(isRestaurant)
         }
       },
       {
         $project: {
-          _id : 1,
-          tableNumber : 1,
-          numberOfSeats : 1,
-        } 
+          _id: 1,
+          tableNumber: 1,
+          numberOfSeats: 1,
+        }
       },
       {
         $lookup: {
-          from : "billingorders",
-          let : {tableNum : "$tableNumber"},
-          pipeline : [
+          from: "billingorders",
+          let: { tableNum: "$tableNumber" },
+          pipeline: [
             {
-              $match : {
-                $expr : {
-                  $and : [
-                    {$eq : ["$tableNo", "$$tableNum"]},
-                    {$eq : ["$status", "HOLD"]}
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$tableNo", "$$tableNum"] },
+                    { $eq: ["$status", "HOLD"] }
                   ]
                 }
               }
             },
             {
-              $project : {
-                _id : 1,
-                customerName : 1,
-                tableNo : 1,
-                status : 1,
-                date : 1,
-                mode : 1
+              $project: {
+                _id: 1,
+                customerName: 1,
+                tableNo: 1,
+                status: 1,
+                date: 1,
+                mode: 1
               }
             }
           ],
-          as : "dataWithHoldTable"
+          as: "dataWithHoldTable"
         }
       },
       {
@@ -609,16 +609,16 @@ exports.getHoldAndAvailableTableDataController = async (req, res) => {
       {
         $group: {
           _id: "$numberOfSeats",
-          holdAndAvailableTableData : {
-            $push : {
-              tableId : "$_id",
-              tableNumber : "$tableNumber",
-              numberOfSeats : "$numberOfSeats",
-              billId : "$dataWithHoldTable._id",
-              status : "$dataWithHoldTable.status",
-              date : "$dataWithHoldTable.date",
-              customerName : "$dataWithHoldTable.customerName",
-              mode : "$dataWithHoldTable.mode",
+          holdAndAvailableTableData: {
+            $push: {
+              tableId: "$_id",
+              tableNumber: "$tableNumber",
+              numberOfSeats: "$numberOfSeats",
+              billId: "$dataWithHoldTable._id",
+              status: "$dataWithHoldTable.status",
+              date: "$dataWithHoldTable.date",
+              customerName: "$dataWithHoldTable.customerName",
+              mode: "$dataWithHoldTable.mode",
             }
           }
         }
@@ -633,7 +633,7 @@ exports.getHoldAndAvailableTableDataController = async (req, res) => {
     const onHoldAndAvailableTableData = await restaurantTableModel.aggregate(pipeline);
 
     res.status(200).send({
-      success : true,
+      success: true,
       onHoldAndAvailableTableData
     })
 
@@ -651,7 +651,7 @@ exports.getHoldAndAvailableTableDataController = async (req, res) => {
   {
     $match: {
      restrauntId : "66ebea9e2e76f642e528ec1d",
-    	mode : "takeaway"
+      mode : "takeaway"
     }
   },
   {
@@ -669,7 +669,7 @@ exports.getHoldAndAvailableTableDataController = async (req, res) => {
           billNo : "$billNo",
           customerName : "$customerName",
           customerPhone : "$customerPhone",
-         	mode : "$mode",
+            mode : "$mode",
           items : "$items",
           date : "$date",
           restrauntAddress : "$restrauntAddress",
@@ -695,7 +695,7 @@ exports.getHoldAndAvailableTableDataController = async (req, res) => {
   {
     $match: {
      restrauntId : "66ebea9e2e76f642e528ec1d",
-    	mode : "takeaway"
+      mode : "takeaway"
     }
   },
   {
@@ -714,7 +714,7 @@ exports.getHoldAndAvailableTableDataController = async (req, res) => {
           billNo : "$billNo",
           customerName : "$customerName",
           customerPhone : "$customerPhone",
-         	mode : "$mode",
+            mode : "$mode",
           items : "$items",
           date : "$date",
           restrauntAddress : "$restrauntAddress",
@@ -754,7 +754,7 @@ exports.getHoldAndAvailableTableDataController = async (req, res) => {
 //           date: -1
 //         }
 //       },
-      
+
 //       {
 //         $group: {
 //           _id: "$status",
@@ -839,14 +839,14 @@ exports.getTotalAndHoldOrdersCountEitherForTakeAwayOrForOnlineController = async
     const pipeline = [
       {
         $match: {
-         restrauntId : isRestaurant,
-         mode : type
+          restrauntId: isRestaurant,
+          mode: type
         }
-      }, 
+      },
       {
         $group: {
           _id: "$status",
-          totalOrders : { $sum : 1 },
+          totalOrders: { $sum: 1 },
         }
       }
     ]
@@ -854,20 +854,20 @@ exports.getTotalAndHoldOrdersCountEitherForTakeAwayOrForOnlineController = async
     const ordersBillDataEitherForTakeAwayOrForOnline = await bill_model.aggregate(pipeline);
 
     const result = {
-      success : true,
-      totalOrdersCount : 0,
-      totalholdOrdersCount : 0,
+      success: true,
+      totalOrdersCount: 0,
+      totalholdOrdersCount: 0,
     }
-    if(ordersBillDataEitherForTakeAwayOrForOnline.length > 0) {
+    if (ordersBillDataEitherForTakeAwayOrForOnline.length > 0) {
       const holdOrdersData = ordersBillDataEitherForTakeAwayOrForOnline.find(order => order._id === "HOLD");
       const completedOrdersData = ordersBillDataEitherForTakeAwayOrForOnline.find(order => order._id === "COMPLETED");
 
       result.totalOrdersCount = (holdOrdersData?.totalOrders || 0) + (completedOrdersData?.totalOrders || 0),
-      result.totalholdOrdersCount = holdOrdersData?.totalOrders || 0;
-    } 
+        result.totalholdOrdersCount = holdOrdersData?.totalOrders || 0;
+    }
 
     res.status(200).send(result);
-  } catch(error) {
+  } catch (error) {
     res.status(500).send({
       success: false,
       message: "Internal Server Issue",
@@ -1188,6 +1188,7 @@ exports.getCardAnalytics = async (req, res) => {
     const isRestaurant = req.restaurant;
 
     const { date } = req.body;
+    // console.log('date now:', date)
 
     const dailyBreakdown = await Bill.getBillBreakdownForDay(
       isRestaurant,
@@ -1254,5 +1255,154 @@ exports.getTableStatusData = async (req, res) => {
 
   } catch (error) {
 
+  }
+}
+
+exports.updateBillWithCompleteStatusController = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+    const { billId, status } = req.body;
+    // console.log('billId, status:', billId, status)
+
+    const currentBill = await bill_model.findOne({ restrauntId: isRestaurant, _id: billId });
+    if (!currentBill) {
+      return res.status(404).send({
+        success: false,
+        message: "Bill is not found!"
+      })
+    }
+
+    function valueCalculator(billItems, paymentMode) {
+      const valueObject = billItems?.reduce((value, item) => {
+        value.grossValueTotal += item.quantity * item.actualPrice;
+        value.discountTotal += item.discountPrice * item.quantity;
+        return value;
+      }, {
+        grossValueTotal: 0,
+        discountTotal: 0,
+        netValue: 0,
+        tax: 0,
+        totalPayValValue: 0,
+        roundOff: 0
+      })
+      valueObject.netValue = valueObject.grossValueTotal - valueObject.discountTotal
+      let taxRate = 5;
+      valueObject.tax = (taxRate / 100) * valueObject.netValue;
+      valueObject.totalPayValValue = valueObject.netValue + valueObject.tax
+      if (paymentMode === "cash") {
+        valueObject.roundOff = valueObject.totalPayValValue - Math.round(valueObject.totalPayValValue);
+        valueObject.roundOff = valueObject.roundOff * -1
+        // console.log('valueObject.roundOff:', valueObject.roundOff)
+        valueObject.totalPayValValue = Math.round(valueObject.totalPayValValue);
+        // console.log('valueObject.totalPayValValue:', valueObject.totalPayValValue)
+      }
+      return valueObject;
+    }
+    const calculatorResult = valueCalculator(currentBill?.items, currentBill?.paymentMode)
+    console.log('calculatorResult:', calculatorResult)
+
+    currentBill.grossValue = calculatorResult?.grossValueTotal || 0;
+    currentBill.discount = calculatorResult?.discountTotal || 0;
+    currentBill.netValue = calculatorResult?.netValue || 0;
+    currentBill.taxes = calculatorResult?.tax || 0;
+    currentBill.roundOff = calculatorResult?.roundOff || 0;
+    currentBill.total = calculatorResult?.totalPayValValue || 0;
+    currentBill.status = status;
+    
+    await currentBill.save();
+
+    return res.status(200).send({
+      success: true,
+      message : "Payment has been done for this order! Thank you!"
+    })
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Something went wrong! Please again letter!",
+      error: error.message
+    })
+  }
+}
+
+exports.updateBillWithHoldStatusController = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+    const { billId, status } = req.body;
+    // console.log('billId, status:', billId, status)
+
+    const currentBill = await bill_model.findOne({ restrauntId: isRestaurant, _id: billId });
+    if (!currentBill) {
+      return res.status(404).send({
+        success: false,
+        message: "Bill is not found!"
+      })
+    }
+
+    currentBill.status = status;
+    
+    await currentBill.save();
+
+    return res.status(200).send({
+      success: true,
+      message : "Order has been puted on hold!"
+    })
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Something went wrong! Please again letter!",
+      error: error.message
+    })
+  }
+}
+
+exports.deleteOrderBill = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+    const { billId } = req.params;
+
+    const deleteBill = await bill_model.findOneAndDelete({ restrauntId: isRestaurant, _id: billId })
+    if (!deleteBill) {
+      return res.status(404).send({
+        success: false,
+        message: "Bill not found!"
+      })
+    }
+
+    return res.status(200).send({
+      success: true,
+      message : "Order has been deleted!"
+    })
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Something went wrong! Please again letter!",
+      error: error.message
+    })
+  }
+}
+
+exports.cancelOrderBill = async (req, res) => {
+  try {
+    const isRestaurant = req.restaurant;
+    const { billId } = req.params;
+
+    const deleteBill = await bill_model.findOneAndDelete({ restrauntId: isRestaurant, _id: billId })
+    if (!deleteBill) {
+      return res.status(404).send({
+        success: false,
+        message: "Bill not found!"
+      })
+    }
+
+    return res.status(200).send({
+      success: true,
+      message : "Order has been deleted!"
+    })
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: "Something went wrong! Please again letter!",
+      error: error.message
+    })
   }
 }

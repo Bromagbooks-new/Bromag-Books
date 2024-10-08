@@ -49,7 +49,6 @@ import {
   Menu,
   AddNewMenuItem,
   UpdateMenuItem,
-  OrderManagement,
   UpdateEmployeeAccess,
   AddTable,
   UpdateTable,
@@ -62,6 +61,12 @@ import {
   UpdateTableInTableManagement,
   OrderOnHoldForTakeAway
 } from "./pages/admindashboardpages";
+
+import {
+  OrderManagement
+} from "./pages/admindashboardpages/ordermanagement/exports"
+
+// import OrderManagement from "./pages/admindashboardpages/ordermanagement/OrderManagement"
 
 import {
   PosCustomers,
@@ -147,6 +152,8 @@ import TotalOrdersForTakeAway from "./pages/admindashboardpages/billingmanagemen
 import OrderOnHoldForOnline, { fetchHoldBillsForOnlineFn } from "./pages/admindashboardpages/billingmanagement/OrderOnHoldForOnline";
 import TotalOrdersForOnline from "./pages/admindashboardpages/billingmanagement/TotalOrdersForOnline";
 import UpdateOrder, { getOrderDetails } from "./pages/admindashboardpages/billingmanagement/UpdateOrder";
+import NewOrderCharts, { newOrderChartsLoader } from "./components/ordermanagement/NewOrderCharts";
+// import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
   {
@@ -372,6 +379,17 @@ const router = createBrowserRouter([
           //     },
           //   ],
           // },
+          {
+            path : "order-management",
+            element : <OrderManagement />,
+            children : [
+              {
+                index : true,
+                element : <NewOrderCharts />,
+                loader : newOrderChartsLoader
+              }
+            ]
+          },
           // {
           //   path: "vendor-management",
           //   element: <Outlet />,
@@ -540,10 +558,6 @@ const router = createBrowserRouter([
               },
             ],
           },
-          // {
-          //   path: "order-management",
-          //   element: <OrderManagement />,
-          // },
           // {
           //   path: "captain-management",
           //   element: <Outlet />,

@@ -39,7 +39,7 @@ const chartConfig = {
 };
 
 export function Chart({data}) {
-  console.log('data:', data)
+  // console.log('data:', data)
   let ordersData = [
       { mode: "Take Away", percent: 60, fill: "#3EE54F" },
     { mode: "Online", percent: 30, fill: "#FADF53" },

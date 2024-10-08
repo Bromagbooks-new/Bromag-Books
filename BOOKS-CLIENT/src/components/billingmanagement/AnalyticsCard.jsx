@@ -23,7 +23,9 @@ const AnalyticsCard = ({
 }) => {
   const [selectedFilter, setSelectedFilter] = useState("today");
 
+  // console.log('breakdown:', breakdown)
   let selectedBreakdown = breakdown.dailyBreakdown;
+  // console.log('selectedBreakdown:', selectedBreakdown)
 
   if(selectedFilter === 'today') {
     selectedBreakdown = breakdown.dailyBreakdown;

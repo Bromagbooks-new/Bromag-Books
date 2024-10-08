@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const path = require('path')
 const cron = require('./utils/cron.js')
+const globalLevelErrorHandlerMiddleware = require("./errors/globalErrorHandlerMiddleware.js");
 // const rateLimit = require("express-rate-limit");
 
 dotenv.config();
@@ -52,9 +53,14 @@ app.use(cors());
 
 // Routers
 const User = require("./router/user");
-const KotRouter = require("./router/kot.routers.js");
+const KotManagementRouterRouter = require("./router/kot.routers.js");
+const BillingManagementRouterRouter = require("./router/billing.routers.js");
+const OrderManagementRouter = require("./router/order.management.routers.js");
 app.use("/", User);
-app.use("/api/v1/kot", KotRouter);
+app.use("/api/v1/kot", KotManagementRouterRouter);
+app.use("/api/v1/billing", BillingManagementRouterRouter);
+app.use("/api/v1/order", OrderManagementRouter);
+app.use(globalLevelErrorHandlerMiddleware);
 
 const PORT = process.env.PORT || 7000;
 app.listen(PORT, () => {

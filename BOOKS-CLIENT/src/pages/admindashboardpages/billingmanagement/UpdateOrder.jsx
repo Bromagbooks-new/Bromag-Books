@@ -6,7 +6,7 @@ import { FetchBill, GetAllCuisines, GetAllMenuItems, MenuCategory, MenuData } fr
 import { cn } from "@/lib/utils";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState, useCallback } from "react";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link, useLoaderData, useLocation } from "react-router-dom";
 import { toastError, toastSuccess } from "@/helpers/helpers";
 import { formatImageUrl } from "@/helpers/helpers";
 import nonVeg from "@/assets/images/billing-management/non-veg.svg";
@@ -17,8 +17,10 @@ import ItemCardForUpdateOrder from "@/components/billingmanagement/ItemCardForUp
 
 const UpdateOrder = () => {
     const [searchText, setSearchText] = useState("");
-    const { billData = [] } = useLoaderData();
-    // console.log('billData:', billData)
+    const { preFetchBillData = [] } = useLoaderData();
+    console.log('preFetchBillData:', preFetchBillData)
+    const [billData, setBillData] = useState(preFetchBillData);
+    console.log('billData:', billData)
     const [categories, setCategories] = useState([]);
     const [selectedCusine, setSelectedCusine] = useState("All");
     // console.log('selectedCusine:', selectedCusine)
@@ -27,6 +29,20 @@ const UpdateOrder = () => {
     const [filteredMenuItems, setFilteredMenuItems] = useState([]);
     // console.log('filteredMenuItems:', filteredMenuItems)
     const [billItems, setBillItems] = useState([]);
+    const locations = useLocation();
+    const queryParams = new URLSearchParams(locations.search);
+    const currentBillId = queryParams.get("id");
+
+    const getCurrentOrderBillDetails = async () => {
+        try {
+            const { data } = await FetchBill({ billId : currentBillId });
+            console.log('data in getCurrentOrderBillDetails:', data)
+            setBillData(data?.bill);
+        } catch (error) {   
+            console.log('error:', error)
+            toastError(error?.response?.data?.message)
+        }
+    }
 
     // console.log('billItems:', billItems)
     const addItem = useCallback((data) => {
@@ -123,6 +139,7 @@ const UpdateOrder = () => {
     const handleBillItemsWhenKotMovedToKitchen = useCallback(() => {
         setBillItems([]);
         getAllMenuItems();
+        getCurrentOrderBillDetails();
     },[])
 
     return (
@@ -235,8 +252,8 @@ export const getOrderDetails = async ({ params, request }) => {
         const searchTerm = new URLSearchParams(searchParams).get("id");
         // console.log('searchTerm:', searchTerm)
         const { data } = await FetchBill({ billId : searchTerm });
-        // console.log('data:', data?.bill)
-        return { billData : data?.bill }
+        console.log('data:', data?.bill)
+        return { preFetchBillData : data?.bill }
     } catch (error) {   
         console.log('error:', error)
         toastError(error?.response?.data?.message)

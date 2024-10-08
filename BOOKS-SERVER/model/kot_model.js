@@ -23,8 +23,7 @@ const kotSchema = mongoose.Schema({
     required: true 
   },
   date: {
-    type: Date,
-    default: Date.now,
+    type: Date
   },
   // aggregator: {
   //   type: String,
@@ -52,6 +51,9 @@ const kotSchema = mongoose.Schema({
       type : String
     }
   ],
+  paymentMode : {
+    type : String
+  },
   status: { 
     type: String, 
     required: true,

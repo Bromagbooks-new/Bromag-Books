@@ -12,7 +12,7 @@ const ViewKOT = memo(({ bill, billItems, handleCreateNewKotAPI, instructions, pa
   // console.log('Rendering ViewKOT', { bill, billItems, instructions, paymentMode });
   const { toPDF, targetRef } = usePDF({ filename: "kot.pdf" });
 
-  const address = bill.restrauntAddress[0];
+  const address = bill?.restrauntAddress[0];
   // console.log(address);
   const printAddress = `${address.building}, ${address.district}, ${address.city}, ${address.state}`;
   return (
@@ -25,7 +25,7 @@ const ViewKOT = memo(({ bill, billItems, handleCreateNewKotAPI, instructions, pa
       <div ref={targetRef} className="w-full px-0 py-4 flex flex-col justify-between gap-3">
         <div className="w-full flex flex-col gap-6">
           <div className="flex flex-col justify-center items-center">
-            <p className="text-xl font-semibold">{bill.restrauntName}</p>
+            <p className="text-xl font-semibold">{bill?.restrauntName}</p>
             <p className="text-xs text-gray-500 w-1/2 text-center">
               {printAddress}
             </p>
@@ -43,8 +43,8 @@ const ViewKOT = memo(({ bill, billItems, handleCreateNewKotAPI, instructions, pa
                 {/* <p className="">Bill No</p> */}
               </div>
               <div className="flex flex-col">
-                <p className="">: {new Date(bill.date).toLocaleDateString()}</p>
-                <p className="">: {new Date(bill.date).toLocaleTimeString()}</p>
+                <p className="">: {new Date(bill?.date).toLocaleDateString()}</p>
+                <p className="">: {new Date(bill?.date).toLocaleTimeString()}</p>
                 {/* <p className="">: {bill.billNo}</p> */}
               </div>
             </div>
@@ -139,7 +139,7 @@ const ViewKOT = memo(({ bill, billItems, handleCreateNewKotAPI, instructions, pa
         </div>
 
         <div className="flex items-end gap-10 border-gray-500 pb-2 border-dashed border-b text-sm px-3 justify-between">
-          {bill.mode === "online" ? (
+          {bill?.mode === "online" ? (
             <div className="flex gap-2 ">
               <div className="flex flex-col">
                 <p className="">Order Mode</p>
@@ -147,9 +147,9 @@ const ViewKOT = memo(({ bill, billItems, handleCreateNewKotAPI, instructions, pa
                 <p className="">Order Id</p>
               </div>
               <div className="flex flex-col">
-                <p className="">: {bill.mode}</p>
-                <p className="">: {bill.aggregator}</p>
-                <p className="">: {bill.aggregatorOrderId}</p>
+                <p className="">: {bill?.mode}</p>
+                <p className="">: {bill?.aggregator}</p>
+                <p className="">: {bill?.aggregatorOrderId}</p>
               </div>
             </div>
           ) : (
@@ -160,9 +160,9 @@ const ViewKOT = memo(({ bill, billItems, handleCreateNewKotAPI, instructions, pa
                 <p className="">Order Mode</p>
               </div>
               <div className="flex flex-col">
-                <p className="">: {bill.customerName}</p>
-                <p className="">: {bill.customerPhone}</p>
-                <p className="capitalize">: {bill.mode}</p>
+                <p className="">: {bill?.customerName}</p>
+                <p className="">: {bill?.customerPhone}</p>
+                <p className="capitalize">: {bill?.mode}</p>
               </div>
             </div>
           )}

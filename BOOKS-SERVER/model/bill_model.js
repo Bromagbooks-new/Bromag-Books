@@ -98,7 +98,12 @@ const billSchema = mongoose.Schema({
   paymentMode: {
     type: String,
   },
-  status: String,
+  status: { 
+    type: String, 
+    required: true,
+    default : "HOLD",
+    enum : ["COMPLETED", "HOLD", "CANCELLED"]
+  },
 });
 
 billSchema.index({ restrauntId: 1 })
@@ -297,6 +302,7 @@ billSchema.statics.getTotalDineinAmountForDay = async function (restaurantId, da
 
 // Daily breakdown
 billSchema.statics.getBillBreakdownForDay = async function (restaurantId, date) {
+  // console.log('date:', date)
   const startOfDay = new Date(date);
   startOfDay.setHours(0, 0, 0, 0);
 
@@ -340,15 +346,19 @@ billSchema.statics.getBillBreakdownForDay = async function (restaurantId, date) 
 };
 
 // Weekly breakdown
-billSchema.statics.getBillBreakdownForWeek = async function (restaurantId, date) {
-  const startOfWeek = new Date(date);
+billSchema.statics.getBillBreakdownForWeek = async function (restaurantId, todayDate, oneWeekAgoDate) {
+  const startOfWeek = new Date(oneWeekAgoDate)
+  console.log('startOfWeek:', startOfWeek)
   startOfWeek.setHours(0, 0, 0, 0);
-  startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+  // startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+  console.log('startOfWeek:', startOfWeek)
 
-  const endOfWeek = new Date(startOfWeek);
-  endOfWeek.setDate(endOfWeek.getDate() + 6);
+  const endOfWeek = new Date(todayDate);
+  console.log('endOfWeek:', endOfWeek)
+  // endOfWeek.setDate(endOfWeek.getDate() + 6);
   endOfWeek.setHours(23, 59, 59, 999);
-
+  console.log('endOfWeek:', endOfWeek)
+  
   const result = await this.aggregate([
     {
       $match: {

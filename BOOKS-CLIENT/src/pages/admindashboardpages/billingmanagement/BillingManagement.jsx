@@ -16,7 +16,7 @@ import { GetCardAnalytics } from "@/config/routeApi/owner";
 
 const BillingManagement = () => {
  const breakdown = useLoaderData();
-//  console.log("breakdown :", breakdown);
+//  console.log("breakdown here :", breakdown);
 
   return (
     <div className="w-full h-full border py-4 flex flex-col gap-4">
@@ -69,7 +69,7 @@ export default BillingManagement;
 export const billingManagementLoader = async ()=> {
   try {
     const response = await GetCardAnalytics({date: new Date()});
-    console.log('response2:', response)
+    // console.log('response2:', response)
 
     if(response.status === 200) {
       console.log(response.data);

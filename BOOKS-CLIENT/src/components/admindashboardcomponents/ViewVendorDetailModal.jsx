@@ -58,7 +58,7 @@ const ViewVendorDetailModal = ({ viewData, ...props }) => {
             <p>Account Number: {viewData.accountNumber}</p>
             <p>Branch Code: {viewData.branchCode}</p>
             <p>GST: {viewData.gst}</p>
-            <p>NEFT: {viewData.neft}</p>
+            <p>IFSC: {viewData.ifsc}</p>
             {/* Add other information here */}
           </div>
 

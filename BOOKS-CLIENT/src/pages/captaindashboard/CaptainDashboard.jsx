@@ -6,6 +6,7 @@ import CaptainTableCard from "../../components/captaincomponents/CaptainTableCar
 //image imports
 import { useEffect, useState } from "react";
 import { TableStatus } from "../../config/routeApi/cap";
+import { RestaurantAdminApi } from "../../config/global";
 
 const CaptainDashboard = () => {
   const [table, setTable] = useState([]);
@@ -14,8 +15,12 @@ const CaptainDashboard = () => {
     const fetchTableStatus = async () => {
       try {
         const response = await TableStatus();
+        const formattedTableData = response.data.tableData.map(table=> {
+          table.image = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+table.image;
+          return table;
+        })
         console.log(response,"res");
-        setTable(response.data.tableData);
+        setTable(formattedTableData);
       } catch (error) {
         console.log(error);
       }

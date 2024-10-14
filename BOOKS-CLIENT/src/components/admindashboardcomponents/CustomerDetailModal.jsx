@@ -38,7 +38,7 @@ const Wrapper = Styled(Modal)`
 
 
 const CustomerDetailModal = ({ customerData, ...props }) => {
-console.log(customerData,"i am customer data modal");
+// console.log(customerData,"i am customer data modal");
     // const { customer, } = customerData
     return (
         <Wrapper

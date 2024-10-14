@@ -29,11 +29,14 @@ const employeeAuth = async (req, res, next) => {
 const adminAuth = async (req, res, next) => {
   try {
     const tokenWithBearer = req.headers["authorization"];
+    console.log('tokenWithBearer:', tokenWithBearer)
 
     if (tokenWithBearer) {
       const Token = tokenWithBearer.replace(/"/g, "");
+      console.log('Token:', Token)
 
       const verifyToken = jwt.verify(Token, process.env.SECRET_KEY);
+      console.log('verifyToken:', verifyToken)
       console.log(Token,"I am token");
       if (verifyToken.role == "owner") {
         req.id = verifyToken.id;

@@ -16,7 +16,7 @@ const SalesManagementCard = (props) => {
 
                                 <Card as={Col} md={"4"} key={index} className="sales-card">
 
-                                    {console.log(item)}
+                                    {/* {console.log(item)} */}
                                     <Card.Body>
                                         <Card.Title className="sales-card-title">
                                             {item.title}

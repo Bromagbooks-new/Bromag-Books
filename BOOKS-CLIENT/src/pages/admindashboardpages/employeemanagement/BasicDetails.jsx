@@ -82,8 +82,17 @@ const BasicDetails = () => {
     const handleEmployData = async () => {
       try {
         const response = await EmployDetails();
-        setEmployeeData(response.data.EmployData);
-        setSearchFilter(response.data.EmployData);
+        console.log(response.data.EmployData);
+        const transformeEmployeeData = response.data.EmployData.map(data=> {
+          const newAadharImages = data.aadhar_image.map(image=> RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+image);
+          console.log(newAadharImages);
+          const newPanImages = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+data.pancard_image;
+          // newData.aadhar_image[0] = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+data.aadhar_image[0];
+          // newData.pancard_image[0] = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+data.pancard_image[0];
+          return {...data, aadhar_image: newAadharImages, pancard_image: newPanImages};
+        });
+        setEmployeeData(transformeEmployeeData);
+        // setSearchFilter(response.data.EmployData);
       } catch (error) {
         console.log(error);
       }

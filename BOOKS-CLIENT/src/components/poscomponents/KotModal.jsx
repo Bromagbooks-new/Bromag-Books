@@ -19,6 +19,7 @@ const KotModal = (props) => {
         TotalPrice: TotalPrice,
         kotData: kotData,
       };
+
       setUploading(true)
 
       const response = await KotOrder(data);

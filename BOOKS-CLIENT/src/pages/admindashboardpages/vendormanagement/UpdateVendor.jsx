@@ -83,7 +83,7 @@ setImageURL(values.billImage)
     setValue("contact", values.phone);
     setValue("AccountNumber", values.accountNumber);
     setValue("BranchCode", values.branchCode);
-    setValue("neft", values.neft);
+    setValue("ifsc", values.ifsc);
     setValue("GST", values.gst);
     setIngredient(values.ingredient)
   }, [values])
@@ -128,7 +128,7 @@ setImageURL(values.billImage)
                   <br />
                   <input
                     {...register("vendorName", {
-                      required: true, pattern: /^[\p{L}\p{M}'-]+$/u
+                      required: true, pattern: /^[\p{L}\p{M}'\s-]+$/u
                     })}
                     type="text"
                     id="vendorName"
@@ -262,7 +262,7 @@ setImageURL(values.billImage)
                   </label>
                   <br />
                   <input
-                    {...register("BranchCode", { required: true,  pattern: /^[A-Z]{4}\d{7}$/ })}
+                    {...register("BranchCode", { required: true,  pattern: /^[A-Z,\d]{6}$/ })}
                     type="text"
                     id="BranchCode"
                     placeholder="Enter Branch Code number"
@@ -284,23 +284,29 @@ setImageURL(values.billImage)
 
               <div className="form-input-row">
                 <div className="form-input-full">
-                  <label htmlFor="neft" className="text-left">
-                    NEFT Number<span className="text-danger">*</span>
+                  <label htmlFor="ifsc" className="text-left">
+                    IFSC Number<span className="text-danger">*</span>
                   </label>
                   <br />
                   <input
-                    {...register("neft", {
-                      required: true, pattern: /^[A-Za-z0-9]{6,20}$/
+                    {...register("ifsc", {
+                      required: true, pattern: /^[A-Z]{4}0[A-Z,\d]{6}$/
                     })}
                     type="text"
-                    id="neft"
-                    placeholder="Enter NEFT number"
+                    id="ifsc"
+                    placeholder="Enter IFSC code"
                   />
-                  {errors.neft && errors.neft.type === "required" && (
+                  {errors.ifsc && errors.ifsc.type === "required" && (
                     <label className="error-msg">
-                      Please enter the Branch Code number
+                      Please enter the IFSC code
                     </label>
                   )}
+                  {errors.ifsc && errors.ifsc.type === "pattern" && (
+                    <label className="error-msg">
+                      Please enter a valid IFSC code
+                    </label>
+                  )}
+                  
                 </div>
               </div>
 

@@ -27,7 +27,7 @@ import { toastError, toastSuccess } from "../../helpers/helpers";
 
 const CaptainMenu = () => {
   const [registeredPosManager, setRegisteredPosManagers] = useState([]);
-  const [selectedPOSManager, setSelectedPosManager] = useState("All");
+  const [selectedPOSManager, setSelectedPosManager] = useState("");
   // const [todaysData, setTodaysData] = useState([]);
   const [modalKot, setModalKot] = useState(false);
   const [modalHold, setModalHold] = useState(false);
@@ -43,6 +43,10 @@ const CaptainMenu = () => {
   const [isUploading, setUploading] = useState(false);
   const [ordered, setOrderedData] = useState([]);
 
+  const [clearMenuSignal, setClearMenuSignal] = useState(0);
+  const sendClearMenuSignal = ()=> setClearMenuSignal(prev=> prev+1);
+  // console.log(clearMenuSignal);
+
   const navigate = useNavigate();
 
   // data coming from captain dashboard
@@ -52,6 +56,11 @@ const CaptainMenu = () => {
   const handleTotalPrice = (total) => {
     setTotalPrice(total);
   };
+
+  const clearItems = ()=> {
+    console.log("Clear items called");
+    setSelectedItems([]);}
+  // console.log(clearItems);
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -104,7 +113,7 @@ const CaptainMenu = () => {
     }
   }, [modalKot]);
 
-  console.log("newordered", ordered);
+  // console.log("newordered", ordered);
 
   const handleHoldSubmit = async () => {
     try {
@@ -138,7 +147,11 @@ const CaptainMenu = () => {
   const handleSendToPos = () => {
     if (ordered[0].KotItems.length == 0) {
       toastError("Your virtual plate is empty.");
-    } else {
+    }
+    else if (selectedPOSManager === '') {
+      toastError("Kindly select a POS");
+    }
+    else {
       setModalPrintBill(true);
     }
   };
@@ -226,7 +239,7 @@ const CaptainMenu = () => {
     GetAllRegisteredPos();
   }, []);
 
-  console.log("registeredPosManager", registeredPosManager);
+  // console.log("registeredPosManager", registeredPosManager);
 
   // async function handleView(data) {
   //   console.log(data);
@@ -308,6 +321,7 @@ const CaptainMenu = () => {
                 onSelectedItemsChange={handleSelectedItemsChange}
                 sortingOption={selectedOption}
                 selectedCategory={selectedCategory}
+                clearMenuSignal={clearMenuSignal}
                 searchTerm={searchTerm}
               />
             </div>
@@ -345,9 +359,10 @@ const CaptainMenu = () => {
 
             <TableKotSummaryModal
               open={modalKot}
-              setSelectedItems={setSelectedItems}
               onCancel={() => setModalKot(false)}
+              sendClearMenuSignal={sendClearMenuSignal}
               cancelButtonProps={{ style: { display: "none" } }}
+              clearItems={clearItems}
               okButtonProps={{ style: { display: "none" } }}
               kotData={selectedItems}
               TotalPrice={totalPrice}
@@ -372,7 +387,7 @@ const CaptainMenu = () => {
                   value={selectedPOSManager}
                   onChange={(e) => setSelectedPosManager(e.target.value)}
                 >
-                  <option value="All">All</option>
+                  <option value="">Select a POS</option>
                   {registeredPosManager.map((posManager) => (
                     <option key={posManager._id} value={posManager._id}>
                       {posManager.username}

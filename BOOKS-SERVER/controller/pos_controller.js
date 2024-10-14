@@ -22,6 +22,9 @@ const zomato_menu_Items_model = require("../model/zomato_menu_Items_model");
 const bromag_menu_items = require("../model/bromag_menu_items");
 const menuCategory_model = require("../model/menuCategory_model");
 const restaurant_menu_model = require("../model/restaurant_menu_model");
+const path = require('path');
+const restaurant_table_model = require("../model/restaurant_table_model");
+const restaurant_model = require("../model/restaurant_model");
 // import posTodayClosing from "../model/posTodayClosing";
 // import posTodayExpense from "../model/posTodayExpense";
 // import PosTodayOpeningBalanceModel from "../model/posTodayOpeningBalance";
@@ -179,18 +182,22 @@ exports.addTodaysExpense = async (req, res) => {
     const Id = req.id;
     const file = req.file;
     if (file) {
-      const imagePath = `passbook/${restaurant}/${file.filename}`;
+      const dirPath = path.join('uploads', 'passbook');
+      const fileName = `${restaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // const imagePath = `passbook/${restaurant}/${file.filename}`;
 
-      await helpers.uploadFile(file, imagePath);
+      await helpers.uploadFileLocally(file, imagePath);
 
-      const imageURL = helpers.getS3FileUrl(imagePath);
-      helpers.deleteFile(file.path);
+      const imageURL = helpers.getFileUrlLocally(imagePath);
+      console.log(imageURL, "imageURL");
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
 
       const TodaysExpenseData = {
         date: new Date(date),
         amount: amount,
         description: description,
-        billURL: imageURL,
+        billURL: relativeImagePath,
         restaurant: restaurant,
         posId: Id,
       };
@@ -225,14 +232,18 @@ exports.addCustomerBill = async (req, res) => {
       });
 
       if (customerdata) {
-        const imagePath = `passbook/customerBill/${restaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'passbook', 'customerBill');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `passbook/customerBill/${restaurant}/${file.filename}`;
 
-        await helpers.uploadFile(file, imagePath);
+        await helpers.uploadFileLocally(file, imagePath);
 
-        helpers.deleteFile(file.path);
+        helpers.deleteFileLocally(file.path);
 
-        const imageURL = helpers.getS3FileUrl(imagePath);
-
+        const imageURL = helpers.getFileUrlLocally(imagePath);
+        console.log(imageURL, "imageURL");
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
         if (amount <= customerdata.limit) {
           const balance = customerdata.limit - amount;
 
@@ -240,7 +251,7 @@ exports.addCustomerBill = async (req, res) => {
             customer: customerdata._id,
             amount: amount,
             date: new Date(date),
-            BillImage: imageURL,
+            BillImage: relativeImagePath,
             balance: balance,
             limit: customerdata.limit,
             restaurant: restaurant,
@@ -307,16 +318,21 @@ console.log(req.files,"files")
       for (const file of req.files) {
 
 
-        const imagePath = `passbook/closingReport/${restaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'passbook', 'closingReport');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
 
-        await helpers.uploadFile(file, imagePath);
+        // const imagePath = `passbook/closingReport/${restaurant}/${file.filename}`;
 
-        helpers.deleteFile(file.path);
+        await helpers.uploadFileLocally(file, imagePath);
 
-        const imageURL = helpers.getS3FileUrl(imagePath);
+        // helpers.deleteFile(file.path);
 
+        const imageURL = helpers.getFileUrlLocally(imagePath);
+        console.log(imageURL, "imageURL");
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
         // Store the URL in the array
-        billImages.push(imageURL);
+        billImages.push(relativeImagePath);
       }
 
       const TodaysClosingData = {
@@ -532,9 +548,17 @@ console.log(req.body,"boooody")
     console.log(KotItemsArray, "KotItems");
 
 
-    const billId = generateBillId();
+    // const billId = generateBillId();
 
     if (isRestaurant) {
+
+      const restaurant = await restaurant_model.findById(isRestaurant);
+      // console.log(restaurant);
+      if(!restaurant) {
+        res.status(500).json({success: false, message: "Order Failed"});
+        return;
+      } 
+      const billId = await Order.generateBillId(restaurant.username, isRestaurant);
 
       if (isPosManager) {
 
@@ -682,6 +706,7 @@ console.log(updatedOrder,"i am updated order");
             phone,
             orderMode: orderMode,
             KotItems:KotItemsArray,
+            billId: billId,
             paymentMethod,
             restaurantId: isRestaurant,
             posManagerId: req.id,
@@ -689,6 +714,7 @@ console.log(updatedOrder,"i am updated order");
           const savedOrder = await order.save();
 
           console.log(KotItemsArray,"Kot at takewayy");
+          console.log(order);
 
           KotItemsArray.map((item,index) => {
             decrementMenuItemQuantity('Bromag', isRestaurant, item.item, item.quantity);
@@ -705,6 +731,7 @@ console.log(updatedOrder,"i am updated order");
           return res.status(200).json({
             success: true,
             message: "Kitchen to order recorded!",
+            billId,
             orderId: Order_Id,
           });
 
@@ -759,19 +786,22 @@ exports.updateProfileImagePos = async (req, res) => {
       const existingUser = await AccessedEmployees.findOne({ _id: id });
 
       const { profileImage } = existingUser;
-      await helpers.deleteS3File(profileImage);
+      await helpers.deleteFileLocally(profileImage);
+      const dirPath = path.join('uploads', 'passbook');
+      const fileName = `${restaurantId}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // const imagePath = `passbook/${restaurantId}/${file.filename}`;
 
-      const imagePath = `passbook/${restaurantId}/${file.filename}`;
-
-      await helpers.uploadFile(file, imagePath);
+      await helpers.uploadFileLocally(file, imagePath);
 
       helpers.deleteFile(file.path);
 
-      const imageURL = helpers.getS3FileUrl(imagePath);
-
+      const imageURL = helpers.getFileUrlLocally(imagePath);
+      console.log(imageURL);
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
       await AccessedEmployees.updateOne(
         { _id: id },
-        { $set: { profileImage: imageURL } }
+        { $set: { profileImage: relativeImagePath } }
       );
 
       res.status(200).json({
@@ -901,6 +931,7 @@ exports.printBill = async (req, res) => {
   try {
     const isRestaurant = req.restaurant;
     const isPosManager = req.id;
+    console.log("Pos ID: ", isPosManager);
     console.log(req.body, "body data");
     const {userId,amount,tableId} = req.body;
     // const { orderMode } = req.body.orderData;
@@ -909,9 +940,17 @@ exports.printBill = async (req, res) => {
     // const KotItems = req.body.kotData;
     // const kotId = req.body.kotId;
 
-    const billId = generateBillId();
+    
+    // const billId = generateBillId();
     if (isRestaurant) {
       if (isPosManager) {
+        // const restaurant = await restaurant_model.findById(isRestaurant);
+        // // console.log(restaurant);
+        // if(!restaurant) {
+        //   res.status(500).json({success: false, message: "Order Failed"});
+        //   return;
+        // } 
+        // const billId = await Order.generateBillId(restaurant.username, isRestaurant);
         // if (orderMode == "takeaway") {
         //   if (!kotId) {
         //     return res.status(400).json({
@@ -919,15 +958,18 @@ exports.printBill = async (req, res) => {
         //       message: "Check your network connection",
         //     });
         //   }
-        const order = await Order.updateOne(
+        const order = await Order.findOneAndUpdate(
           { _id: userId },
           {
-            billId: billId,
+            // billId: billId,
             Amount: Amount,
-            orderStatus:"Success"
+            orderStatus:"Success",
+            posManagerId: isPosManager
 
           }
         );
+        console.log("Order----------------------------------------------");
+        console.log(order);
 
         await RestaurantTable.findOneAndUpdate(
           {
@@ -1685,7 +1727,7 @@ const gettodaysSalesAmountSum = async (restaurantId) => {
             $gte: currentDate,
             $lt: new Date(currentDate.getTime() + 24 * 60 * 60 * 1000),
           },
-          orderMode: { $ne: "dineIn" },
+          // orderMode: { $ne: "dineIn" },
         },
       },
       {
@@ -1695,6 +1737,7 @@ const gettodaysSalesAmountSum = async (restaurantId) => {
         },
       },
     ]);
+    console.log(orderAmountSum);
 
     if (orderAmountSum.length > 0) {
       return orderAmountSum[0].totalAmount;
@@ -2472,6 +2515,12 @@ exports.getTodaysOpeningData = async (req, res) => {
           },
         },
       ]);
+
+      const testFloatingData = await Order.aggregate([
+        { $match: query },
+      ])
+      console.log("Floating Data--------------------------------------");
+      console.log(testFloatingData);
 
       const OpeningAmount = Openingdata && Openingdata.totalAmount ? Openingdata.totalAmount : 0;
       // const ClosingAmount = Closingdata && Closingdata.totalAmount ? Closingdata.totalAmount : 0;
@@ -3490,6 +3539,7 @@ exports.getDineIn = async (req, res) => {
         const DineInDetails = await Order.find({
           restaurantId: isRestaurant,
           orderMode: "dineIn",
+          posManagerId: isPosManager,
           orderStatus: { $ne: 'Success' } 
       }).populate("tableId")
         .sort({ _id: -1 });
@@ -3524,7 +3574,8 @@ exports.GetDineInSuccesData = async (req, res) => {
         const DineInDetails = await Order.find({
           restaurantId: isRestaurant,
           orderMode: "dineIn",
-          orderStatus: 'Success' 
+          orderStatus: 'Success',
+          posManagerId: isPosManager,
 
         }).populate("tableId").sort({ _id: -1 });
 

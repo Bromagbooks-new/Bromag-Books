@@ -23,6 +23,7 @@ const TableOrderSummeryModal = (props) => {
 
   useEffect(() => {
     if (ordered && ordered[0]) {
+      // console.log(ordered[0]);
       const { gstAmount, grandTotal } = calculateGST(ordered[0].Amount);
 
       setGST(gstAmount);
@@ -67,7 +68,15 @@ const TableOrderSummeryModal = (props) => {
       setUploading(true);
 
       // const response = await PrintBillAtCaptain(NeworderedData);
-      const response = await PrintBillAtCaptain(ordered[0]);
+      // console.log(posManager);
+
+      if(posManager === '') {
+        toastError("Kindly select a POS");
+        setUploading(false);
+        return;
+      }
+
+      const response = await PrintBillAtCaptain({...ordered[0], posManagerId: posManager});
       setUploading(false);
 
       if (response?.data.success) {

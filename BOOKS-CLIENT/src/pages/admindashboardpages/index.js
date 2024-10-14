@@ -38,3 +38,7 @@ export { default as AddTable } from './tablemanagement/AddTable'
 export { default as UpdateTable } from './tablemanagement/UpdateTable'
 export { default as CaptainPassbook } from './tablemanagement/CaptainPassbook'
 export { default as TableDetails } from './tablemanagement/TableDetails'
+export { default as TableManagement } from "./tablemanagement/TableManagement"
+export { default as AddTableForTableManagement } from "./tablemanagement/AddTableForTableManagement"
+export { default as UpdateTableInTableManagement } from "./tablemanagement/UpdateTableInTableManagement"
+export { default as OrderOnHoldForTakeAway } from "./billingmanagement/OrderOnHoldForTakeAway"

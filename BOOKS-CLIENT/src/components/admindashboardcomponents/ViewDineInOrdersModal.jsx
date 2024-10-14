@@ -17,7 +17,7 @@ const ViewDineInOrdersModal = (props) => {
   
 
   const navigate = useNavigate();
-console.log(ordered,"i am ordered");
+// console.log(ordered,"i am ordered");
     useEffect(() => {
        
         setFilteredKotItems(ordered);

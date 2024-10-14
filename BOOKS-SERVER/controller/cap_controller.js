@@ -13,6 +13,7 @@ const helpers = require("../utils/helpers");
 const { default: mongoose } = require("mongoose");
 const { v4: uuidv4 } = require("uuid");
 const restaurant_menu_model = require("../model/restaurant_menu_model");
+const path = require('path')
 
 function generateOrderId() {
   const orderId = uuidv4().replace(/-/g, "").slice(0, 12);
@@ -87,7 +88,8 @@ exports.getAllRegisteredPosCap = async (req, res) => {
 
 exports.tableBooking = async (req, res) => {
   try {
-    const { customerName, phone, orderMode, tableId } = req.body;
+    const { customerName, phone, orderMode, tableId, paymentMethod } = req.body;
+    console.log(req.body);
     const restaurant = req.restaurant;
     const validCap = req.id;
 
@@ -107,6 +109,7 @@ exports.tableBooking = async (req, res) => {
         phone: phone,
         status: "booked",
         orderMode: orderMode,
+        paymentMethod: paymentMethod
       },
       { new: true }
     );
@@ -171,13 +174,16 @@ exports.addCustomerBill = async (req, res) => {
       });
 
       if (customerdata) {
-        const imagePath = `customer/customerBill/${restaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'customer', 'customerBill');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `customer/customerBill/${restaurant}/${file.filename}`;
 
-        await helpers.uploadFile(file, imagePath);
+        await helpers.uploadFileLocally(file, imagePath);
 
-        const imageURL = helpers.getS3FileUrl(imagePath);
-
-        helpers.deleteFile(file.path);
+         helpers.getFileUrlLocally(imagePath);
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+        helpers.deleteFileLocally(file.path);
 
         if (amount <= customerdata.limit) {
           const balance = customerdata.limit - amount;
@@ -187,7 +193,7 @@ exports.addCustomerBill = async (req, res) => {
             employe: captainId,
             amount: amount,
             date: new Date(date),
-            BillImage: imageURL,
+            BillImage: relativeImagePath,
             balance: balance,
             limit: customerdata.limit,
             restaurant: restaurant,
@@ -357,7 +363,10 @@ exports.printBillAtCap = async (req, res) => {
     const orderData = req.body;
     const tableId = orderData._id;
     const orderId = orderData.orderId;
-    const isPosManager = req.posManagerId;
+    const isPosManager = req.body.posManagerId;
+    console.log("----------------------------------");
+    console.log("POS Manager",isPosManager);
+    console.log("----------------------------------");
     if (isRestaurant && isCapManager) {
       // Check if the order with the given orderId already exists
       const existingOrder = await Order.findOne({ orderId });
@@ -391,7 +400,17 @@ exports.printBillAtCap = async (req, res) => {
             .json({ success: true, message: "Bill successfully sent to POS" });
         }
       } else {
-        const billId = generateBillId();
+        const restaurant = await Restaurant.findById(isRestaurant);
+        // console.log(restaurant);
+        if(!restaurant) {
+          res.status(500).json({success: false, message: "Order Failed"});
+          return;
+        } 
+        const billId = await Order.generateBillId(restaurant.username, isRestaurant);
+
+        console.log('----------------------------------------------');
+        console.log("Heree at new order", isPosManager);
+        console.log('----------------------------------------------');
 
         const newOrder = new Order({
           customerName: orderData.customerName,
@@ -721,6 +740,9 @@ exports.getTableDetails = async (req, res) => {
       _id: tableId,
     });
     if (tableData) {
+      console.log("-----------------------------------------------------");
+      console.log(tableData);
+      console.log("-----------------------------------------------------");
       return res
         .status(200)
         .json({ success: true, message: "Successfully fetched", tableData });

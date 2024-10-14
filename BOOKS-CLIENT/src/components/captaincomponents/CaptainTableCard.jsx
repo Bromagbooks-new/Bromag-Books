@@ -3,6 +3,7 @@ import Wrapper from "../../assets/wrappers/captainwrappers/CaptainTableCard";
 import ModalStyle from "../../assets/wrappers/poswrappers/PosFormModal";
 //react imports
 import { useEffect, useState } from "react";
+import Form from "react-bootstrap/Form";
 // import TableBookingFormModal from "./TableBookingFormModal";
 import TableCancelBookingModal from "./TableCancelBookingModal";
 import {
@@ -73,6 +74,7 @@ setCustomerName(data.customerName)
         if (response.data.success) { 
 
           const table = response.data.tableData;
+          console.log(table);
         
           setCustomerName(table.customerName)
           setCustomerData(table);
@@ -107,19 +109,19 @@ setCustomerName(data.customerName)
       setUploading(false);
 
       setBooked(!booked);
-      console.log(response.data.message);
+      // console.log(response.data.message);
     } catch (error) {
       console.log(error);
     }
   };
 
   const handleModal = () => {
-    console.log("here im");
+    // console.log("here im");
     setModal2Open(!modal2Open);
   };
 
   const handleCancelModal = () => {
-    console.log("here");
+    // console.log("here");
     setCancelModalOpen(!cancelModalOpen);
   };
 
@@ -128,8 +130,9 @@ setCustomerName(data.customerName)
   }, [booked]);
 
   const handleMenuSubmit = async () => {
-    const data = customerData
-    console.log(data,"i am customer data");
+    const data = customerData;
+    // console.log(data);
+    // console.log(data,"i am customer data");
     navigate(`/captain-dashboard/captain-menu`, {
       state: { data },
     });
@@ -244,7 +247,20 @@ setCustomerName(data.customerName)
       </label>
     )}
                   
-
+                  <Form.Select
+                id="paymentMethod"
+                style={{width: '60%'}}
+                placeholder="Select your payment method"
+                label="Select your payment method"
+                {...register("paymentMethod", {
+                  required: true,
+                })}
+              >
+                <option value="Cash">Cash</option>
+                <option value="Card">Card</option>
+                <option value="UPI">UPI</option>
+                <option value="Credit">Credit</option>
+              </Form.Select>
 
 
 

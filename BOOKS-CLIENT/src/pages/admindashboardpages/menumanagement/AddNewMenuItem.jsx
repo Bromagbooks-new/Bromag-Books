@@ -28,6 +28,7 @@ const AddNewMenuItem = () => {
     register,
     handleSubmit,
     formState: { errors },
+    setError
   } = useForm();
 
   const navigate = useNavigate();
@@ -83,6 +84,7 @@ const AddNewMenuItem = () => {
       navigate("/dashboard/menu-management/menu");
       toastSuccess(response.data.message);
     } else {
+      response.data.status === 'ITEM_EXISTS' && setError('Item', {type: '400', message: "Item of this name already exists"})
       toastError(response.data.message);
     }
   };
@@ -193,8 +195,13 @@ const AddNewMenuItem = () => {
                   >
                     <Input placeholder="Item Name" />
                   </Form.Item>
-                </div>
               </div>
+                </div>
+                {errors.Item && errors.Item.type === "400" && (
+                  <label className="error-msg">
+                    Item with this name already exists
+                  </label>
+                )}
 
               <div className="form-input-row">
                 <div className="form-input-textarea">

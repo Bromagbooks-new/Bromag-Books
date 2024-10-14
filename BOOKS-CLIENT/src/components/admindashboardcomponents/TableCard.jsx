@@ -13,7 +13,7 @@ const TableCard = (props) => {
   const {tableData, image, noOfSeats, tableNo } = props;
   // const [isUploading, setUploading] = useState(false);
   const [modalView,setModalView] = useState(false)
-console.log(tableData,"tableData");
+// console.log(tableData,"tableData");
   const navigate = useNavigate()
 
 
@@ -41,7 +41,7 @@ console.log(tableData,"tableData");
   };
 
   useEffect(() => {
-    console.log("i am table data",tableData);
+    // console.log("i am table data",tableData);
     // props.onDelete();
   }, [props.refresh]);
 

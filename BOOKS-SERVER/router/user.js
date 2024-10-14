@@ -1,7 +1,10 @@
 const express = require("express");
 const userRouter = express.Router();
+const rateLimit = require("express-rate-limit");
 //controllers
 const controller = require("../controller/access_controller");
+const billingController = require("../controller/billing_controller");
+const kotController = require("../controller/kot_controller");
 const menuController = require("../controller/menu_controller");
 const posController = require("../controller/pos_controller");
 const capController = require("../controller/cap_controller");
@@ -12,9 +15,19 @@ const interceptor = require("../middleware/interceptor");
 
 const upload = require("../utils/uploaders");
 
+// Rate limiting middleware
+const limiter = rateLimit({
+  windowMs : 15 * 60 * 1000, // 15 minutes
+  max : 100, // Limit each IP to 100 requests per windowMs
+  message : "Too many requests from this IP, please try again later." 
+})
+
 /* restaurant */
 userRouter.get("/accessRestaurantHome", controller.accessRestaurantHome);
-userRouter.post("/login", controller.verifyLogin);
+userRouter.post("/login",limiter, controller.verifyLogin);
+userRouter.post("/verifyToken", controller.verifyToken);
+userRouter.post("/demo-request", controller.storeDemoRequest);
+userRouter.post("/user-query", controller.storeUserRequest);
 
 
 /* restaurant owner */
@@ -88,6 +101,184 @@ userRouter.post(
 
 // userRouter.post("/addEmployDetails", upload.ImageUploader.fields([{ name: "aadharImage", maxCount: 1 },
 // { name: "pancardImage", maxCount: 1 },]),interceptor.adminAuth,controller.addEmployDetails);
+
+
+userRouter.post(
+  "/generateBill",
+  limiter,
+  interceptor.adminAuth,
+  billingController.generateBill
+);
+userRouter.post(
+  "/fetchBill",
+  interceptor.adminAuth,
+  billingController.fetchBill
+);
+userRouter.get(
+  "/fetchHoldBills",
+  interceptor.adminAuth,
+  billingController.fetchHoldBills
+);
+userRouter.get(
+  "/fetchCompletedBills",
+  interceptor.adminAuth,
+  billingController.fetchCompletedBills
+);
+userRouter.patch(
+  "/updateBill",
+  interceptor.adminAuth,
+  billingController.updateBill
+);
+userRouter.post(
+  "/deleteBill",
+  interceptor.adminAuth,
+  billingController.deleteBill
+);
+userRouter.get(
+  "/getTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline",
+  interceptor.adminAuth,
+  billingController.getTotalAndHoldOrdersCountEitherForTakeAwayOrForOnlineController
+)
+userRouter.get(
+  "/getTotalBillsEitherForTakeAwayOrOnlineOrders",
+  interceptor.adminAuth,
+  billingController.getTotalBillsEitherForTakeAwayOrOnlineOrdersController
+)
+
+// Get Tables Hold And Available Count
+userRouter.get(
+  "/getTablesHoldAndAvailableCount",
+  interceptor.adminAuth,
+  billingController.getTablesHoldAndAvailableCount
+)
+
+// Get Hold Table Data
+userRouter.get(
+  "/getTablesOnHoldData",
+  interceptor.adminAuth,
+  billingController.getTablesOnHoldDataController
+)
+
+// Get Hold And Available Table Data
+userRouter.get(
+  "/getHoldAndAvailableTableData",
+  interceptor.adminAuth,
+  billingController.getHoldAndAvailableTableDataController
+)
+
+userRouter.post(
+  "/addOpeningReport",
+  interceptor.adminAuth,
+  billingController.addOpeningReport
+);
+userRouter.get(
+  "/getOpeningReports",
+  interceptor.adminAuth,
+  billingController.getOpeningReports
+);
+userRouter.get(
+  "/isOpeningReportCreatedToday",
+  interceptor.adminAuth,
+  billingController.isOpeningReportCreatedToday
+);
+
+userRouter.post(
+  "/addExpense",
+  upload.ImageUploader.array("image", 1),
+  interceptor.adminAuth,
+  billingController.addExpense
+);
+userRouter.get(
+  "/getExpenses",
+  interceptor.adminAuth,
+  billingController.getExpenses
+);
+
+userRouter.post(
+  "/addClosingReport",
+  interceptor.adminAuth,
+  billingController.addClosingReport
+);
+userRouter.get(
+  "/getClosingReports",
+  interceptor.adminAuth,
+  billingController.getClosingReports
+);
+userRouter.get(
+  "/isClosingReportCreatedToday",
+  interceptor.adminAuth,
+  billingController.isClosingReportCreatedToday
+);
+userRouter.post(
+  "/getPassbookData",
+  interceptor.adminAuth,
+  billingController.getPassbookData
+);
+userRouter.post(
+  "/getCardAnalytics",
+  interceptor.adminAuth,
+  billingController.getCardAnalytics
+);
+userRouter.post(
+  "/getDashboardAnalytics",
+  interceptor.adminAuth,
+  billingController.getDashboardAnalytics
+);
+
+userRouter.post(
+  "/generateKOT",
+  interceptor.adminAuth,
+  kotController.generateKOT
+);
+
+
+userRouter.post(
+  "/addAggregator",
+  interceptor.adminAuth,
+  menuController.addAggregator
+);
+
+
+userRouter.get(
+  "/getAllAggregators",
+  interceptor.adminAuth,
+  menuController.getAllAggregators
+);
+
+
+userRouter.post(
+  "/addCuisine",
+  interceptor.adminAuth,
+  menuController.addCuisine
+);
+
+
+userRouter.get(
+  "/getAllCuisines",
+  interceptor.adminAuth,
+  menuController.getAllCuisines
+);
+
+
+userRouter.post(
+  "/addMenuItem",
+  upload.ImageUploader.single("ItemImage"),
+  interceptor.adminAuth,
+  menuController.addMenuItem
+);
+
+
+userRouter.get(
+  "/getAllMenuItems",
+  interceptor.adminAuth,
+  menuController.getAllMenuItems
+);
+
+userRouter.put(
+  "/updateMenuItemAvailableStatus",
+  interceptor.adminAuth,
+  menuController.updateMenuItemAvailableStatus
+)
 
 userRouter.post(
   "/addMenuCategory",
@@ -255,6 +446,42 @@ userRouter.post(
   interceptor.adminAuth,
   tableController.addTableData
 ); //table management
+
+// New router addNewTableData() for table management without captain
+userRouter.post(
+  "/addNewTableData/",
+  interceptor.adminAuth,
+  tableController.addNewTableData
+)
+
+// Fetch all table data
+userRouter.get(
+  "/getNewTableData",
+  interceptor.adminAuth,
+  tableController.getNewTableData
+)
+
+// Fetch all table count
+userRouter.get(
+  "/getNewTableDatCount/",
+  interceptor.adminAuth,
+  tableController.getNewTableDatCount
+)
+
+// Fetch single table data
+userRouter.get(
+  "/getSingleTableInfo/:tableId",
+  interceptor.adminAuth,
+  tableController.getSingleTableInfo
+)
+
+// Update sngle table data
+userRouter.put(
+  "/updateTableForTableManagement/:tableId",
+  interceptor.adminAuth,
+  tableController.updateTableForTableManagement
+)
+
 userRouter.get(
   "/getTableDataAtAdmin",
   interceptor.adminAuth,

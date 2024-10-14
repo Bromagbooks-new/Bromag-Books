@@ -260,7 +260,7 @@ const AddCustomer = () => {
                   <input
                     {...register("address", {
                       required: true,
-                      pattern: /^^[a-zA-Z0-9\s,.-]+$/,
+                      // pattern: /^^[a-zA-Z0-9\s,.-]+$/,
                     })}
                     type="text"
                     id="address"

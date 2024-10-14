@@ -19,6 +19,10 @@ const {
 const StockOut = require("../model/stock_out");
 const { generateEmployId } = require("../middleware/employ_Id");
 const feedback_model = require("../model/feedback_model");
+const Token = require('../model/token_model');
+const path = require('path');
+const { DemoRequestModel } = require("../model/demo_request");
+const {UserQuery} = require('../model/userQuery');
 
 
 exports.getAllRegisteredPos = async (req, res) => {
@@ -303,182 +307,81 @@ exports.verifyLogin = async (req, res) => {
           { id: employee._id },
           process.env.SECRET_KEY,
           {
-            expiresIn: "30d",
+            expiresIn: "1hr",
           }
         );
+
+        const newToken = new Token({
+          token: token,
+          employeeId: employee._id,
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour expiration
+        });
+
+        await newToken.save();
 
         const encodedToken = btoa(token);
         const dashboardLink = `${process.env.CLIENT}/link-verification/token/${encodedToken}`;
 
-
-
         const mailFormat = {
           to: employee.email,
-          subject: "Bromag India Private Limited : Open your account",
-          html:
-            "<h4>Hai dear,</h4><br><p>Welcome back to Bromag India! Use " +
-            `Click the link to access your dashboard: ${dashboardLink}`,
+          subject: "Bromag Books Private Limited : Open your account",
+          html: `
+            <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9;">
+              <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 10px;">
+                <img src="cid:logo" alt="Bromag Books" style="width: 120px; margin-bottom: 20px;">
+                <h2>Welcome to BROMAG BOOKS!</h2>
+                <p>Please click on the below blue button to verify & login.</p>
+                <a href="${dashboardLink}" style="background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">LOGIN</a>
+              </div>
+              <div style="margin-top: 20px;">
+                <p>Follow us on:</p>
+                <p>
+                  <a href="https://www.facebook.com" style="margin: 0 10px;"><img src="cid:facebook" alt="Facebook" style="width: 24px;"></a>
+                  <a href="https://www.instagram.com" style="margin: 0 10px;"><img src="cid:instagram" alt="Instagram" style="width: 24px;"></a>
+                  <a href="https://www.whatsapp.com" style="margin: 0 10px;"><img src="cid:whatsapp" alt="WhatsApp" style="width: 24px;"></a>
+                  <a href="https://www.youtube.com" style="margin: 0 10px;"><img src="cid:youtube" alt="YouTube" style="width: 24px;"></a>
+                  <a href="https://www.linkedin.com" style="margin: 0 10px;"><img src="cid:linkedin" alt="LinkedIn" style="width: 24px;"></a>
+                </p>
+              </div>
+              <div style="margin-top: 20px; font-size: 12px;">
+                <p>&copy; 2024 Bromag Books. All rights reserved.</p>
+                <p><a href="https://www.bromagbooks.com" style="text-decoration: none; color: #007bff;">www.bromagbooks.com</a></p>
+              </div>
+            </div>
+          `,
+          attachments: [
+            {
+              filename: 'logo.svg',
+              path: '/public',
+              cid: 'logo' // same cid value as in the html img src
+            },
+            {
+              filename: 'facebook.svg',
+              path: '/public',
+              cid: 'facebook'
+            },
+            {
+              filename: 'instagram.svg',
+              path: '/path',
+              cid: 'instagram'
+            },
+            {
+              filename: 'whatsapp.svg',
+              path: '/path',
+              cid: 'whatsapp'
+            },
+            {
+              filename: 'youtube.svg',
+              path: '/path',
+              cid: 'youtube'
+            },
+            {
+              filename: 'linkedin.svg',
+              path: '/path',
+              cid: 'linkedin'
+            }
+          ]
         };
-
-
-
-        // const mailFormat = {
-        //   to: employee.email,
-        //   subject: "Bromag India Private Limited : Open your account",
-        //   html:`<!DOCTYPE html>
-        //   <html lang="en">
-          
-        //   <head>
-        //       <meta charset="UTF-8">
-        //       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          
-        //       <!-- google fonts -->
-        //       <link rel="preconnect" href="https://fonts.googleapis.com">
-        //       <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        //       <link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600;800&display=swap" rel="stylesheet">
-          
-          
-        //       <title>Document</title>
-        //   </head>
-          
-        //   <body style="margin: 0px; box-sizing: border-box; overflow-x: hidden; width: 100%; height: 100%; font-family: 'Inter', sans-serif; color: #404040; font-weight: 400; display: flex; justify-content: center; align-items: center;">
-        //       <div
-        //           style='width: 700px;background-color: #E5E5E5;display:flex; align-items:center;justify-content: center; padding-left: 80px ;padding-right:80px'>
-        //           <div align="center" style='width: 100%;height: 100%;  align-items:center;justify-content: center'>
-        //               <header
-        //                   style='width: 100%;background-color: #0059C2;color:#fff;padding: 10px 50px;border-radius: 30px 30px 0px 0px;'>
-        //                   <h1 style='font-weight: 600;'>Welcome to Bromag Books!</h1>
-        //               </header>
-          
-        //               <section style='width: 100%;padding:50px 50px;background-color:#fff;border-radius: 0px 0px 30px 30px'>
-        //                   <div>
-        //                       <div style='display: flex;align-items: center;column-gap: 7px;'>
-        //                           <h4 style='margin: 5px 0px'>Dear</h4>
-        //                           <p style='margin: 5px 0px'>[Restaurant Owner/Manager],</p>
-        //                       </div>
-          
-        //                       <div>
-        //                           <p style='margin: 10px 0px'>Welcome to Bromag Books! We are delighted to have you on board, and
-        //                               we are confident that our billing solution will streamline your restaurant's operations and
-        //                               enhance your overall efficiency.
-        //                           </p>
-        //                       </div>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Your Account Details:</h4>
-        //                       <p style='margin: 5px 0px'>Your account has been set up. You can log in using the following
-        //                           credentials:</p>
-        //                       <div
-        //                           style='width: 30%;background-color:#B3C3DA40;padding: 5px 30px; border-radius: 10px;margin-top: 20px;'>
-        //                           <p>Username: [username]</p>
-        //                           <p>Password: [password]</p>
-        //                       </div>
-        //                       <div
-        //                           style='width: 100%;margin: 30px 0px;display: flex;flex-direction: column; align-items: center;   '>
-        //                           <img style='width: 77px;height:104px;' src="../assets/images/email-bg.png" alt="">
-        //                           <p>Click on the button below to redirect to your restaurant home page</p>
-        //                           <a style='background-color:#00418D;color: #fff;padding: 10px 50px;border-radius: 25px; text-decoration:none'
-        //                               href='${dashboardLink}'>
-        //                               Click here
-        //                           </a>
-        //                       </div>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Getting to Know Bromag Books:</h4>
-        //                       <p style='margin: 5px 0px'>
-        //                           Your account has to take a few minutes to explore the intuitive features of our web app. From easy
-        //                           menu
-        //                           setup, table
-        //                           management to seamless order tracking and we've designed it to simplify your billing process.
-        //                       </p>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>User Guides and Tutorials</h4>
-        //                       <p style='margin: 5px 0px'>
-        //                           To help you get started, we have prepared user guides and tutorials. Access them [insert link to
-        //                           guides/tutorials] to
-        //                           familiarize yourself with the key functionalities.
-        //                       </p>
-        //                   </div>
-          
-        //                   <p style='margin-top: 40px;font-size: 20px;'>Setting Up Your Restaurant</p>
-          
-        //                   <div>
-        //                       <h4 style='margin: 5px 0px'>1. Menu Configuration:</h4>
-        //                       <p style='margin: 10px 0px'>
-        //                           Navigate to the menu configuration section to input your restaurant's offerings accurately. You
-        //                           can
-        //                           add/edit items, set prices, and customize categories to match your menu structure.
-        //                       </p>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>2. Table Management:</h4>
-        //                       <p style='margin: 10px 0px'>
-        //                           Efficiently manage your restaurant's dining areas using our Table Management System.
-        //                       </p>
-          
-        //                       <p>Here's how to get started:</p>
-          
-        //                       <ul style='list-style-type: lower-alpha;'>
-        //                           <li style='margin:10px 0px'>
-        //                               Access the Captain Management section in the web app.
-        //                           </li>
-        //                           <li style='margin:10px 0px'>
-        //                               Add tables and customize the layout based on your restaurant's floor plan.
-        //                           </li>
-        //                           <li style='margin:10px 0px'>
-        //                               Easily track the status of each table, including occupied, available, and reserved.
-        //                           </li>
-        //                           <li style='margin:10px 0px'>
-        //                               Improve overall customer experience by ensuring smooth table turnover
-        //                           </li>
-        //                       </ul>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Need Help?</h4>
-        //                       <p style='margin: 5px 0px'>
-        //                           If you have any questions or encounter any issues during the onboarding process, our support
-        //                           team is
-        //                           ready to assist
-        //                           you.
-        //                       </p>
-        //                   </div>
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Contact Us</h4>
-        //                       <div
-        //                           style='width: 30%;background-color:#B3C3DA40;padding: 5px 30px; border-radius: 10px;margin-top: 20px;'>
-        //                           <p>Mail ID: [mail id]</p>
-        //                           <p>Phone: [contact number]</p>
-        //                       </div>
-        //                   </div>
-          
-          
-        //                   <div style='margin-top: 40px'>
-        //                       <h4 style='margin: 10px 0px'>Onboarding Assistance:</h4>
-        //                       <p style='margin: 5px 0px'>
-        //                           For personalized onboarding assistance, we offer live training sessions. Schedule a session by
-        //                           replying to this email
-        //                           with your preferred time, and a member of our team will guide you through the setup process
-          
-        //                       </p>
-        //                   </div>
-          
-        //                   <h2 style='text-align: center;margin-top: 50px;font-weight: 600'>We Are Here For You!</h2>
-        //               </section>
-        //           </div>
-        //       </div>
-        //   </body>
-          
-        //   </html>`,
-        // };
-
-
 
         sendEmail(mailFormat.to, mailFormat.subject, mailFormat.html);
         res.json({
@@ -486,17 +389,93 @@ exports.verifyLogin = async (req, res) => {
           token,
           message: `Welcome ${employee.username}!`,
         });
+
       } else {
         console.log("!password");
         res.json({ success: false, message: "Incorrect password!" });
       }
     } else {
-      res.json({ success: false, message: "Not matches in our record!" });
+      res.json({ success: false, message: "No match in our records!" });
     }
   } catch (error) {
+    res.status(500).json({ success: false, serverMessage: "Internal Server Error" });
+  }
+}
+
+
+exports.verifyToken = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const decodedToken = atob(token);
+
+    const tokenRecord = await Token.findOne({ token: decodedToken });
+
+    if (!tokenRecord) {
+      return res.status(200).json({ success: false, message: "Invalid token!" });
+    }
+
+    if (tokenRecord.used) {
+      return res.status(200).json({ success: false, message: "This link has already been used!" });
+    }
+
+    if (new Date() > tokenRecord.expiresAt) {
+      return res.status(200).json({ success: false, message: "This link has expired!" });
+    }
+
+    // Mark the token as used
+    tokenRecord.used = true;
+    await tokenRecord.save();
+
+    // Return the actual token
+    const actualToken = jwtToken.sign(
+      { id: tokenRecord.employeeId },
+      process.env.SECRET_KEY,
+      { expiresIn: "1hr" }
+    );
+
+    res.json({ success: true, actualToken });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Internal Server Error" });
+  }
+};
+
+
+exports.storeDemoRequest = async (req, res)=> {
+
+  try {
+    const {name, email, phone, location, type, designation, purpose} = req.body;
+
+    const demoRequest = new DemoRequestModel({ name, email, phone, location, type, designation, purpose });
+    await demoRequest.save();
+
+    sendEmail("mag@bromagindia.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose));
+
+    res.json({ success: true, message: "Request Saved" });
+
+  }
+  catch (error) {
     res
-      .status(500)
-      .json({ success: false, serverMessage: "Internal Server Error" });
+    .status(500)
+    .json({ success: false, serverMessage: "Internal Server Error" });
+  }
+};
+exports.storeUserRequest = async (req, res)=> {
+
+  try {
+    const {name, email, phone, query} = req.body;
+
+    const userQuery = new UserQuery({ name, email, phone, query });
+    await userQuery.save();
+
+    sendEmail("mag@bromagindia.com", "User Feedback", helpers.feedbackEmailTemplate(name, email, phone, query));
+
+    res.json({ success: true, message: "Request Saved" });
+
+  }
+  catch (error) {
+    res
+    .status(500)
+    .json({ success: false, serverMessage: "Internal Server Error" });
   }
 };
 
@@ -650,37 +629,45 @@ exports.accessedEmployees = async (req, res) => {
   }
 };
 
-exports.generateNextEmployeeId = async (req, res) => {
+exports.generateNextEmployeeId = async (restaurantId) => {
   try {
+    // Fetch the restaurant name using the restaurant ID
+    const restaurant = await Restaurant.findById(restaurantId);
+    if (!restaurant) {
+      throw new Error('Restaurant not found');
+    }
+
+    const restaurantName = restaurant.username;
+    if (!restaurantName || restaurantName.length < 3) {
+      throw new Error('Invalid restaurant name');
+    }
+
+    const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
     let nextEmployeeId;
-    const lastEmployee = await AccessedEmployees.find()
+
+    // Find the last employee whose employeeId starts with the restaurant code followed by "EMP"
+    const lastEmployee = await AccessedEmployees.find({
+      employeeId: { $regex: `^${restaurantCode}EMP` }
+    })
       .sort({ employeeId: -1 })
       .limit(1);
-console.log("lastEmployee",lastEmployee)
-      if(lastEmployee === null){
-    nextEmployeeId = "BIPL000001"  ;
 
-   } else {
+    console.log("lastEmployee", lastEmployee);
 
-    const lastEmployeeIdNumber =
-      lastEmployee.length > 0
-        ? parseInt(lastEmployee[0].employeeId.slice(4), 10)
-        : 0;
+    if (lastEmployee.length === 0) {
+      nextEmployeeId = `${restaurantCode}EMP001`;
+    } else {
+      const lastEmployeeIdNumber = parseInt(lastEmployee[0].employeeId.slice(6), 10);
+      const nextEmployeeIdNumber = lastEmployeeIdNumber + 1;
+      const paddedNextEmployeeIdNumber = String(nextEmployeeIdNumber).padStart(3, "0");
+      nextEmployeeId = `${restaurantCode}EMP${paddedNextEmployeeIdNumber}`;
+    }
 
-    const nextEmployeeIdNumber = lastEmployeeIdNumber + 1;
-
-    const paddedNextEmployeeIdNumber = String(nextEmployeeIdNumber).padStart(
-      3,
-      "0"
-    );
-
-    nextEmployeeId = `BIPL${paddedNextEmployeeIdNumber}`;
-  }
-  console.log("its next",nextEmployeeId)
-
+    console.log("Next Employee ID:", nextEmployeeId);
     return nextEmployeeId;
   } catch (err) {
     console.log(err);
+    throw err; // Re-throw the error to be handled by the caller
   }
 };
 
@@ -708,18 +695,20 @@ console.log(accessAs,"i am accesss");
     if (file) {
 console.log(file," i am file");      
       
-      
-      const imagePath=`access/profileImage/${restaurant}/${file.filename}`;
-      
-      
-      await helpers.uploadFile(file,imagePath);
-      
-      helpers.deleteFile(file.path);
+const dirPath = path.join('uploads', 'access', 'profileImage');
+const fileName = `${restaurant}/${file.filename}`;
+const imagePath = path.join(dirPath, fileName);
+// const imagePath = `/access/profileImage/${restaurant}/${file.filename}`;
 
-      updates.profileImage = helpers.getS3FileUrl(imagePath);
-      console.log(updates.profileImage);
-      await helpers.deleteS3File(response.profileImage);
+await helpers.uploadFileLocally(file, imagePath);
 
+const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+updates.profileImage = relativeImagePath;
+
+if (response.profileImage) {
+  const oldImagePath = path.join(__dirname, response.profileImage);
+  helpers.deleteOldFiles(oldImagePath);
+}
 
     }
 
@@ -742,7 +731,7 @@ exports.addAccess = async (req, res) => {
     
     const { username, password, email, accessAs } = req.body;
     const file = req.files[0];
-    const employeeId = await this.generateNextEmployeeId();
+    const employeeId = await this.generateNextEmployeeId(req.restaurant);
    console.log("emplueeID",employeeId)
     if (username) {
       const existingUsername = await AccessedEmployees.findOne({ username });
@@ -762,19 +751,30 @@ exports.addAccess = async (req, res) => {
 
       const isRestaurant = req.restaurant;
       if (file) {
-        const imagePath = `access/profileImage/${isRestaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'access', 'profileImage');
+        const fileName = `${isRestaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // Log the image path
+        console.log("Image path: ", imagePath);
 
-        await helpers.uploadFile(file, imagePath);
+        const uploadSuccess = await helpers.uploadFileLocally(file, imagePath);
 
-        const imageURL = helpers.getS3FileUrl(imagePath);
+        if (!uploadSuccess) {
+          return res.status(500).json({ success: false, message: "Failed to upload file" });
+        }
 
-        helpers.deleteFile(file.path);
+        const imageURL = helpers.getFileUrlLocally(imagePath);
+
+        // Log the image URL
+        console.log("Image URL: ", imageURL);
+
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
 
         const newAccess = new AccessedEmployees({
           username: username,
           password: password,
           email: email,
-          profileImage: imageURL,
+          profileImage: relativeImagePath,
           accessFor: accessAs,
           employeeId: employeeId,
           restaurant: req.restaurant,
@@ -804,7 +804,8 @@ exports.deleteEmployeeAccess = async (req, res) => {
       const response = await AccessedEmployees.findOne({ _id: employId });
 
       if (response.profileImage) {
-        await helpers.deleteS3File(response.profileImage);
+        const localFilePath = response.profileImage.replace('/uploads/', ''); // Remove the leading '/uploads/' part
+        await helpers.deleteFileLocally(localFilePath);
       }
 
       await AccessedEmployees.findOneAndDelete({
@@ -851,19 +852,28 @@ exports.addEmployDetails = async (req, res) => {
       } = req.body;
       const aadharImage = req.files["aadharImage"][0];
       const pancardImage = req.files["pancardImage"][0];
-      const aadharImagePath = `employee/aadharImages/${isRestaurant}/${aadharImage.filename}`;
-      const pancardImagePath = `employee/pancardImages/${isRestaurant}/${pancardImage.filename}`;
+      const dirPath = path.join('uploads', 'employee', 'aadharImages');
+      const fileName = `${isRestaurant}/${aadharImage.filename}`;
+      const aadharImagePath = path.join(dirPath, fileName);
+      const dirPath1 = path.join('uploads', 'employee', 'pancardImages');
+      const fileName1 = `${isRestaurant}/${pancardImage.filename}`;
+      const pancardImagePath = path.join(dirPath1, fileName1);
+      // const aadharImagePath = `employee/aadharImages/${isRestaurant}/${aadharImage.filename}`;
+      // const pancardImagePath = `employee/pancardImages/${isRestaurant}/${pancardImage.filename}`;
 
-      await helpers.uploadFile(aadharImage, aadharImagePath);
-      await helpers.uploadFile(pancardImage, pancardImagePath);
+      await helpers.uploadFileLocally(aadharImage, aadharImagePath);
+      await helpers.uploadFileLocally(pancardImage, pancardImagePath);
 
-      const aadhar = helpers.getS3FileUrl(aadharImagePath);
-      const pancard = helpers.getS3FileUrl(pancardImagePath);
+      // const aadhar = helpers.getFileUrlLocally(aadharImagePath);
+      // const pancard = helpers.getFileUrlLocally(pancardImagePath);
 
-      helpers.deleteFile(pancardImage.path);
-      helpers.deleteFile(aadharImage.path);
+      // helpers.deleteFileLocally(pancardImage.path);
+      // helpers.deleteFileLocally(aadharImage.path);
 
-      const existingEmployee = await Employees.findOne({ employID });
+      const relativeImagePathadhar = `/${aadharImagePath.replace(/\\/g, '/')}`;
+      const relativeImagePathpancard = `/${pancardImagePath.replace(/\\/g, '/')}`;
+
+      const existingEmployee = await Employees.findOne({ employID })
       if (existingEmployee) {
         const updatedData = {
           staff: employ,
@@ -872,17 +882,17 @@ exports.addEmployDetails = async (req, res) => {
           gender: gender,
           aadhar_number: aadharNumber,
           pan_number: pancardNumber,
-          pf_number: pfNumber,
-          uan_number: uanNumber,
+          // pf_number: pfNumber,
+          // uan_number: uanNumber,
           phone: phone,
           emergency_contact_person_name: emergencyContactName,
           emergency_contact_person_address: emergencyContactAddress,
           permanent_address: permanentAddress,
           dob: dob,
           marital_status: maritalStatus,
-          aadhar_image: aadhar,
-          pancard_image: pancard,
-          esi_number: esiNumber,
+          aadhar_image: relativeImagePathadhar,
+          pancard_image: relativeImagePathpancard,
+          // esi_number: esiNumber,
           blood_group: bloodGroup,
           emergency_contact_person_number: emergencyContactNumber,
           emergency_contact_person_relation: emergencyContactPersonRelation,
@@ -1025,19 +1035,21 @@ console.log(files,restaurant,"i am customer");
 
       for (const file of req.files) {
         // const imageURL = await S3uploadFile(file.originalname, file.buffer);
+        const dirPath = path.join('uploads', 'customer', 'aadharImages');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
 
-        const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
+        await helpers.uploadFileLocally(file, imagePath);
 
-        await helpers.uploadFile(file, imagePath);
+        helpers.deleteFileLocally(file.path);
 
-        helpers.deleteFile(file.path);
-
-        const imageURL = helpers.getS3FileUrl(imagePath);
+        const imageURL = helpers.getFileUrlLocally(imagePath);
+        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
 
         // Store the URL in the array
-        aadharImages.push(imageURL);
+        aadharImages.push(relativeImagePath);
       }
-
    
       
     } 
@@ -1152,24 +1164,21 @@ exports.updateCustomerDetail = async (req, res) => {
         console.log("entered files>0");
      
         for (const imageUrl of data.aadharImage) {
-          await helpers.deleteS3File(imageUrl);
+          await helpers.deleteFileLocally(imageUrl);
         }
 
         for (const file of files) {
           // const imageURL = await S3uploadFile(file.originalname, file.buffer);
           
 
-          const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
-  
-          await helpers.uploadFile(file, imagePath);
-  
-          helpers.deleteFile(file.path);
-  
-          const imageURL = helpers.getS3FileUrl(imagePath);
-  
-          // Store the URL in the array
-          console.log(imageURL," i am urllll");
-          aadharImages.push(imageURL);
+          const dirPath = path.join('uploads', 'customer', 'aadharImages');
+          const fileName = `${restaurant}/${file.filename}`;
+          const imagePath = path.join(dirPath, fileName);
+          // const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
+          await helpers.uploadFileLocally(file, imagePath);
+          helpers.deleteFileLocally(file.path);
+          const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+          aadharImages.push(relativeImagePath);
         }
   
       } 
@@ -1443,24 +1452,27 @@ exports.addVenderDetails = async (req, res) => {
       category,
       contact,
       vendorName,
-      neft,
+      ifsc,
     } = req.body;
 
     if (file) {
-      imagePath = `vender/vendorProof/${restaurant}/${file.filename}`;
-      helpers.uploadFile(file, imagePath);
-      ImageURL = helpers.getS3FileUrl(imagePath);
-
-      helpers.deleteFile(file.path);
+      const dirPath = path.join('uploads', 'vender', 'vendorProof');
+      const fileName = `${restaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // imagePath = `vender/vendorProof/${restaurant}/${file.filename}`;
+      await helpers.uploadFileLocally(file, imagePath);
+      ImageURL = helpers.getFileUrlLocally(imagePath);
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+      helpers.deleteFileLocally(file.path)
 
       const vendorData = new Venders({
         ingredient: category,
         vendorId: VendorId,
         vendorName: vendorName,
         phone: contact,
-        billImage: ImageURL,
+        billImage: relativeImagePath,
         gst: GST,
-        neft: neft,
+        ifsc: ifsc,
         branchCode: BranchCode,
         accountNumber: AccountNumber,
         restaurant: restaurant,
@@ -1496,29 +1508,32 @@ exports.updateVenderDetails = async (req, res) => {
       category,
       contact,
       vendorName,
-      neft,
+      ifsc,
       id,
     } = req.body;
     const vendorData = await Venders.find({ _id: id });
 
     if (file) {
-      imagePath = `vender/vendorProof/${restaurant}/${file.filename}`;
+      const dirPath = path.join('uploads', 'vender', 'vendorProof');
+      const fileName = `${restaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // imagePath = `vender/vendorProof/${restaurant}/${file.filename}`;
 
-      helpers.deleteS3File(vendorData.billImage);
-      helpers.uploadFile(file, imagePath);
+      helpers.deleteFileLocally(vendorData.billImage);
+      await helpers.uploadFileLocally(file, imagePath);
 
-      ImageURL = helpers.getS3FileUrl(imagePath);
-
-      helpers.deleteFile(file.path);
+      ImageURL = helpers.getFileUrlLocally(imagePath);
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+      // helpers.deleteFileLocally(file.path);
 
       const updateData = {
         $set: {
           ingredient: category,
           vendorName: vendorName,
           phone: contact,
-          billImage: ImageURL,
+          billImage: relativeImagePath,
           gst: GST,
-          neft: neft,
+          ifsc: ifsc,
           branchCode: BranchCode,
           accountNumber: AccountNumber,
           restaurant: restaurant,
@@ -1533,7 +1548,7 @@ exports.updateVenderDetails = async (req, res) => {
           vendorName: vendorName,
           phone: contact,
           gst: GST,
-          neft: neft,
+          ifsc: ifsc,
           branchCode: BranchCode,
           accountNumber: AccountNumber,
           restaurant: restaurant,
@@ -1589,18 +1604,21 @@ exports.addIngredientsDetails = async (req, res) => {
       const file = req.file;
 
       let ImageURL;
+      let relativeImagePath;
 
       if (file) {
-        const imagePath = `vender/ingredients/${restaurant}/${file.filename}`;
+        const dirPath = path.join('uploads', 'vender', 'ingredients');
+        const fileName = `${restaurant}/${file.filename}`;
+        const imagePath = path.join(dirPath, fileName);
+        // const imagePath = `vender/ingredients/${restaurant}/${file.filename}`;
 
-        await helpers.uploadFile(file, imagePath);
+        await helpers.uploadFileLocally(file, imagePath);
 
-        ImageURL = helpers.getS3FileUrl(imagePath);
+        ImageURL = helpers.getFileUrlLocally(imagePath);
 
-        helpers.deleteFile(file.path);
+        relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
         console.log(ImageURL, "url");
       }
-
       const isExist = await Venders.findOne({ _id: vendor_id });
 
       if (isExist) {
@@ -1609,7 +1627,7 @@ exports.addIngredientsDetails = async (req, res) => {
           description: description,
           amount: totalAmount,
           paymentMode: paymentMode,
-          billImage: ImageURL,
+          billImage: relativeImagePath,
           restaurant: restaurant,
           vendorName: companyName,
           commodities: comoditiesArray,
@@ -1640,7 +1658,7 @@ exports.addIngredientsDetails = async (req, res) => {
             unit: stockItem.Unit,
             VendorId: new mongoose.Types.ObjectId(vendor_id),
             amount: CommodityAmount,
-            billURL: ImageURL,
+            billURL: relativeImagePath,
             restaurant: new mongoose.Types.ObjectId(restaurant),
           });
 
@@ -2129,6 +2147,7 @@ console.log(req.body,"bodyy");
 
       let aadharImages = []
       let pancard
+      let relativeImagePathpancard
       
       if (req.files && Object.keys(req.files).length > 0) {
 console.log(req.files);
@@ -2145,25 +2164,29 @@ console.log(req.files);
           for (const file of aadharImage) {
             // const imageURL = await S3uploadFile(file.originalname, file.buffer);
   
-            const imagePath = `employee/aadharImages/${restaurant}/${file.filename}`
-  
-            await helpers.uploadFile(file, imagePath);
-          
-            helpers.deleteFile(file.path);
-          
-            const imageURL = helpers.getS3FileUrl(imagePath);
-          
-            // Store the URL in the array
-            aadharImages.push(imageURL);
-          
-          }
+            const dirPath = path.join('uploads', 'employee', 'aadharImages');
+            const fileName = `${restaurant}/${file.filename}`;
+            const imagePath = path.join(dirPath, fileName);
+                  // const imagePath = `employee/aadharImages/${restaurant}/${file.filename}`
+        
+                  await helpers.uploadFileLocally(file, imagePath);
+                
+                  helpers.deleteFileLocally(file.path);
+                
+                  const imageURL = helpers.getFileUrlLocally(imagePath);
+                  console.log(imageURL);
+                  const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+                  // Store the URL in the array
+                  aadharImages.push(relativeImagePath);
+                
+                }
         
 
           if (employee.aadhar_image && employee.aadhar_image.length > 0) {
            
             for (const imageURL of employee.aadhar_image) {
 
-              await helpers.deleteS3File(imageURL);
+              await helpers.deleteFileLocally(imageURL);
            
             }
 
@@ -2174,18 +2197,22 @@ console.log(req.files);
 
         if (pancardImage) {
           
-          const pancardImagePath = `employee/pancardImages/${restaurant}/${pancardImage.filename}`;
-        
-          await helpers.uploadFile(pancardImage, pancardImagePath);
-        
-           pancard = helpers.getS3FileUrl(pancardImagePath);
-        
-          helpers.deleteFile(pancardImage.path);
-
-          const oldPanPicURL = employee.pancard_image;
-        
-          await helpers.deleteS3File(oldPanPicURL);
-
+          const dirPath = path.join('uploads', 'employee', 'pancardImages');
+          const fileName = `${restaurant}/${pancardImage.filename}`;
+          const pancardImagePath = path.join(dirPath, fileName);
+              // const pancardImagePath = `employee/pancardImages/${restaurant}/${pancardImage.filename}`;
+            
+              await helpers.uploadFileLocally(pancardImage, pancardImagePath);
+            
+               pancard = helpers.getFileUrlLocally(pancardImagePath);
+               relativeImagePathpancard = `/${pancardImagePath.replace(/\\/g, '/')}`;
+              helpers.deleteFileLocally(pancardImage.path);
+    
+              const oldPanPicURL = employee.pancard_image;
+            
+              await helpers.deleteFileLocally(oldPanPicURL);
+    
+    
 
         
         }
@@ -2237,7 +2264,7 @@ console.log(req.files);
         dob: dob,
         marital_status: maritalStatus,
         aadhar_image: aadharImages,
-        pancard_image: pancard,
+        pancard_image: relativeImagePathpancard,
         esi_number: esiNumber,
         blood_group: bloodGroup,
         emergency_contact_person_number: emergencyContactNumber,

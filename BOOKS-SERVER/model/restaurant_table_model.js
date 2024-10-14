@@ -63,6 +63,10 @@ const restaurantTable = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  paymentMethod: {
+    type: String,
+    default: 'Cash',
+  }
 });
 
 module.exports = mongoose.model("RestaurantTable", restaurantTable);

@@ -23,9 +23,9 @@ const Footer = () => {
   const emailAddress = "mag@bromagindia.com";
 
   const onSubmit = async (data) => {
-    console.log(data, "data");
+    // console.log(data, "data");
     const response = await sendFeedback(data);
-    console.log("Form submitted successfully:", data);
+    // console.log("Form submitted successfully:", data);
   };
 
   return (

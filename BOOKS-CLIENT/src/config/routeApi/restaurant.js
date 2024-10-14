@@ -29,6 +29,22 @@ const sendFeedback = async (data)=>{
     console.log(error);
   }
 }
+const storeDemoRequest = async (data)=>{
+  try {
+    const response = await restaurantAxiosInstance.post("demo-request",data);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
+const storeUserQuery = async (data)=>{
+  try {
+    const response = await restaurantAxiosInstance.post("user-query",data);
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 
-export { adminLogin,employeeLogin,sendFeedback };
+export { adminLogin,employeeLogin,sendFeedback, storeDemoRequest, storeUserQuery };

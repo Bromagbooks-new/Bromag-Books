@@ -32,9 +32,13 @@ const employees = mongoose.Schema({
     },
     pf_number:{
         type:String,
+        optional: true,
+        default: "",
     },
     uan_number:{
-        type:Number,
+        type:String,
+        optional: true,
+        default: "",
     },
     emergency_contact_person_name:{
         type:String,
@@ -66,7 +70,9 @@ const employees = mongoose.Schema({
         // required:true
     },
     esi_number:{
-        type:Number,
+        type:String,
+        optional: true,
+        default: "",
     },
     blood_group:{
         type:String,

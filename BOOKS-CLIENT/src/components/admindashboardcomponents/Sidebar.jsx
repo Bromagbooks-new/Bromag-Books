@@ -1,59 +1,25 @@
-import SidebarLinks from "./SidebarLinks";
-import sidebarlinks from "../../utils/SidebarLinksData";
 import { useDispatch } from "react-redux";
 import { ownerLogout } from "../../store/slices/owner";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import { IoLogOut } from "react-icons/io5";
+import { NavLink, useNavigate } from "react-router-dom";
+import logo from "@/assets/images/landing-images/bromag_books_white_BGLESS.png";
+import group from "@/assets/images/dashboard/Group 207 (1).svg";
 
+import billingManagement from "@/assets/images/dashboard/billing.svg";
+import salesManagement from "@/assets/images/dashboard/sales.svg";
+import orderManagement from "@/assets/images/dashboard/order.svg";
+import dominentManagement from "@/assets/images/dashboard/dominent.svg";
+import menuManagement from "@/assets/images/dashboard/menu.svg";
+import employeeManagement from "@/assets/images/dashboard/employee.svg";
+import tableManagement from "@/assets/images/dashboard/table.svg";
+import vendorManagement from "@/assets/images/dashboard/vendor.svg";
+import stockManagement from "@/assets/images/dashboard/stock.svg";
+import inventoryManagement from "@/assets/images/dashboard/inventory.svg";
+import crmManagement from "@/assets/images/dashboard/crm.svg";
+import dashboard from "@/assets/images/dashboard/dashboard.svg";
+import { cn } from "@/lib/utils";
+import { ScrollArea } from "../ui/scroll-area";
 
-
-const LogOut = styled.div`
-padding: 0px 0px;
-width: 100%;
-display: flex;
-margin-bottom: 20px;
-
-button{
-  width: 100%;
-  background-color: transparent;
-  color: #fff;
-  border-style: none;
-  padding:0px 0px 0px 0px;
-  text-align: left;
-  background-color:#00418D;
-  border-radius: 0px 0px 15px 15px; 
-  display: flex;
-  align-items: flex-start;
-  p{
-    width: 100%;
-    height: 52px;
-    display: flex;
-    align-items: center;
-    padding-left:15px;
-  }
-}
-span{
-  width: 15%;
-  font-size: 16px;
-  color: #fff;
-  margin-right: 10px;
-  background-color:#00418D; 
-  padding: 14px 10px;
-  border-radius: 0px 0px 50px 50px;
-  text-align: center;
-}
-button p:hover{
-  background-color: #C8E1FF;
-  border-radius: 25px 0px 0px 25px;
-  color: #000;
-}
-@media screen and (min-width:768px) and (max-width: 1024px){
-height: calc(100vh - 60vh);
-}
-`;
-
-function Sidebar({ openSidebarToggle, openSidebar }) {
+function Sidebar() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -65,33 +31,132 @@ function Sidebar({ openSidebarToggle, openSidebar }) {
 
   return (
     // className = { openSidebarToggle? "sidebar-responsive": "" }
-    <aside id="sidebar" className={openSidebarToggle ? 'sidebar-responsive' : ''}>
-      <div className="sidebar-content" style={{ width: "98%", height: "100%" }}>
-
-        <div className="sidebar_title">
-          <span className="icon close_icon" onClick={openSidebar}>
-            X
-          </span>
-        </div>
-
-
-        <div style={{ margin: "20px 10px 0px 10px" }}>
-
-          <div>
-            {sidebarlinks.map((item, index) => {
-              return <SidebarLinks key={index} index={index} item={item}></SidebarLinks>;
-            })}
-          </div>
-
-          <LogOut className="logout-div" >
-            <span><IoLogOut /></span>
-            <button onClick={handleLogout}>
-              <p>logout</p>
-            </button>
-          </LogOut>
-        </div>
+    <aside id="sidebar" className=" md:w-[20%] h-screen py-4 text-white">
+      <img src={logo} className="w-16 h-16 ml-4" />
+      <div className="pt-4 flex h-full">
+        <ScrollArea
+          className="h-[35rem] w-full overflow-visible z-20"
+          type="scroll"
+        >
+          <nav className="flex flex-col h-full justify-center gap-3 w-[20rem] p-3 z-20">
+            {sideBarItems.map((item) => (
+              <NavLink
+                to={item.url}
+                key={item.id}
+                end={item.url === "/dashboard"}
+                className={({ isActive }) =>
+                  cn(
+                    ` flex gap-3 items-center p-2 w-11/12 z-20 hover:bg-gray-600`,
+                    {
+                      "bg-[#677F9074] rounded-lg": isActive,
+                    }
+                  )
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <div
+                      className={cn(
+                        "w-2 rounded-r-lg h-12 -my-2 bg-[#56DDE8] -ml-6 z-20 hidden",
+                        { block: isActive }
+                      )}
+                    />
+                    <img src={item.icon} className="w-6 h-6" />
+                    <p
+                      className={cn("text-base", { "font-semibold": isActive })}
+                    >
+                      {item.title}
+                    </p>
+                  </>
+                )}
+              </NavLink>
+            ))}
+          </nav>
+        </ScrollArea>
+      </div>
+      <div className="relative h-0 z-0">
+        <img
+          src={group}
+          className="w-[20rem] h-[20rem] opacity-70 fixed bottom-0 z-0 -left-10"
+        />
       </div>
     </aside>
   );
 }
 export default Sidebar;
+
+const sideBarItems = [
+  {
+    id: 1,
+    title: "Dashboard",
+    url: "/dashboard",
+    icon: dashboard,
+  },
+  {
+    id: 2,
+    title: "Billing Management",
+    url: "billing-management",
+    icon: billingManagement,
+  },
+  {
+    id: 3,
+    title: "Sales Management",
+    url: "sales-management",
+    icon: salesManagement,
+  },
+  {
+    id: 4,
+    title: "Order Management",
+    url: "order-management",
+    icon: orderManagement,
+  },
+  {
+    id: 5,
+    title: "Dominant Management",
+    url: "dominant-management",
+    icon: dominentManagement,
+  },
+  {
+    id: 6,
+    title: "Menu Management",
+    url: "menu-management",
+    icon: menuManagement,
+  },
+
+  {
+    id: 7,
+    title: "Table Management",
+    url: "table-management",
+    icon: tableManagement,
+  },
+  {
+    id: 8,
+    title: "Stock Management",
+    url: "stock-management",
+    icon: stockManagement,
+  },
+  {
+    id: 9,
+    title: "Inventory Management",
+    url: "inventory-management",
+    icon: inventoryManagement,
+  },
+  {
+    id: 10,
+    title: "Wallet Management",
+    url: "wallet-management",
+    icon: vendorManagement,
+  },
+  {
+    id: 11,
+    title: "Employee Management",
+    url: "employee-management",
+    icon: employeeManagement,
+  },
+  {
+    id: 12,
+    title: "CRM Management",
+    url: "crm-management",
+    icon: crmManagement,
+  },
+];

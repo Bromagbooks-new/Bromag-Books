@@ -7,11 +7,13 @@ import { useEffect, useState } from "react";
 import { GetCapDashboard, capDashboard } from "../../config/routeApi/cap";
 import Uploading from "../loaders/Uploading";
 import toast from "react-hot-toast";
+import { RestaurantAdminApi } from "../../config/global";
 
 const CaptainHeader = ({ openSidebar }) => {
   const [click, setClick] = useState(false);
   const [capData, setCapData] = useState({});
   const [restaurant, setRestaurant] = useState({});
+  const [profilePhoto, setProfilePhoto] = useState();
   //   const [isUploading, setUploading] = useState(false);
 
   useEffect(() => {
@@ -21,10 +23,12 @@ const CaptainHeader = ({ openSidebar }) => {
         // const response = await GetCapDashboard();
         const response = await capDashboard();
 
-console.log(response,"header response");
+// console.log(response,"header response");
         if (response.data.success) {
           setRestaurant(response.data.RestaurantData)
           setCapData(response.data.ManagerData);
+          const formattedPhoto = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+response.data.ManagerData.profileImage
+          setProfilePhoto(formattedPhoto)
         } else {
           toast.error(response.data.message);
         }
@@ -68,7 +72,7 @@ console.log(response,"header response");
 
           <div className="profile" onClick={handleClick}>
             <div className="profile-div">
-              <img src={ProfileImg} alt="" />
+              <img src={profilePhoto ||ProfileImg} alt="" />
             </div>
           </div>
         </div>

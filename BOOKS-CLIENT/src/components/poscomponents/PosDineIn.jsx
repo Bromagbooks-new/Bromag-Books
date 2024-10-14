@@ -10,6 +10,7 @@ import { Table } from "../../assets/images";
 // backend imports to list the datas
 import { GetDineInData } from "../../config/routeApi/pos";
 import { toastError } from "../../helpers/helpers";
+import { RestaurantAdminApi } from "../../config/global";
 
 const Wrapper = styled.div`
   margin-bottom: 40px;
@@ -122,7 +123,11 @@ const PosDineIn = () => {
         const response = await GetDineInData();
         if (response.data.success) {
           console.log(response.data.DineInData,"dinin dataa")
-          setDineInData(response.data.DineInData);
+          const transformedData = response.data.DineInData.map((data)=> {
+            data.tableId.image = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+data.tableId.image;
+            return data;
+          })
+          setDineInData(transformedData);
         } else {
           toastError(response.data.message);
         }

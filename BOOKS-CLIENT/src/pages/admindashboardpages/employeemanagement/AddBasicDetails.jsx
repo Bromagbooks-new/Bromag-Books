@@ -550,7 +550,7 @@ const AddBasicDetails = () => {
 
                   <input
                     {...register("uanNumber", {
-                      required: true,
+                      // required: true,
                       pattern: /^[A-Za-z0-9]*$/,
                     })}
                     type="text"

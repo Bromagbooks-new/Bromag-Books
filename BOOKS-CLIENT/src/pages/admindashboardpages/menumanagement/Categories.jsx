@@ -55,6 +55,11 @@ const Categories = () => {
       const response = await DeleteMenuCategory(categoryId);
       setUploading(false)
 
+      if(response.data.status === 'ACTIVE_MENU_EXISITS') {
+        toastError(response.data.message);
+        return;
+      }
+
       if (refresh === true) {
         setRefresh(false);
       } else {

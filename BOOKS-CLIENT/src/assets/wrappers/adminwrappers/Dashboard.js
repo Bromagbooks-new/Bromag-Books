@@ -54,6 +54,11 @@ const Wrapper = styled.main`
   height: 300px;
 }
 
+.page-content {
+  display: flex;
+  gap: 20px;
+}
+
 `;
 
 export default Wrapper;

@@ -118,6 +118,7 @@ console.log(newMenuData,"heyy")
       }
   
       // Add the menuItem to the array corresponding to its category and subcategory
+      menuItem.itemImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+menuItem.itemImage
       organizedMenu[category][subCategory].push(menuItem);
     });
   
@@ -128,6 +129,7 @@ console.log(newMenuData,"heyy")
   const handleMenuData = async () => {
     try {
       const {data} = await MenuData();
+      console.log(data);
 
       
       if (data.success) {

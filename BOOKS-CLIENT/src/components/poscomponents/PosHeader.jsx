@@ -6,6 +6,7 @@ import { posDashboard, updateProfileImage } from "../../config/routeApi/pos";
 import { useEffect, useState } from "react";
 import { toastError, toastSuccess } from "../../helpers/helpers";
 import toast from "react-hot-toast";
+import { RestaurantAdminApi } from "../../config/global";
 
 
 const PosHeader = ({ openSidebar }) => {
@@ -50,7 +51,10 @@ const PosHeader = ({ openSidebar }) => {
         const response = await posDashboard();
         if (response.data.success) {
           setRestaurant(response.data.RestaurantData);
-          setManager(response.data.ManagerData);
+          let transformedManagerData = response.data.ManagerData;
+          transformedManagerData.profileImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+transformedManagerData.profileImage
+          console.log(transformedManagerData);
+          setManager(transformedManagerData);
         } else {
           toast.error(response.data.message);
         }
@@ -59,7 +63,7 @@ const PosHeader = ({ openSidebar }) => {
       }
     };
     handleRestaurantData();
-  }, [manager]);
+  }, []);
 
   return (
     <Wrapper className="pos-header">

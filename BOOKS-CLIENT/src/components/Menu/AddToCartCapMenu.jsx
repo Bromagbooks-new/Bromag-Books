@@ -5,6 +5,7 @@ import Card from "react-bootstrap/Card";
 import { GetMenuDataAtCap } from "../../config/routeApi/cap";
 import Uploading from "../loaders/Uploading";
 import { toastError } from "../../helpers/helpers";
+import { RestaurantAdminApi } from "../../config/global";
 
 const AddToCartCapMenu = ({
   onTotalPriceChange,
@@ -12,6 +13,7 @@ const AddToCartCapMenu = ({
   sortingOption,
   selectedCategory,
   searchTerm,
+  clearMenuSignal
 }) => {
   const [menu, setMenu] = useState([]);
   const [quantities, setQuantities] = useState({});
@@ -27,12 +29,16 @@ const AddToCartCapMenu = ({
       setUploading(false);
 
       if (response.data.success) {
-        setMenu(response.data.MenuData);
+        const transformedMenuData = response.data.MenuData.map(item=> {
+          item.itemImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+item.itemImage;
+          return item;
+        })
+        setMenu(transformedMenuData);
         const initialQuantities = {};
         response.data.MenuData.forEach((menuItem) => {
-         
+          
           initialQuantities[menuItem._id] = {
-            quantity: 1,
+            quantity: 0,
             item: menuItem.item,
             price: menuItem.discountPrice? menuItem.discountPrice:actualPrice,
           };
@@ -99,9 +105,11 @@ const AddToCartCapMenu = ({
   }, [sortingOption, menu, searchTerm]);
 
   useEffect(() => {
-    console.log("Fetching menu data");
+    // console.log("Fetching menu data");
+    setSelectedItems([]);
     handleMenuData();
-  }, [selectedCategory]);
+    // console.log(clearMenuSignal);
+  }, [selectedCategory, clearMenuSignal]);
 
   useEffect(() => {
     let totalPrice = 0;
@@ -149,9 +157,9 @@ const AddToCartCapMenu = ({
       [itemId]: {
         ...prevQuantities[itemId],
         quantity:
-          prevQuantities[itemId].quantity > 1
+          prevQuantities[itemId].quantity > 0
             ? prevQuantities[itemId].quantity - 1
-            : 1,
+            : 0,
       },
     }));
 
@@ -162,12 +170,19 @@ const AddToCartCapMenu = ({
 
   // Increase quantity handler
   const setIncrease = (itemId, productStock) => {
+    // console.log(productStock);
 
     if (selectedItems.includes(itemId)) {
      return toastError("Uncheck to Change Quantity")
     }
 
-    setQuantities((prevQuantities) => ({
+    setQuantities((prevQuantities) => {
+      
+      if(prevQuantities[itemId].quantity === productStock) {
+        toastError("You can only select upto "+productStock+ " of this item");
+      }
+      
+      return {
       ...prevQuantities,
       [itemId]: {
         ...prevQuantities[itemId],
@@ -176,7 +191,7 @@ const AddToCartCapMenu = ({
             ? prevQuantities[itemId].quantity + 1
             : productStock,
       },
-    }));
+    }});
 
 
 
@@ -228,9 +243,12 @@ const AddToCartCapMenu = ({
                 {menuItem.discountPrice ? menuItem.discountPrice : null}
               </p>
               </div>
-
               <div className="count-div">
-                <div className="quantity">quantity </div>
+                <div className="quantity">Available Quantity</div>
+                <div className="count">{menuItem.quantity}</div>
+              </div>
+              <div className="count-div">
+                <div className="quantity">Order Quantity</div>
                 <div className="increase-decrease-div">
                   <button
                     className="decrease"
@@ -243,7 +261,7 @@ const AddToCartCapMenu = ({
                   </div>
                   <button
                     className="increase"
-                    onClick={() => setIncrease(menuItem._id, productStock)}
+                    onClick={() => setIncrease(menuItem._id, menuItem.quantity)}
                   >
                     <FaPlus />
                   </button>

@@ -14,7 +14,7 @@ function Header({ openSidebar }) {
         (async function getDetails(){
             
             const response =await GetRestaurantDetail()
-            console.log(response, "response");
+            // console.log(response, "response");
             if (response.data.success) {
     
                 setRestaurantData(response.data.restaurantData)

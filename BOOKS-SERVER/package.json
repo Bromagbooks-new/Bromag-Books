@@ -25,6 +25,7 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
+    "server": "file:",
     "uuid": "^9.0.1"
   }
 }

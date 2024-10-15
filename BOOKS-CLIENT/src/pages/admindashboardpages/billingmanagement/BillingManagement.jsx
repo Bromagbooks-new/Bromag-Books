@@ -15,8 +15,8 @@ import { Button } from "@/components/ui/button";
 import { GetCardAnalytics } from "@/config/routeApi/owner";
 
 const BillingManagement = () => {
- const breakdown = useLoaderData();
-//  console.log("breakdown here :", breakdown);
+  const breakdown = useLoaderData();
+  //  console.log("breakdown here :", breakdown);
 
   return (
     <div className="w-full h-full border py-4 flex flex-col gap-4">
@@ -66,16 +66,16 @@ const BillingManagement = () => {
 
 export default BillingManagement;
 
-export const billingManagementLoader = async ()=> {
+export const billingManagementLoader = async () => {
   try {
-    const response = await GetCardAnalytics({date: new Date()});
+    const response = await GetCardAnalytics({ date: new Date() });
     // console.log('response2:', response)
 
-    if(response.status === 200) {
+    if (response.status === 200) {
       console.log(response.data);
       return response.data.breakdown;
     }
-  } catch(error) {
+  } catch (error) {
     console.error(error);
   }
 }

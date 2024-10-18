@@ -258,12 +258,12 @@ const router = createBrowserRouter([
               {
                 path: 'online-order',
                 element: <OnlineOrder />,
-                loader : getTotalAndHoldOrdersCountForOnline
+                loader: getTotalAndHoldOrdersCountForOnline
               },
               {
                 path: 'takeaway-order',
                 element: <TakeawayOrder />,
-                loader : getTotalAndHoldOrdersCountForTakeAway
+                loader: getTotalAndHoldOrdersCountForTakeAway
               },
               {
                 path: 'dinein-order',
@@ -272,32 +272,32 @@ const router = createBrowserRouter([
             ]
           },
           {
-            path : "billing-management/dinein-order/tables-on-hold",
-            element : <TablesOnHold />,
-            loader : getTablesOnHoldDataFn
+            path: "billing-management/dinein-order/tables-on-hold",
+            element: <TablesOnHold />,
+            loader: getTablesOnHoldDataFn
           },
           {
-            path : "billing-management/dinein-order/tables-on-hold-and-available",
-            element : <TableOnHoldAndAvailable />,
-            loader : getHoldAndAvailableTableDataFn
+            path: "billing-management/dinein-order/tables-on-hold-and-available",
+            element: <TableOnHoldAndAvailable />,
+            loader: getHoldAndAvailableTableDataFn
           },
           {
-            path : "billing-management/takeaway-order/orders-on-hold",
-            element : <OrderOnHoldForTakeAway />,
-            loader : fetchHoldBillsFn
+            path: "billing-management/takeaway-order/orders-on-hold",
+            element: <OrderOnHoldForTakeAway />,
+            loader: fetchHoldBillsFn
           },
           {
-            path : "billing-management/takeaway-order/total-orders",
-            element : <TotalOrdersForTakeAway />
+            path: "billing-management/takeaway-order/total-orders",
+            element: <TotalOrdersForTakeAway />
           },
           {
-            path : "billing-management/online-order/orders-on-hold",
-            element : <OrderOnHoldForOnline />,
-            loader : fetchHoldBillsForOnlineFn
+            path: "billing-management/online-order/orders-on-hold",
+            element: <OrderOnHoldForOnline />,
+            loader: fetchHoldBillsForOnlineFn
           },
           {
-            path : "billing-management/online-order/total-orders",
-            element : <TotalOrdersForOnline />
+            path: "billing-management/online-order/total-orders",
+            element: <TotalOrdersForOnline />
           },
           {
             path: 'billing-management/order',
@@ -307,7 +307,7 @@ const router = createBrowserRouter([
           {
             path: 'billing-management/update-order',
             element: <UpdateOrder />,
-            loader : getOrderDetails
+            loader: getOrderDetails
           },
           {
             path: 'billing-management/opening-report',
@@ -353,40 +353,40 @@ const router = createBrowserRouter([
 
           //   ],
           // },
-          // {
-          //   path: "sales-management",
-          //   element: <Outlet />,
-          //   children: [
-          //     {
-          //       index: true,
-          //       element: <SalesManagement />,
-          //     },
-          //     {
-          //       path: "total-sales",
-          //       element: <TotalSales />,
-          //     },
-          //     {
-          //       path: "online-orders",
-          //       element: <OnlineOrders />,
-          //     },
-          //     {
-          //       path: "take-away",
-          //       element: <TakeAway />,
-          //     },
-          //     {
-          //       path: "dining",
-          //       element: <Dining />,
-          //     },
-          //   ],
-          // },
           {
-            path : "order-management",
-            element : <OrderManagement />,
-            children : [
+            path: "sales-management",
+            element: <Outlet />,
+            children: [
               {
-                index : true,
-                element : <NewOrderCharts />,
-                loader : newOrderChartsLoader
+                index: true,
+                element: <SalesManagement />,
+              },
+              {
+                path: "total-sales",
+                element: <TotalSales />,
+              },
+              {
+                path: "online-orders",
+                element: <OnlineOrders />,
+              },
+              {
+                path: "take-away",
+                element: <TakeAway />,
+              },
+              {
+                path: "dining",
+                element: <Dining />,
+              },
+            ],
+          },
+          {
+            path: "order-management",
+            element: <OrderManagement />,
+            children: [
+              {
+                index: true,
+                element: <NewOrderCharts />,
+                loader: newOrderChartsLoader
               }
             ]
           },
@@ -589,9 +589,9 @@ const router = createBrowserRouter([
             element: <Outlet />,
             children: [
               {
-                index : true,
-                element : <TableManagement />,
-                loader : totalCountOfAddedTableDataLoader
+                index: true,
+                element: <TableManagement />,
+                loader: totalCountOfAddedTableDataLoader
               },
               {
                 path: "add-table",
@@ -604,7 +604,7 @@ const router = createBrowserRouter([
               {
                 path: "update-table/:tableId",
                 element: <UpdateTableInTableManagement />,
-                loader : totalOrderDetailsForSelectedTable
+                loader: totalOrderDetailsForSelectedTable
               },
               {
                 path: "captain-passbook",

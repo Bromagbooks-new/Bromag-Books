@@ -9,6 +9,73 @@ import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { SalesDashboard } from "../../../config/routeApi/owner";
 import { toastError } from "../../../helpers/helpers";
+import { Line } from 'react-chartjs-2';
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+const data = {
+  labels: Array.from({ length: 26 }, (_, i) => `Day ${i + 1}`),
+  datasets: [
+    {
+      label: 'Sales Data',
+      data: [20, 40, 30, 50, 40, 20, 90, 50, 30, 60, 22, 40, 30, 50, 80, 40, 30, 70, 60, 40, 20],
+      fill: true,
+      backgroundColor: 'rgba(0, 123, 255, 0.2)',
+      borderColor: 'rgba(0, 123, 255, 1)',
+      pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+      tension: 0.3
+    }
+  ]
+};
+
+const options = {
+  responsive: true,
+  plugins: {
+    legend: {
+      display: false
+    },
+    tooltip: {
+      mode: 'index',
+      intersect: false
+    }
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      max: 100,
+      ticks: {
+        stepSize: 20,
+        callback: (value) => `${value}%`
+      }
+    },
+    x: {
+      beginAtZero: true,
+      ticks: {
+        autoSkip: true,
+        maxTicksLimit: 10
+      }
+    }
+  }
+};
+
+
 
 const SalesManagement = () => {
   const [totalSalesPerDay, setTotalSalesPerDay] = useState({});
@@ -57,10 +124,10 @@ const SalesManagement = () => {
         setHighestBillingAmountPerHr(response.data.HighestBillingAmountPerHr);
         setAverageBillingAmountPerDay(response.data.averageBillingAmountPerDay);
         if (response.data.TotalOnlineSales) {
-          
+
           setOnlineAggregatesPerDay(response.data.TotalOnlineSales);
         }
-        
+
         setTakeAwayPerDay(response.data.totalTakeAwayTotalAmount);
         setDineInPerDay(response.data.totalDineInPerDay);
       } else {
@@ -135,26 +202,33 @@ const SalesManagement = () => {
     }
   };
 
+
   const totalSales = [
     {
       title: " Total Sales Amount/Day",
       quantity:
         totalSalesPerDay && totalSalesPerDay.totalAmount
           ? totalSalesPerDay.totalAmount
-          : 0,
+          : 2341,
+      borderColor: "#3357FF",
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
     },
     {
       title: "Hourly Sales Amount",
       quantity:
-      hourlySalesPerDay
+        hourlySalesPerDay || 1230,
+      borderColor: "#FF5733",
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
     },
     {
       title: "Highest Billing Amount/hr",
       quantity:
         highestBillingAmountPerHr && highestBillingAmountPerHr
           ? highestBillingAmountPerHr
-          : 0,
-         
+          : 3784,
+      borderColor: "#33FF57",
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
+
     },
     // {
     //   title: "Average Billing Amount per Day",
@@ -167,21 +241,26 @@ const SalesManagement = () => {
     {
       title: "Online Aggregator Sales/Day",
       quantity:
-      onlineAggregatesPerDay &&
-      onlineAggregatesPerDay
-         
+        onlineAggregatesPerDay &&
+        onlineAggregatesPerDay,
+      borderColor: "#A020F0",
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
     },
     {
       title: "Take Away Sales Amount/Day",
-      quantity: `${takeAwayPerDay}`,
+      quantity: `${takeAwayPerDay || 2}`,
+      borderColor: "#0000FF",
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
     },
     {
       title: "Dining Sales Amount/Day",
-      quantity: `${dineInPerDay}`,
+      quantity: `${dineInPerDay || 269}`,
+      borderColor: "#8B0000",
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
     },
   ];
 
-console.log("hourlySalesPerDay",highestBillingAmountPerHr)
+  console.log("hourlySalesPerDay", highestBillingAmountPerHr)
 
 
 
@@ -190,123 +269,17 @@ console.log("hourlySalesPerDay",highestBillingAmountPerHr)
       <div className="page-content">
         <div className="page-header">
           <div>
-            <h3>Sales Management</h3>
+            <p className="text-3xl mt-3 mb-2 ml-9 font-bold">Sales Management</p>
           </div>
-
-          {/* <div className="dates">
-            <form onSubmit={handleSubmit(handleDateFilter)}>
-              <div className="dates">
-                <div className="date left">
-                  <Form.Label>From</Form.Label>
-                  <div>
-                    <Form.Control
-                      className="date-input"
-                      type="date"
-                      {...register("start", { required: true })}
-                    />
-                    {errors.start && (
-                      <Form.Control.Feedback type="invalid">
-                        Please enter a valid date
-                      </Form.Control.Feedback>
-                    )}
-                  </div>
-                </div>
-
-                <div className="date right">
-                  <Form.Label>To</Form.Label>
-                  <div>
-                    <Form.Control
-                      className="date-input"
-                      type="date"
-                      {...register("end", { required: true })}
-                    />
-                    {errors.end && (
-                      <Form.Control.Feedback type="invalid">
-                        Please enter a valid date
-                      </Form.Control.Feedback>
-                    )}
-                  </div>
-                </div>
-                <Button className="search-btn" type="submit">
-                  Submit
-                </Button>
-              </div>
-            </form>
-          </div> */}
         </div>
-
-        {/* <section>
-          <div className="card-deck">
-            <Button
-              onClick={() => handleButtonClick("today")}
-              className={
-                showToday
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Today
-            </Button>
-
-            <Button
-              onClick={() => handleButtonClick("yesterday")}
-              className={
-                showYesterday
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Yesterday
-            </Button>
-
-            <Button
-              onClick={() => handleButtonClick("lastWeek")}
-              className={
-                showLastWeek
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Last Week
-            </Button>
-
-            <Button
-              onClick={() => handleButtonClick("lastMonth")}
-              className={
-                showLastMonth
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Last Month
-            </Button>
-
-            <Button
-              onClick={() => handleButtonClick("lastYear")}
-              className={
-                showLastYear
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Last Year
-            </Button>
-
-            <Button
-              onClick={() => handleButtonClick("total")}
-              className={showTotal ? "quicklink-btn" : "quicklink-btn"}
-            >
-              Reset
-            </Button>
-          </div>
-        </section> */}
-
         <section className="sales-card-deck">
           <SalesManagementCard arrayOfObjects={totalSales} />
-          {/* <SalesManagementCard arrayOfObjects={totalOnlineSales} /> */}
-          {/* <SalesManagementCard arrayOfObjects={totalOfflineSales} /> */}
-          {/* <SalesManagementCard arrayOfObjects={totalCategorySales} /> */}
         </section>
+        <div style={{ height: '345px', width: "85%", marginTop: '0rem', marginLeft: "30px", backgroundColor: '#fff', borderRadius: '1rem', padding: '0.5rem' }}>
+          <div style={{ height: '95%', backgroundColor: '#e0f0ff', borderRadius: '1rem', padding: '1rem' }}>
+            <Line data={data} options={options} />
+          </div>
+        </div>
       </div>
     </Wrapper>
   );

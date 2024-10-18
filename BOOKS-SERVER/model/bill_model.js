@@ -108,31 +108,45 @@ const billSchema = mongoose.Schema({
 
 billSchema.index({ restrauntId: 1 })
 
-billSchema.statics.generateBillId = async function (restaurantName, restrauntId) {
+billSchema.statics.generateBillId = async function (
+  restaurantName, // Rathor
+  restrauntId //
+) {
   const today = new Date();
-  const dateString = today.toISOString().split("T")[0];
-  const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
+  const dateString = today.toISOString().split("T")[0]; // Get date in YYYY-MM-DD format
+  console.log(restaurantName);
+  const restaurantCode = restaurantName.substring(0, 3).toUpperCase(); // RAT0035 RAT
+  console.log('restaurantCode:', restaurantCode)
 
-  try {
-    const lastOrder = await this.findOne({
-      restrauntId: restrauntId,
-      date: { $gte: new Date(dateString) },
-    }).sort({ date: -1 });
+  // Find the last order for this restaurant from today
+  const lastOrder = await this.findOne({
+    restrauntId: restrauntId,
+    // date: { $gte: new Date(dateString) },
+    // $or: [
+    //   { orderStatus: 'Success' },
+    //   { orderMode: { $in: ['Swiggy', 'Zomato', 'Bromag', 'others'] } }
+    // ],
+  }).sort({ date: -1 }); // 66ed682a03b498ef78cc5985
+  // console.log('lastOrder:', lastOrder)
 
-    let count = 1;
-    if (lastOrder && lastOrder.billNo) {
-      const lastBillId = lastOrder.billNo;
-      const lastCount = lastBillId ? parseInt(lastBillId.substring(3), 10) : 1;
-      count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999
-    }
-
-    return `${restaurantCode}${count.toString().padStart(4, "0")}`;
-  } catch (error) {
-    console.error("Error generating bill ID:", error);
-    throw new Error("Could not generate bill ID");
+  console.log("NEWWW BILLL ID-----------------------------------------");
+  // console.log(lastOrder);
+  console.log('lastOrder.billNo:', lastOrder.billNo)
+  let count = 1;
+  if (lastOrder && lastOrder.billNo) { // RAT0035
+    // Extract the count from the last bill ID
+    const lastBillId = lastOrder.billNo; // RAT0035
+    const lastCount = lastBillId
+      ? parseInt(lastBillId?.substring(3), 10) // 35
+      : 1;
+    count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999 range  // 6
   }
-};
 
+  // Format the bill ID
+  const billId = `${restaurantCode}${count.toString().padStart(4, "0")}`;
+  console.log('billId:', billId)
+  return billId; // RAT006
+};
 
 billSchema.statics.getTotalBillsForDay = async function (restaurantId, date) {
   const startOfDay = new Date(date);

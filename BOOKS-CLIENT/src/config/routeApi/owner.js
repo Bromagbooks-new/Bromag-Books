@@ -419,7 +419,7 @@ const GetTotalBillsEitherForTakeAwayOrOnlineOrders = async (page, type) => {
   try {
     const response = await restaurantOwnerAxiosInstance.get(`getTotalBillsEitherForTakeAwayOrOnlineOrders?page=${page}&type=${type}`);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error("error in GetTotalBillsEitherForTakeAwayOrOnlineOrders owner.js:", error);
     throw error
   }
@@ -447,7 +447,7 @@ const GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.get(`getTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline?type=${data}`);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error("Error in GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline owner.js :", error);
     throw error;
   }
@@ -658,7 +658,7 @@ const UpdateMenuItemAvailableStatus = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.put("updateMenuItemAvailableStatus", data);
     return response;
-  } catch(error) {
+  } catch (error) {
     console.error(error);
     throw error;
   }
@@ -1051,6 +1051,7 @@ const TotalSalesData = async () => {
     const response = await restaurantOwnerAxiosInstance.get(
       "getTotalSalesData"
     );
+    console.log("hello", response)
     return response;
   } catch (error) {
     console.log(error);

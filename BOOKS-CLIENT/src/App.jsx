@@ -153,6 +153,7 @@ import OrderOnHoldForOnline, { fetchHoldBillsForOnlineFn } from "./pages/adminda
 import TotalOrdersForOnline from "./pages/admindashboardpages/billingmanagement/TotalOrdersForOnline";
 import UpdateOrder, { getOrderDetails } from "./pages/admindashboardpages/billingmanagement/UpdateOrder";
 import NewOrderCharts, { newOrderChartsLoader } from "./components/ordermanagement/NewOrderCharts";
+import { getTotalSalesDataFn } from "./pages/admindashboardpages/salesmanagement/TotalSales";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -354,16 +355,18 @@ const router = createBrowserRouter([
           //   ],
           // },
           {
-            path: "sales-management",
+            path: 'sales-management',
             element: <Outlet />,
+            loader: getTotalSalesDataFn,
             children: [
               {
                 index: true,
                 element: <SalesManagement />,
               },
               {
-                path: "total-sales",
+                path: 'total-sales',
                 element: <TotalSales />,
+                loader: getTotalSalesDataFn,
               },
               {
                 path: "online-orders",

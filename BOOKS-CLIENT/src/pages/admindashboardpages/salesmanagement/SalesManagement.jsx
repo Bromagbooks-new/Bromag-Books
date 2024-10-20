@@ -205,60 +205,49 @@ const SalesManagement = () => {
 
   const totalSales = [
     {
-      title: " Total Sales Amount/Day",
-      quantity:
-        totalSalesPerDay && totalSalesPerDay.totalAmount
-          ? totalSalesPerDay.totalAmount
-          : 2341,
+      title: "Total Sales Amount/Day",
+      quantity: totalSalesPerDay?.totalAmount || 2341,
       borderColor: "#3357FF",
-      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg",
+      url: "total-sales"
     },
     {
       title: "Hourly Sales Amount",
-      quantity:
-        hourlySalesPerDay || 1230,
+      quantity: hourlySalesPerDay || 1230,
       borderColor: "#FF5733",
-      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg",
+      url: "hourly-sales"
     },
     {
       title: "Highest Billing Amount/hr",
-      quantity:
-        highestBillingAmountPerHr && highestBillingAmountPerHr
-          ? highestBillingAmountPerHr
-          : 3784,
+      quantity: highestBillingAmountPerHr || 3784,
       borderColor: "#33FF57",
-      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
-
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg",
+      url: "highest-billing"
     },
-    // {
-    //   title: "Average Billing Amount per Day",
-    //   quantity:
-    //     averageBillingAmountPerDay &&
-    //     averageBillingAmountPerDay.averageAmountPerDay
-    //       ? averageBillingAmountPerDay.averageAmountPerDay
-    //       : 0,
-    // },
     {
       title: "Online Aggregator Sales/Day",
-      quantity:
-        onlineAggregatesPerDay &&
-        onlineAggregatesPerDay,
+      quantity: onlineAggregatesPerDay || 0,
       borderColor: "#A020F0",
-      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg",
+      url: "online-sales"
     },
     {
       title: "Take Away Sales Amount/Day",
       quantity: `${takeAwayPerDay || 2}`,
       borderColor: "#0000FF",
-      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg",
+      url: "take-away"
     },
     {
       title: "Dining Sales Amount/Day",
       quantity: `${dineInPerDay || 269}`,
       borderColor: "#8B0000",
-      image: "./../../../assets/images/billing-management/OnlineActivated.svg"
-    },
+      image: "./../../../assets/images/billing-management/OnlineActivated.svg",
+      url: "dining-sales"
+    }
   ];
+
 
   console.log("hourlySalesPerDay", highestBillingAmountPerHr)
 

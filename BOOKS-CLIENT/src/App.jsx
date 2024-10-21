@@ -154,6 +154,8 @@ import TotalOrdersForOnline from "./pages/admindashboardpages/billingmanagement/
 import UpdateOrder, { getOrderDetails } from "./pages/admindashboardpages/billingmanagement/UpdateOrder";
 import NewOrderCharts, { newOrderChartsLoader } from "./components/ordermanagement/NewOrderCharts";
 import { getTotalSalesDataFn } from "./pages/admindashboardpages/salesmanagement/TotalSales";
+import HourlySales from "./pages/admindashboardpages/salesmanagement/HourlySales";
+import HighestBillingAmount from "./pages/admindashboardpages/salesmanagement/HighestBillingAmount";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -369,7 +371,15 @@ const router = createBrowserRouter([
                 loader: getTotalSalesDataFn,
               },
               {
-                path: "online-orders",
+                path: "hourly-sales",
+                element: <HourlySales />,
+              },
+              {
+                path: "highest-billing",
+                element: <HighestBillingAmount />,
+              },
+              {
+                path: "online-sales",
                 element: <OnlineOrders />,
               },
               {
@@ -377,7 +387,7 @@ const router = createBrowserRouter([
                 element: <TakeAway />,
               },
               {
-                path: "dining",
+                path: "dining-sales",
                 element: <Dining />,
               },
             ],

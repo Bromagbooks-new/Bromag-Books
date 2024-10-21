@@ -142,7 +142,7 @@ const TotalSales = () => {
     <Wrapper className="page">
       <div className="page-content">
         <div className="text-3xl flex gap-4 mt-4 items-center font-semibold">
-          <Link to="/dashboard/billing-management">
+          <Link to="/dashboard/sales-management">
             <ArrowLeft className="w-6 h-6" />
           </Link>
           <p>Total Sales Amount / Day</p>

@@ -362,7 +362,7 @@ const router = createBrowserRouter([
           {
             path: 'sales-management',
             element: <Outlet />,
-            loader: getTotalSalesDataFn,
+            // loader: getTotalSalesDataFn,
             children: [
               {
                 index: true,
@@ -371,7 +371,7 @@ const router = createBrowserRouter([
               {
                 path: 'total-sales',
                 element: <TotalSales />,
-                loader: getTotalSalesDataFn,
+                // loader: getTotalSalesDataFn,
               },
               {
                 path: "hourly-sales",

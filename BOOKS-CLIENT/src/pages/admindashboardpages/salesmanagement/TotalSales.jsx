@@ -64,6 +64,8 @@ const TotalSales = () => {
   useEffect(() => {
     if (!loadedSalesData && dummySalesData.length === 0) {
       toastError("No sales data available");
+    } else {
+      setSalesData(loadedSalesData || dummySalesData);
     }
   }, [loadedSalesData]);
 
@@ -74,20 +76,11 @@ const TotalSales = () => {
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
-  // Filter to include only Dine In sales
   const filteredSalesData = salesData.filter((item) => {
-    // Check if the order is Dine In
-    const isDineIn = item.orderMode.toLowerCase() === "dine in";
-
     const formattedAmount = String(item.Amount);
     const matchesSearchQuery =
-      isDineIn && (
-        Object.values(item).some(
-          (value) =>
-            typeof value === "string" &&
-            value.toLowerCase().includes(debouncedSearchQuery.toLowerCase())
-        ) || formattedAmount.includes(debouncedSearchQuery)
-      );
+      item.billId.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+      formattedAmount.includes(debouncedSearchQuery);
 
     const itemDate = new Date(item.date);
     const matchesDateRange =
@@ -113,25 +106,12 @@ const TotalSales = () => {
                 <IoSearchSharp className="search-icon" />
                 <input
                   type="text"
-                  placeholder="Search by Bill ID or Date"
+                  placeholder="Search by Bill ID"
                   className="search-bar"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button
-                  className="search-button"
-                  style={{
-                    width: "127px",
-                    height: "40px",
-                    background: "#486072",
-                    borderRadius: "7px",
-                    marginLeft: "2rem",
-                    color: "white",
-                  }}
-                  onClick={() => setDebouncedSearchQuery(searchQuery)}
-                >
-                  Search
-                </button>
+                <button className="search-button" style={{ width: "127px", height: "40px", background: "#486072", borderRadius: "7px", marginLeft: "2rem", color: "white" }} onClick={(e) => setSearchQuery(e.target.value)}>Search</button>
               </div>
               <div className="date-picker-group">
                 <p style={{ width: "33px", height: "16px", color: "#1F303C" }}>From</p>
@@ -147,19 +127,7 @@ const TotalSales = () => {
                   className="date-picker"
                 />
               </div>
-              <button
-                className="search-button"
-                style={{
-                  width: "127px",
-                  height: "40px",
-                  background: "#486072",
-                  borderRadius: "7px",
-                  color: "white",
-                }}
-                onClick={() => setDebouncedSearchQuery(searchQuery)}
-              >
-                Search
-              </button>
+              <button className="search-button" style={{ width: "127px", height: "40px", background: "#486072", borderRadius: "7px", color: "white" }} onClick={() => setDebouncedSearchQuery(searchQuery)}>Search</button>
             </div>
           </div>
           <div className="pagination-div">

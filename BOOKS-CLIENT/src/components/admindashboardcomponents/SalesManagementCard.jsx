@@ -14,7 +14,7 @@ const SalesManagementCard = (props) => {
                     {props.arrayOfObjects.map((item, index) => {
                         return (
                             <Col md={4} key={index} className="mb-3">
-                                <NavLink to={`/sales-management/${item.url}`} style={{ textDecoration: 'none' }}>
+                                <NavLink to={`/dashboard/sales-management/${item.url}`} style={{ textDecoration: 'none' }}>
                                     <Card
                                         className="sales-card border-2 shadow-sm"
                                         style={{

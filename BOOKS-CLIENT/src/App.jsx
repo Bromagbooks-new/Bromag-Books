@@ -63,7 +63,7 @@ import {
 } from "./pages/admindashboardpages";
 
 import {
-  OrderManagement
+  OrderManagement,
 } from "./pages/admindashboardpages/ordermanagement/exports"
 
 // import OrderManagement from "./pages/admindashboardpages/ordermanagement/OrderManagement"
@@ -156,6 +156,9 @@ import NewOrderCharts, { newOrderChartsLoader } from "./components/ordermanageme
 import { getTotalSalesDataFn } from "./pages/admindashboardpages/salesmanagement/TotalSales";
 import HourlySales from "./pages/admindashboardpages/salesmanagement/HourlySales";
 import HighestBillingAmount from "./pages/admindashboardpages/salesmanagement/HighestBillingAmount";
+import OnlineOrderManagement from "./pages/admindashboardpages/ordermanagement/OnlineOrderManagement";
+import TakeAwayOrderManagement from "./pages/admindashboardpages/ordermanagement/TakeAwayOrderManagement";
+import DineInOrderManagement from "./pages/admindashboardpages/ordermanagement/DineInOrderManagement";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -395,12 +398,24 @@ const router = createBrowserRouter([
           {
             path: "order-management",
             element: <OrderManagement />,
+            loader: billingManagementLoader,
             children: [
               {
                 index: true,
                 element: <NewOrderCharts />,
                 loader: newOrderChartsLoader
-              }
+              },
+              {
+                path: 'online-order',
+                element: <OnlineOrderManagement />,
+              }, {
+                path: 'takeaway-order',
+                element: <TakeAwayOrderManagement />,
+              },
+              {
+                path: 'dinein-order',
+                element: <DineInOrderManagement />,
+              },
             ]
           },
           // {

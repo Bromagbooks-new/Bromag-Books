@@ -39,18 +39,18 @@ const chartConfig = {
 
 };
 
-export function Chart({data}) {
+export function Chart({ data }) {
 
     let ordersData = [
         { mode: "Take Away", percent: 60, fill: "#3EE54F" },
-      { mode: "Online", percent: 30, fill: "#FADF53" },
-      { mode: "Dine In", percent: 10, fill: "#2AA4FC" },
+        { mode: "Online", percent: 30, fill: "#FADF53" },
+        { mode: "Dine In", percent: 10, fill: "#2AA4FC" },
     ];
-  
-    Object.keys(data).forEach(key=> {
-      if(key==='online') ordersData[1].percent = data[key] || 10;
-      if(key==='takeaway') ordersData[0].percent = data[key] || 20;
-      if(key==='dinein') ordersData[2].percent = data[key] || 15;
+
+    Object.keys(data).forEach(key => {
+        if (key === 'online') ordersData[1].percent = data[key] || 10;
+        if (key === 'takeaway') ordersData[0].percent = data[key] || 20;
+        if (key === 'dinein') ordersData[2].percent = data[key] || 15;
     });
 
     return (
@@ -161,13 +161,13 @@ export default NewOrderCharts;
 export const newOrderChartsLoader = async () => {
 
     try {
-        // const response = await GetDashboardAnalytics({date: new Date()});
-        // console.log('response1:', response)
+        const response = await GetDashboardAnalytics({ date: new Date() });
+        console.log('response1:', response)
 
-        // if(response.status === 200) {
-        // console.log(response.data);
-        //   return response.data.stats;
-        // }
+        if (response.status === 200) {
+            console.log(response.data);
+            return response.data.stats;
+        }
 
         return {
             dailyStats: {

@@ -7,19 +7,20 @@ const GetKotUniqueIdAPI = async (data) => {
         console.log('data:', data)
         const response = await restaurantOwnerAxiosInstance.post(`${url1}/get-kot-unique-id`, data);
         return response;
-    } catch(error) {
+    } catch (error) {
         console.error("error in GetKotUniqueIdAPI :", error);
         throw error;
     }
-    
+
 }
 
 
 const CreateNewKotAPI = async (data) => {
     try {
         const response = await restaurantOwnerAxiosInstance.post(`${url1}/create-new-kot`, data);
+        // console.log("createnewkotapi", response)
         return response;
-    } catch(error) {
+    } catch (error) {
         console.error("error in CreateNewKotAPI :", error);
         throw error;
     }

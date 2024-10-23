@@ -7,7 +7,7 @@ import { memo, useEffect, useState } from "react";
 import { CreateNewKotAPI } from "@/config/routeApi/Owner/kot.owner.api";
 import { toastSuccess, toastError } from "@/helpers/helpers";
 
-const ViewKOT = memo(({ bill, billItems, handleCreateNewKotAPI, instructions, paymentMode, handleOpenDialog, kotUniqueId }) => {
+const ViewKOT = memo(({ bill, billItems, handleKOT, instructions, paymentMode, handleOpenDialog, kotUniqueId }) => {
   // console.log('billItems:', billItems)
   // console.log('Rendering ViewKOT', { bill, billItems, instructions, paymentMode });
   const { toPDF, targetRef } = usePDF({ filename: "kot.pdf" });
@@ -177,8 +177,9 @@ const ViewKOT = memo(({ bill, billItems, handleCreateNewKotAPI, instructions, pa
 
       {/* {!sentToKotStatus && ( */}
       <div className="flex justify-center">
-        <Button className="bg-landing-secondary rounded-full" onClick={handleCreateNewKotAPI}>Send to KOT</Button>
+        <Button className="bg-landing-secondary rounded-full" onClick={handleKOT}>Send to KOT</Button>
       </div>
+
       {/* )} */}
       <div className="border-0 absolute w-[25px] h-[25px] right-[11px] top-[11px] z-10 cursor-pointer" onClick={handleOpenDialog}></div>
     </DialogContent>

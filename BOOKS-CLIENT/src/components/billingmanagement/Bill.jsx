@@ -43,7 +43,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
         const bill = response.data.bill;
         const kotResponse = await GenerateKOT({ billData: bill });
         if (kotResponse.status === 201) {
-          // console.log(kotResponse.data);
+          // console.log("generate kot", kotResponse.data);
           toastSuccess(
             `Sent to Kitchen Successfully!! ${kotResponse.data.KOT.kotNo}`
           );
@@ -110,7 +110,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   const [showInstruction, setShowIntruction] = useState(false);
 
   const handleInstructionInput = (instruction) =>
-    
+
     setInputInstruction(instruction);
 
   const addInstruction = () => {

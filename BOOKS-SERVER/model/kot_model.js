@@ -3,24 +3,24 @@ const { menuSchema } = require("./menu_model");
 // console.log(menuSchema);
 
 const kotSchema = mongoose.Schema({
-  restrauntId: { 
-    type: mongoose.ObjectId, 
-    ref : "restaurant",
-    required: true 
+  restrauntId: {
+    type: mongoose.ObjectId,
+    ref: "restaurant",
+    required: true
   },
-  billNo: { 
-    type: String, 
+  billNo: {
+    type: String,
 
     required: true
   },
-  kotNo: { 
-    type: String, 
-    required: true 
+  kotNo: {
+    type: String,
+    required: true
   },
-  billId: { 
-    type: mongoose.ObjectId, 
-    ref : "billingorders",
-    required: true 
+  billId: {
+    type: mongoose.ObjectId,
+    ref: "billingorders",
+    required: true
   },
   date: {
     type: Date
@@ -35,30 +35,30 @@ const kotSchema = mongoose.Schema({
   // },
   items: [
     new mongoose.Schema({
-      actualPrice : Number,
-      aggregatorId : String,
-      cuisine : String,
-      discountPrice : Number,
-      itemId : String,
-      name : String,
-      portion : String,
-      quantity : Number,
-      subCuisine : String
+      actualPrice: Number,
+      aggregatorId: String,
+      cuisine: String,
+      discountPrice: Number,
+      itemId: String,
+      name: String,
+      portion: String,
+      quantity: Number,
+      subCuisine: String
     }),
   ],
   instructions: [
     {
-      type : String
+      type: String
     }
   ],
-  paymentMode : {
-    type : String
+  paymentMode: {
+    type: String
   },
-  status: { 
-    type: String, 
+  status: {
+    type: String,
     required: true,
-    default : "HOLD",
-    enum : ["COMPLETED", "HOLD", "CANCELLED"]
+    default: "HOLD",
+    enum: ["COMPLETED", "HOLD", "CANCELLED"]
   },
 });
 
@@ -69,7 +69,9 @@ kotSchema.statics.generateKOTNo = async function (
 ) {
   // console.log('restaurantName:', restaurantName)
   // console.log('billNo:', billNo)
-  const restaurantCode = restaurantName.substring(0, 3).toUpperCase() + billNo; // RAT0035 RAT
+  // console.log("restaurant", restaurantName)
+  const restaurantCode = (restaurantName ? restaurantName.substring(0, 3).toUpperCase() : "DEF") + billNo;
+  // RAT0035 RAT
   // console.log('restaurantCode:', restaurantCode)
   // const today = new Date();
   // const dateString = today.toISOString().split("T")[0]; // Get date in YYYY-MM-DD format

@@ -8,32 +8,25 @@ const { formatTodayDate } = require("../utils/formateDate.js");
 exports.generateKOT = async (req, res) => {
   try {
     const isRestaurant = req.restaurant;
-    console.log(isRestaurant, req.body);
+    console.log("kotNo", isRestaurant, req.body);
 
     const { billData } = req.body;
-    // console.log(billData);
+    const { items, restrauntName, billNo } = billData;
 
-
-    const { items } = billData;
-
-    const kotNo = await kot_model.generateKOTNo(isRestaurant);
-
-    // console.log(isRestaurant, req.body);
+    const kotNo = await kot_model.generateKOTNo(isRestaurant, restrauntName, billNo);
+    // console.log("object", kotNo);
 
     const newKOT = new kot_model({ ...billData, kotNo, billId: billData._id });
-    console.log(newKOT);
-    newKOT.save();
+    // console.log("newkot", newKOT);
+    await newKOT.save();
 
     const promises = items.map(async (item) => {
       return await menu_item_model.findOneAndUpdate(
-        {
-          _id: item._id,
-        },
+        { _id: item._id },
         { $inc: { quantity: -item.quantity } }
       );
     });
 
-    console.log("UPDATESSS", promises);
     const updates = await Promise.all(promises);
     console.log("UPDATESSS", updates);
 
@@ -44,11 +37,10 @@ exports.generateKOT = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ status: "FAILED", message: "Internal Server Error" });
+    res.status(500).json({ status: "FAILED", message: "Internal Server Error" });
   }
 };
+
 
 exports.getKotUniqueIdController = async (req, res) => {
   try {
@@ -114,8 +106,8 @@ exports.createNewKotController = async (req, res) => {
       items: billItems,
       instructions: instructions ? instructions : [],
       status: "HOLD",
-      paymentMode : paymentMode,
-      date : date
+      paymentMode: paymentMode,
+      date: date
     }).save();
 
     const object = {};
@@ -209,8 +201,8 @@ exports.createNewKotController = async (req, res) => {
 
     const updateCurrentBillItems = await billModel.updateOne(
       { restrauntId: isRestaurant, _id: billId },
-      { $set : { items : currentBillItems, paymentMode : paymentMode }},
-      { new : true }
+      { $set: { items: currentBillItems, paymentMode: paymentMode } },
+      { new: true }
     )
     // console.log('updateCurrentBillItems:', updateCurrentBillItems)
 

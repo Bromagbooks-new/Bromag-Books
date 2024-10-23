@@ -106,8 +106,9 @@ const TakeAway = () => {
       try {
         const response = await TakeAwayDataForAdmin();
         if (response.data.success) {
-          // setTakeAwayData(response.data.takeAwayData);
-          setTakeAwayData(dummyTakeAwayData);
+          console.log("take-away", response.data.takeAwayData)
+          setTakeAwayData(response.data.takeAwayData);
+          // setTakeAwayData(dummyTakeAwayData);
         } else {
           toastError(response.data.message);
         }

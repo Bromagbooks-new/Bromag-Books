@@ -66,6 +66,7 @@ const OnlineOrders = () => {
       try {
         const response = await OnlineOrderData(); // online aggregator apis ???? in order management onlineorder api??
         if (response.data.success) {
+          // console.log("online-away", response.data.OnlineOrderData)
           // setOnlineSalesData(response.data.OnlineOrderData);
           setOnlineSalesData(dummySalesData);
         } else {

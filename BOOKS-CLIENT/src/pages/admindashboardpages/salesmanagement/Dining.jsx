@@ -62,10 +62,11 @@ const Dining = () => {
         const response = await DineInDataForAdmin();
         if (response.data.success) {
           // Uncomment the line below to use the fetched data
-          // setDineIn(response.data.DineInDetails);
+          console.log("dine-in", response.data.DineInDetails)
+          setDineIn(response.data.DineInDetails);
 
           // For demo purposes, using dummy data
-          setDineIn(dummyDineInData);
+          // setDineIn(dummyDineInData);
         } else {
           toastError(response.data.message);
         }

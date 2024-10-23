@@ -186,6 +186,7 @@ export const getTotalSalesDataFn = async () => {
   try {
     const response = await TotalSalesData();
     if (response.data.success) {
+      console.log("total-sales", response.data.SalesData)
       return response.data.SalesData;
     } else {
       throw new Error(response.data.message);

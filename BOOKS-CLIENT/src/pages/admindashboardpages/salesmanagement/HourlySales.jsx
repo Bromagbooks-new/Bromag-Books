@@ -8,6 +8,7 @@ import { ArrowLeft } from "lucide-react";
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { TotalSalesData } from "@/config/routeApi/owner";
 
 const HourlySales = () => {
     const [hourlySalesData, setHourlySalesData] = useState([]);
@@ -61,21 +62,20 @@ const HourlySales = () => {
             },
         ];
 
-        // const handleHourlySalesData = async () => {
-        //     try {
-        //         const response = await HourlySalesDataForAdmin();
-        //         if (response.data.success) {
-        //             // setHourlySalesData(response.data.hourlySalesData);
-        //             setHourlySalesData(dummyHourlySalesData);
-        //         } else {
-        //             toastError(response.data.message);
-        //         }
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // };
-        // handleHourlySalesData();
-        setHourlySalesData(dummyHourlySalesData)
+        const handleHourlySalesData = async () => {
+            try {
+                const response = await TotalSalesData();
+                if (response.data.success) {
+                    // setHourlySalesData(response.data.hourlySalesData);
+                    setHourlySalesData(dummyHourlySalesData);
+                } else {
+                    toastError(response.data.message);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+        handleHourlySalesData();
     }, []);
 
     // Debouncing for search input

@@ -159,6 +159,7 @@ import HighestBillingAmount from "./pages/admindashboardpages/salesmanagement/Hi
 import OnlineOrderManagement from "./pages/admindashboardpages/ordermanagement/OnlineOrderManagement";
 import TakeAwayOrderManagement from "./pages/admindashboardpages/ordermanagement/TakeAwayOrderManagement";
 import DineInOrderManagement from "./pages/admindashboardpages/ordermanagement/DineInOrderManagement";
+import DominantManagement from "./pages/admindashboardpages/dominanatmanagement/DominantManagement";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -362,7 +363,7 @@ const router = createBrowserRouter([
           {
             path: 'sales-management',
             element: <Outlet />,
-            // loader: getTotalSalesDataFn,
+            loader: getTotalSalesDataFn,
             children: [
               {
                 index: true,
@@ -371,27 +372,32 @@ const router = createBrowserRouter([
               {
                 path: 'total-sales',
                 element: <TotalSales />,
-                // loader: getTotalSalesDataFn,
+                loader: getTotalSalesDataFn,
               },
               {
                 path: "hourly-sales",
                 element: <HourlySales />,
+                loader: getTotalSalesDataFn,
               },
               {
                 path: "highest-billing",
                 element: <HighestBillingAmount />,
+                loader: getTotalSalesDataFn,
               },
               {
                 path: "online-sales",
                 element: <OnlineOrders />,
+                loader: getTotalSalesDataFn,
               },
               {
                 path: "take-away",
                 element: <TakeAway />,
+                loader: getTotalSalesDataFn,
               },
               {
                 path: "dining-sales",
                 element: <Dining />,
+                loader: getTotalSalesDataFn,
               },
             ],
           },
@@ -416,6 +422,30 @@ const router = createBrowserRouter([
                 path: 'dinein-order',
                 element: <DineInOrderManagement />,
               },
+            ]
+          },
+          {
+            path: "dominant-management",
+            element: <DominantManagement />,
+            loader: billingManagementLoader,
+            children: [
+              // {
+              //   index: true,
+              //   element: <NewOrderCharts />,
+              //   loader: newOrderChartsLoader
+              // },
+              // {
+              //   path: 'online-order',
+              //   element: <OnlineOrderManagement />,
+              // },
+              //{
+              //   path: 'takeaway-order',
+              //   element: <TakeAwayOrderManagement />,
+              // },
+              // {
+              //   path: 'dinein-order',
+              //   element: <DineInOrderManagement />,
+              // },
             ]
           },
           // {

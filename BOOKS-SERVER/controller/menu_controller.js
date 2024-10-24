@@ -219,6 +219,41 @@ exports.addMenuItem = async (req, res) => {
   }
 };
 
+exports.deleteMenuItem = async (req, res) => {
+  try {
+    const { menuItemId } = req.params;
+    const restaurant = req.restaurant;
+
+    // Find the menu item by ID and restaurant
+    const menuItem = await MenuItem.findOne({ _id: menuItemId, restaruntId: restaurant });
+
+    if (!menuItem) {
+      return res.status(404).json({
+        status: "MENU_ITEM_NOT_FOUND",
+        message: "Menu Item not found",
+      });
+    }
+
+    // Delete the associated image if needed
+    const imagePath = path.join(__dirname, '..', menuItem.image);
+    await helpers.deleteFileLocally(imagePath);
+
+    // Delete the menu item from the database
+    await MenuItem.findByIdAndDelete(menuItemId);
+
+    return res.status(200).json({
+      status: "MENU_ITEM_DELETED",
+      message: "Menu Item Deleted Successfully",
+    });
+  } catch (error) {
+    console.error("Failed to delete menu item", error);
+    return res.status(500).json({
+      status: "FAILED",
+      message: "Internal Server Error",
+    });
+  }
+};
+
 exports.getAllMenuItems = async (req, res) => {
   try {
     const restaurant = req.restaurant;
@@ -1791,19 +1826,19 @@ exports.updateMenuItemAvailableStatus = async (req, res) => {
         })
       }
 
-      if(isExistingMenuItem.quantity === 0) {
+      if (isExistingMenuItem.quantity === 0) {
         return res.status(406).send({
-          success : false,
-          message : "Quantity is 0, Please add some quantity to open this!"
+          success: false,
+          message: "Quantity is 0, Please add some quantity to open this!"
         })
       }
 
-      await MenuItem.findOneAndUpdate({ restaruntId: isRestaurantId, _id: id }, { availableStatus : availableStatus })
+      await MenuItem.findOneAndUpdate({ restaruntId: isRestaurantId, _id: id }, { availableStatus: availableStatus })
       // console.log('updateExistingMenuItem:', updateExistingMenuItem)
       console.log("Here");
       return res.status(201).send({
         success: true,
-        message : `Menu item has been ${availableStatus ? "opened" : "closed"}!`
+        message: `Menu item has been ${availableStatus ? "opened" : "closed"}!`
       })
     } else {
       res.status(401).send({ success: false, message: "session expired" });

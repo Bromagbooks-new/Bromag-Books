@@ -160,6 +160,9 @@ import OnlineOrderManagement from "./pages/admindashboardpages/ordermanagement/O
 import TakeAwayOrderManagement from "./pages/admindashboardpages/ordermanagement/TakeAwayOrderManagement";
 import DineInOrderManagement from "./pages/admindashboardpages/ordermanagement/DineInOrderManagement";
 import DominantManagement from "./pages/admindashboardpages/dominanatmanagement/DominantManagement";
+import NonVegOrderManagement from "./pages/admindashboardpages/dominanatmanagement/TotalNonVegOrder";
+import VegOrderManagement from "./pages/admindashboardpages/dominanatmanagement/TotalVegOrders";
+import RepeatOrderManagement from "./pages/admindashboardpages/dominanatmanagement/RepeatOrder";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -429,23 +432,23 @@ const router = createBrowserRouter([
             element: <DominantManagement />,
             loader: billingManagementLoader,
             children: [
-              // {
-              //   index: true,
-              //   element: <NewOrderCharts />,
-              //   loader: newOrderChartsLoader
-              // },
-              // {
-              //   path: 'online-order',
-              //   element: <OnlineOrderManagement />,
-              // },
-              //{
-              //   path: 'takeaway-order',
-              //   element: <TakeAwayOrderManagement />,
-              // },
-              // {
-              //   path: 'dinein-order',
-              //   element: <DineInOrderManagement />,
-              // },
+              {
+                index: true, // Default child route
+                element: <NonVegOrderManagement />,
+                loader: newOrderChartsLoader
+              },
+              {
+                path: 'nonveg-order',
+                element: <NonVegOrderManagement />
+              },
+              {
+                path: 'veg-order',
+                element: <VegOrderManagement />
+              },
+              {
+                path: 'repeat-order',
+                element: <RepeatOrderManagement />
+              }
             ]
           },
           // {

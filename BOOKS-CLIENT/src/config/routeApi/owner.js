@@ -644,6 +644,16 @@ const AddMenuItem = async (data) => {
     console.error(error);
   }
 }
+
+const DeleteMenuItem = async (menuItemId) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.delete(`deleteMenuItem/${menuItemId}`);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
 const GetAllMenuItems = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.get("getAllMenuItems", data);
@@ -1392,6 +1402,7 @@ export {
   AddCuisine,
   GetAllCuisines,
   AddMenuItem,
+  DeleteMenuItem,
   GetAllMenuItems,
   UpdateMenuItemAvailableStatus
 };

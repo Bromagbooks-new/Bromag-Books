@@ -32,20 +32,20 @@ const Menu = () => {
   const [isUploading, setUploading] = useState(false);
   const [options, setOptions] = useState([]);
   const [showBromag, setShowBromag] = useState(false);
-   const [showZomato, setShowZomato] = useState(false);
-   const [showRestaurant, setShowRestaurant] = useState(true);
-   const [showSwiggy, setShowSwiggy] = useState(false);
-   const [showOthers, setShowOthers] = useState(false);
-   const [bromagMenus, setBromagMenus] = useState([]);
-   const [zomataMenus, setZomataMenus] = useState([]);
-   const [restaurantMenus, setRestaurantMenus] = useState([]);
-   const [swiggyMenus, setSwiggyMenus] = useState([]);
-   const [othersMenus, setOthersMenus] = useState([]);
+  const [showZomato, setShowZomato] = useState(false);
+  const [showRestaurant, setShowRestaurant] = useState(true);
+  const [showSwiggy, setShowSwiggy] = useState(false);
+  const [showOthers, setShowOthers] = useState(false);
+  const [bromagMenus, setBromagMenus] = useState([]);
+  const [zomataMenus, setZomataMenus] = useState([]);
+  const [restaurantMenus, setRestaurantMenus] = useState([]);
+  const [swiggyMenus, setSwiggyMenus] = useState([]);
+  const [othersMenus, setOthersMenus] = useState([]);
   //to publish the data
   const handlePublishSubmit = async () => {
     try {
       setUploading(true)
-console.log(newMenuData,"heyy")
+      console.log(newMenuData, "heyy")
       const data = newMenuData
         .map((category) =>
           category.data
@@ -58,7 +58,7 @@ console.log(newMenuData,"heyy")
         .flat();
 
 
-      
+
       const response = await PublishMenu(data);
       // setUploading(false)
 
@@ -88,7 +88,7 @@ console.log(newMenuData,"heyy")
 
   //quantity updates
   const updateQuantity = ({ itemId, newQuantity }) => {
- 
+
     const updatedMenuData = newMenuData.map((category) => ({
       ...category,
       data: category.data.map((item) =>
@@ -102,46 +102,46 @@ console.log(newMenuData,"heyy")
 
   function organizeMenu(menuData) {
     const organizedMenu = {};
-  
+
     menuData.forEach((menuItem) => {
       const category = menuItem.category;
       const subCategory = menuItem.subCategory;
-  
+
       // Check if the category key exists in the organizedMenu object
       if (!organizedMenu[category]) {
         organizedMenu[category] = {};
       }
-  
+
       // Check if the subcategory key exists in the organizedMenu[category] object
       if (!organizedMenu[category][subCategory]) {
         organizedMenu[category][subCategory] = [];
       }
-  
+
       // Add the menuItem to the array corresponding to its category and subcategory
-      menuItem.itemImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length-1)+menuItem.itemImage
+      menuItem.itemImage = RestaurantAdminApi.slice(0, RestaurantAdminApi.length - 1) + menuItem.itemImage
       organizedMenu[category][subCategory].push(menuItem);
     });
-  
+
     return organizedMenu;
   }
 
   //to handle menu data
   const handleMenuData = async () => {
     try {
-      const {data} = await MenuData();
+      const { data } = await MenuData();
       console.log(data);
 
-      
+
       if (data.success) {
 
-const restaurantOrganiesMenu = await organizeMenu(data.restaurantMenu)
-const zomatoOrganiesMenu = await organizeMenu(data.zomatoMenu)
-const swiggyMenuOrganiesMenu = await organizeMenu(data.swiggyMenu)
-const bromagMenuOrganiesMenu = await organizeMenu(data.bromagMenu)
-const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
+        const restaurantOrganiesMenu = await organizeMenu(data.restaurantMenu)
+        const zomatoOrganiesMenu = await organizeMenu(data.zomatoMenu)
+        const swiggyMenuOrganiesMenu = await organizeMenu(data.swiggyMenu)
+        const bromagMenuOrganiesMenu = await organizeMenu(data.bromagMenu)
+        const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
 
         // Log the organized menu
-        
+
         console.log(zomatoOrganiesMenu, "heee");
 
         setZomataMenus(zomatoOrganiesMenu)
@@ -153,7 +153,7 @@ const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
 
       }
 
-   
+
     } catch (error) {
       console.log(error);
     }
@@ -272,11 +272,11 @@ const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
   };
 
   // to update category sharing in menu
-  const handleMenuSharingUpdates = async (categoryName,plateform) => {
+  const handleMenuSharingUpdates = async (categoryName, plateform) => {
     try {
 
 
-      const response = await MenuSharingUpdates(categoryName,plateform);
+      const response = await MenuSharingUpdates(categoryName, plateform);
 
 
       if (refresh) {
@@ -295,9 +295,9 @@ const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
   };
 
   //toggle change for category sharing and archiving feature
-  const handleCheckboxChange = (categoryName,plateform) => {
+  const handleCheckboxChange = (categoryName, plateform) => {
     try {
-      handleMenuSharingUpdates(categoryName,plateform);
+      handleMenuSharingUpdates(categoryName, plateform);
     } catch (error) {
       console.error("Category Toggle error:", error);
     }
@@ -393,18 +393,18 @@ const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
                   ))}
               </select> */}
 
-<select
-        value={selectedCategory}
-        onChange={(e) => setSelectedCategory(e.target.value)}
-      >
-        <option value={"All"}>All Cuisine</option>
-        {Object.keys(restaurantMenus).map((category) => (
-          <option key={category} value={category}>
-            {category}
-          </option>
-        ))}
+              <select
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value={"All"}>All Cuisine</option>
+                {Object.keys(restaurantMenus).map((category) => (
+                  <option key={category} value={category}>
+                    {category}
+                  </option>
+                ))}
               </select>
-              
+
             </div>
 
             <div className="right-sub-header">
@@ -493,7 +493,7 @@ const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
             </Button> */}
             </div>
           </section>
-          
+
           <section>
             {!change &&
               newMenuData.map((category, index) => (
@@ -559,451 +559,451 @@ const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
 
 
           <div>
-          {showZomato &&
-        zomataMenus &&
-        Object.entries(zomataMenus)
-          .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
-          .map(([category, subcategories]) => {
-            const filteredSubcategories = Object.entries(subcategories)
-              .filter(([subCategory, menuItems]) => {
-                const searchQuery = searchInput.toLowerCase();
-                return (
-                  subCategory.toLowerCase().includes(searchQuery) ||
-                  menuItems.some(
-                    (menuItem) =>
-                      menuItem.item.toLowerCase().includes(searchQuery) ||
-                      menuItem.description.toLowerCase().includes(searchQuery)
-                  )
-                );
-              });
+            {showZomato &&
+              zomataMenus &&
+              Object.entries(zomataMenus)
+                .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
+                .map(([category, subcategories]) => {
+                  const filteredSubcategories = Object.entries(subcategories)
+                    .filter(([subCategory, menuItems]) => {
+                      const searchQuery = searchInput.toLowerCase();
+                      return (
+                        subCategory.toLowerCase().includes(searchQuery) ||
+                        menuItems.some(
+                          (menuItem) =>
+                            menuItem.item.toLowerCase().includes(searchQuery) ||
+                            menuItem.description.toLowerCase().includes(searchQuery)
+                        )
+                      );
+                    });
 
-            if (filteredSubcategories.length === 0) {
-              return null; // Skip rendering if no matching results in this category
-            }
+                  if (filteredSubcategories.length === 0) {
+                    return null; // Skip rendering if no matching results in this category
+                  }
 
-            return (
-              <div key={category}>
-                <div className="category">
-                  <div className="category-header">
-                    <h3>{category}</h3>
-                    {Object.entries(subcategories)
-                      .slice(0, 1)
-                      .map(([subcuisine, subcuisineArray]) => (
-                        <div key={subcuisine}>
-                          {subcuisineArray && subcuisineArray.length > 0 && (
-                            <div>
-                              <label
-                                className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
-                              >
-                                <input
-                                  className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
-                                  type="checkbox"
-                                  checked={subcuisineArray[0].menuShared}
-                                  onChange={() => {
-                                    handleCheckboxChange(subcuisineArray[0].category, subcuisineArray[0].platformName);
-                                  }}
-                                />
-                                <span
-                                  className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
-                                />
-                              </label>
-                            </div>
-                          )}
+                  return (
+                    <div key={category}>
+                      <div className="category">
+                        <div className="category-header">
+                          <h3>{category}</h3>
+                          {Object.entries(subcategories)
+                            .slice(0, 1)
+                            .map(([subcuisine, subcuisineArray]) => (
+                              <div key={subcuisine}>
+                                {subcuisineArray && subcuisineArray.length > 0 && (
+                                  <div>
+                                    <label
+                                      className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
+                                    >
+                                      <input
+                                        className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
+                                        type="checkbox"
+                                        checked={subcuisineArray[0].menuShared}
+                                        onChange={() => {
+                                          handleCheckboxChange(subcuisineArray[0].category, subcuisineArray[0].platformName);
+                                        }}
+                                      />
+                                      <span
+                                        className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
+                                      />
+                                    </label>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
                         </div>
-                      ))}
-                  </div>
 
-                  {filteredSubcategories.map(([subCategory, menuItems]) => (
-                    <div key={subCategory}>
-                      <h5>{subCategory}</h5>
-                      <div className="card-deck">
-                        {menuItems.map((menuItem) => (
-                          <MenuCard
-                            key={menuItem._id}
-                            plateform={menuItem.platformName}
-                            title={menuItem.item}
-                            desc={menuItem.description}
-                            price={menuItem.actualprice}
-                            originalPrice={menuItem.actualPrice}
-                            img={menuItem?.itemImage}
-                            toggleState={menuItem.isShared}
-                            discount={menuItem.discountPrice}
-                            discountPerc={menuItem.discountPercentage}
-                            handleToggleChange={() => handleToggleChange(menuItem._id)}
-                            itemId={menuItem._id}
-                            updateQuantity={updateQuantity}
-                            quantity={menuItem.quantity}
-                            onDelete={handleMenuDelete}
-                          />
+                        {filteredSubcategories.map(([subCategory, menuItems]) => (
+                          <div key={subCategory}>
+                            <h5>{subCategory}</h5>
+                            <div className="card-deck">
+                              {menuItems.map((menuItem) => (
+                                <MenuCard
+                                  key={menuItem._id}
+                                  plateform={menuItem.platformName}
+                                  title={menuItem.item}
+                                  desc={menuItem.description}
+                                  price={menuItem.actualprice}
+                                  originalPrice={menuItem.actualPrice}
+                                  img={menuItem?.itemImage}
+                                  toggleState={menuItem.isShared}
+                                  discount={menuItem.discountPrice}
+                                  discountPerc={menuItem.discountPercentage}
+                                  handleToggleChange={() => handleToggleChange(menuItem._id)}
+                                  itemId={menuItem._id}
+                                  updateQuantity={updateQuantity}
+                                  quantity={menuItem.quantity}
+                                  onDelete={handleMenuDelete}
+                                />
+                              ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-            
+                  );
+                })}
 
 
 
 
-            
-          {showRestaurant &&
-        restaurantMenus &&
-        Object.entries(restaurantMenus)
-          .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
-          .map(([category, subcategories]) => {
-            const filteredSubcategories = Object.entries(subcategories)
-              .filter(([subCategory, menuItems]) => {
-                const searchQuery = searchInput.toLowerCase();
-                return (
-                  subCategory.toLowerCase().includes(searchQuery) ||
-                  menuItems.some(
-                    (menuItem) =>
-                      menuItem.item.toLowerCase().includes(searchQuery) ||
-                      menuItem.description.toLowerCase().includes(searchQuery)
-                  )
-                );
-              });
 
-            if (filteredSubcategories.length === 0) {
-              return null; 
-            }
 
-            return (
-              <div key={category}>
-                <div className="category">
-                  <div className="category-header">
-                    <h3>{category}</h3>
-                    {Object.entries(subcategories)
-                      .slice(0, 1)
-                      .map(([subcuisine, subcuisineArray]) => (
-                        <div key={subcuisine}>
-                          {subcuisineArray && subcuisineArray.length > 0 && (
-                            <div>
-                              <label
-                                className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
-                              >
-                                <input
-                                  className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
-                                  type="checkbox"
-                                  checked={subcuisineArray[0].menuShared}
-                                  onChange={() => {
-                                    handleCheckboxChange(subcuisineArray[0].category, subcuisineArray[0].platformName);
-                                  }}
-                                />
-                                <span
-                                  className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
-                                />
-                              </label>
-                            </div>
-                          )}
+            {showRestaurant &&
+              restaurantMenus &&
+              Object.entries(restaurantMenus)
+                .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
+                .map(([category, subcategories]) => {
+                  const filteredSubcategories = Object.entries(subcategories)
+                    .filter(([subCategory, menuItems]) => {
+                      const searchQuery = searchInput.toLowerCase();
+                      return (
+                        subCategory.toLowerCase().includes(searchQuery) ||
+                        menuItems.some(
+                          (menuItem) =>
+                            menuItem.item.toLowerCase().includes(searchQuery) ||
+                            menuItem.description.toLowerCase().includes(searchQuery)
+                        )
+                      );
+                    });
+
+                  if (filteredSubcategories.length === 0) {
+                    return null;
+                  }
+
+                  return (
+                    <div key={category}>
+                      <div className="category">
+                        <div className="category-header">
+                          <h3>{category}</h3>
+                          {Object.entries(subcategories)
+                            .slice(0, 1)
+                            .map(([subcuisine, subcuisineArray]) => (
+                              <div key={subcuisine}>
+                                {subcuisineArray && subcuisineArray.length > 0 && (
+                                  <div>
+                                    <label
+                                      className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
+                                    >
+                                      <input
+                                        className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
+                                        type="checkbox"
+                                        checked={subcuisineArray[0].menuShared}
+                                        onChange={() => {
+                                          handleCheckboxChange(subcuisineArray[0].category, subcuisineArray[0].platformName);
+                                        }}
+                                      />
+                                      <span
+                                        className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
+                                      />
+                                    </label>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
                         </div>
-                      ))}
-                  </div>
 
-                  {filteredSubcategories.map(([subCategory, menuItems]) => (
-                    <div key={subCategory}>
-                      <h5>{subCategory}</h5>
-                      <div className="card-deck">
-                        {menuItems.map((menuItem) => (
-                          <MenuCard
-                            key={menuItem._id}
-                            plateform={menuItem.platformName}
-                            title={menuItem.item}
-                            desc={menuItem.description}
-                            price={menuItem.actualprice}
-                            originalPrice={menuItem.actualPrice}
-                            img={menuItem?.itemImage}
-                            toggleState={menuItem.isShared}
-                            discount={menuItem.discountPrice}
-                            discountPerc={menuItem.discountPercentage}
-                            handleToggleChange={() => handleToggleChange(menuItem._id)}
-                            itemId={menuItem._id}
-                            updateQuantity={updateQuantity}
-                            quantity={menuItem.quantity}
-                            onDelete={handleMenuDelete}
-                          />
+                        {filteredSubcategories.map(([subCategory, menuItems]) => (
+                          <div key={subCategory}>
+                            <h5>{subCategory}</h5>
+                            <div className="card-deck">
+                              {menuItems.map((menuItem) => (
+                                <MenuCard
+                                  key={menuItem._id}
+                                  plateform={menuItem.platformName}
+                                  title={menuItem.item}
+                                  desc={menuItem.description}
+                                  price={menuItem.actualprice}
+                                  originalPrice={menuItem.actualPrice}
+                                  img={menuItem?.itemImage}
+                                  toggleState={menuItem.isShared}
+                                  discount={menuItem.discountPrice}
+                                  discountPerc={menuItem.discountPercentage}
+                                  handleToggleChange={() => handleToggleChange(menuItem._id)}
+                                  itemId={menuItem._id}
+                                  updateQuantity={updateQuantity}
+                                  quantity={menuItem.quantity}
+                                  onDelete={handleMenuDelete}
+                                />
+                              ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-          
-            
-          {showBromag &&
-  bromagMenus &&
-  Object.entries(bromagMenus)
-    .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
-    .map(([category, subcategories]) => {
-      const filteredSubcategories = Object.entries(subcategories)
-        .filter(([subCategory, menuItems]) => {
-          const searchQuery = searchInput.toLowerCase();
-          return (
-            subCategory.toLowerCase().includes(searchQuery) ||
-            menuItems.some(
-              (menuItem) =>
-                menuItem.item.toLowerCase().includes(searchQuery) ||
-                menuItem.description.toLowerCase().includes(searchQuery)
-            )
-          );
-        });
+                  );
+                })}
 
-      if (filteredSubcategories.length === 0) {
-        return null; // Skip rendering if no matching results in this category
-      }
 
-      return (
-        <div key={category}>
-          <div className="category">
-            <div className="category-header">
-              <h3>{category}</h3>
-              {Object.entries(subcategories)
-                .slice(0, 1)
-                .map(([subcuisine, subcuisineArray]) => (
-                  <div key={subcuisine}>
-                    {subcuisineArray && subcuisineArray.length > 0 && (
-                      <div>
-                        <label
-                          className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
-                        >
-                          <input
-                            className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
-                            type="checkbox"
-                            checked={subcuisineArray[0].menuShared}
-                            onChange={() => {
-                              handleCheckboxChange(
-                                subcuisineArray[0].category,
-                                subcuisineArray[0].platformName
-                              );
-                            }}
-                          />
-                          <span
-                            className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
-                          />
-                        </label>
+            {showBromag &&
+              bromagMenus &&
+              Object.entries(bromagMenus)
+                .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
+                .map(([category, subcategories]) => {
+                  const filteredSubcategories = Object.entries(subcategories)
+                    .filter(([subCategory, menuItems]) => {
+                      const searchQuery = searchInput.toLowerCase();
+                      return (
+                        subCategory.toLowerCase().includes(searchQuery) ||
+                        menuItems.some(
+                          (menuItem) =>
+                            menuItem.item.toLowerCase().includes(searchQuery) ||
+                            menuItem.description.toLowerCase().includes(searchQuery)
+                        )
+                      );
+                    });
+
+                  if (filteredSubcategories.length === 0) {
+                    return null; // Skip rendering if no matching results in this category
+                  }
+
+                  return (
+                    <div key={category}>
+                      <div className="category">
+                        <div className="category-header">
+                          <h3>{category}</h3>
+                          {Object.entries(subcategories)
+                            .slice(0, 1)
+                            .map(([subcuisine, subcuisineArray]) => (
+                              <div key={subcuisine}>
+                                {subcuisineArray && subcuisineArray.length > 0 && (
+                                  <div>
+                                    <label
+                                      className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
+                                    >
+                                      <input
+                                        className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
+                                        type="checkbox"
+                                        checked={subcuisineArray[0].menuShared}
+                                        onChange={() => {
+                                          handleCheckboxChange(
+                                            subcuisineArray[0].category,
+                                            subcuisineArray[0].platformName
+                                          );
+                                        }}
+                                      />
+                                      <span
+                                        className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
+                                      />
+                                    </label>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                        </div>
+
+                        {filteredSubcategories.map(([subCategory, menuItems]) => (
+                          <div key={subCategory}>
+                            <h5>{subCategory}</h5>
+                            <div className="card-deck">
+                              {menuItems.map((menuItem) => (
+                                <MenuCard
+                                  key={menuItem._id}
+                                  plateform={menuItem.platformName}
+                                  title={menuItem.item}
+                                  desc={menuItem.description}
+                                  price={menuItem.actualprice}
+                                  originalPrice={menuItem.actualPrice}
+                                  img={menuItem?.itemImage}
+                                  toggleState={menuItem.isShared}
+                                  discount={menuItem.discountPrice}
+                                  discountPerc={menuItem.discountPercentage}
+                                  handleToggleChange={() => handleToggleChange(menuItem._id)}
+                                  itemId={menuItem._id}
+                                  updateQuantity={updateQuantity}
+                                  quantity={menuItem.quantity}
+                                  onDelete={handleMenuDelete}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </div>
-                ))}
-            </div>
+                    </div>
+                  );
+                })}
 
-            {filteredSubcategories.map(([subCategory, menuItems]) => (
-              <div key={subCategory}>
-                <h5>{subCategory}</h5>
-                <div className="card-deck">
-                  {menuItems.map((menuItem) => (
-                    <MenuCard
-                      key={menuItem._id}
-                      plateform={menuItem.platformName}
-                      title={menuItem.item}
-                      desc={menuItem.description}
-                      price={menuItem.actualprice}
-                      originalPrice={menuItem.actualPrice}
-                      img={menuItem?.itemImage}
-                      toggleState={menuItem.isShared}
-                      discount={menuItem.discountPrice}
-                      discountPerc={menuItem.discountPercentage}
-                      handleToggleChange={() => handleToggleChange(menuItem._id)}
-                      itemId={menuItem._id}
-                      updateQuantity={updateQuantity}
-                      quantity={menuItem.quantity}
-                      onDelete={handleMenuDelete}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    })}
 
-            
-{showSwiggy &&
-  swiggyMenus &&
-  Object.entries(swiggyMenus)
-    .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
-    .map(([category, subcategories]) => {
-      const filteredSubcategories = Object.entries(subcategories)
-        .filter(([subCategory, menuItems]) => {
-          const searchQuery = searchInput.toLowerCase();
-          return (
-            subCategory.toLowerCase().includes(searchQuery) ||
-            menuItems.some(
-              (menuItem) =>
-                menuItem.item.toLowerCase().includes(searchQuery) ||
-                menuItem.description.toLowerCase().includes(searchQuery)
-            )
-          );
-        });
+            {showSwiggy &&
+              swiggyMenus &&
+              Object.entries(swiggyMenus)
+                .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
+                .map(([category, subcategories]) => {
+                  const filteredSubcategories = Object.entries(subcategories)
+                    .filter(([subCategory, menuItems]) => {
+                      const searchQuery = searchInput.toLowerCase();
+                      return (
+                        subCategory.toLowerCase().includes(searchQuery) ||
+                        menuItems.some(
+                          (menuItem) =>
+                            menuItem.item.toLowerCase().includes(searchQuery) ||
+                            menuItem.description.toLowerCase().includes(searchQuery)
+                        )
+                      );
+                    });
 
-      if (filteredSubcategories.length === 0) {
-        return null; // Skip rendering if no matching results in this category
-      }
+                  if (filteredSubcategories.length === 0) {
+                    return null; // Skip rendering if no matching results in this category
+                  }
 
-      return (
-        <div key={category}>
-          <div className="category">
-            <div className="category-header">
-              <h3>{category}</h3>
-              {Object.entries(subcategories)
-                .slice(0, 1)
-                .map(([subcuisine, subcuisineArray]) => (
-                  <div key={subcuisine}>
-                    {subcuisineArray && subcuisineArray.length > 0 && (
-                      <div>
-                        <label
-                          className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
-                        >
-                          <input
-                            className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
-                            type="checkbox"
-                            checked={subcuisineArray[0].menuShared}
-                            onChange={() => {
-                              handleCheckboxChange(
-                                subcuisineArray[0].category,
-                                subcuisineArray[0].platformName
-                              );
-                            }}
-                          />
-                          <span
-                            className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
-                          />
-                        </label>
+                  return (
+                    <div key={category}>
+                      <div className="category">
+                        <div className="category-header">
+                          <h3>{category}</h3>
+                          {Object.entries(subcategories)
+                            .slice(0, 1)
+                            .map(([subcuisine, subcuisineArray]) => (
+                              <div key={subcuisine}>
+                                {subcuisineArray && subcuisineArray.length > 0 && (
+                                  <div>
+                                    <label
+                                      className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
+                                    >
+                                      <input
+                                        className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
+                                        type="checkbox"
+                                        checked={subcuisineArray[0].menuShared}
+                                        onChange={() => {
+                                          handleCheckboxChange(
+                                            subcuisineArray[0].category,
+                                            subcuisineArray[0].platformName
+                                          );
+                                        }}
+                                      />
+                                      <span
+                                        className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
+                                      />
+                                    </label>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                        </div>
+
+                        {filteredSubcategories.map(([subCategory, menuItems]) => (
+                          <div key={subCategory}>
+                            <h5>{subCategory}</h5>
+                            <div className="card-deck">
+                              {menuItems.map((menuItem) => (
+                                <MenuCard
+                                  key={menuItem._id}
+                                  plateform={menuItem.platformName}
+                                  title={menuItem.item}
+                                  desc={menuItem.description}
+                                  price={menuItem.actualprice}
+                                  originalPrice={menuItem.actualPrice}
+                                  img={menuItem?.itemImage}
+                                  toggleState={menuItem.isShared}
+                                  discount={menuItem.discountPrice}
+                                  discountPerc={menuItem.discountPercentage}
+                                  handleToggleChange={() => handleToggleChange(menuItem._id)}
+                                  itemId={menuItem._id}
+                                  updateQuantity={updateQuantity}
+                                  quantity={menuItem.quantity}
+                                  onDelete={handleMenuDelete}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </div>
-                ))}
-            </div>
-
-            {filteredSubcategories.map(([subCategory, menuItems]) => (
-              <div key={subCategory}>
-                <h5>{subCategory}</h5>
-                <div className="card-deck">
-                  {menuItems.map((menuItem) => (
-                    <MenuCard
-                      key={menuItem._id}
-                      plateform={menuItem.platformName}
-                      title={menuItem.item}
-                      desc={menuItem.description}
-                      price={menuItem.actualprice}
-                      originalPrice={menuItem.actualPrice}
-                      img={menuItem?.itemImage}
-                      toggleState={menuItem.isShared}
-                      discount={menuItem.discountPrice}
-                      discountPerc={menuItem.discountPercentage}
-                      handleToggleChange={() => handleToggleChange(menuItem._id)}
-                      itemId={menuItem._id}
-                      updateQuantity={updateQuantity}
-                      quantity={menuItem.quantity}
-                      onDelete={handleMenuDelete}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      );
-    })}
+                    </div>
+                  );
+                })}
 
 
-{showOthers &&
-  othersMenus &&
-  Object.entries(othersMenus)
-    .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
-    .map(([category, subcategories]) => {
-      const filteredSubcategories = Object.entries(subcategories)
-        .filter(([subCategory, menuItems]) => {
-          const searchQuery = searchInput.toLowerCase();
-          return (
-            subCategory.toLowerCase().includes(searchQuery) ||
-            menuItems.some(
-              (menuItem) =>
-                menuItem.item.toLowerCase().includes(searchQuery) ||
-                menuItem.description.toLowerCase().includes(searchQuery)
-            )
-          );
-        });
+            {showOthers &&
+              othersMenus &&
+              Object.entries(othersMenus)
+                .filter(([category, subcategories]) => selectedCategory === "All" || selectedCategory === category)
+                .map(([category, subcategories]) => {
+                  const filteredSubcategories = Object.entries(subcategories)
+                    .filter(([subCategory, menuItems]) => {
+                      const searchQuery = searchInput.toLowerCase();
+                      return (
+                        subCategory.toLowerCase().includes(searchQuery) ||
+                        menuItems.some(
+                          (menuItem) =>
+                            menuItem.item.toLowerCase().includes(searchQuery) ||
+                            menuItem.description.toLowerCase().includes(searchQuery)
+                        )
+                      );
+                    });
 
-      if (filteredSubcategories.length === 0) {
-        return null; // Skip rendering if no matching results in this category
-      }
+                  if (filteredSubcategories.length === 0) {
+                    return null; // Skip rendering if no matching results in this category
+                  }
 
-      return (
-        <div key={category}>
-          <div className="category">
-            <div className="category-header">
-              <h3>{category}</h3>
-              {Object.entries(subcategories)
-                .slice(0, 1)
-                .map(([subcuisine, subcuisineArray]) => (
-                  <div key={subcuisine}>
-                    {subcuisineArray && subcuisineArray.length > 0 && (
-                      <div>
-                        <label
-                          className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
-                        >
-                          <input
-                            className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
-                            type="checkbox"
-                            checked={subcuisineArray[0].menuShared}
-                            onChange={() => {
-                              handleCheckboxChange(
-                                subcuisineArray[0].category,
-                                subcuisineArray[0].platformName
-                              );
-                            }}
-                          />
-                          <span
-                            className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
-                          />
-                        </label>
+                  return (
+                    <div key={category}>
+                      <div className="category">
+                        <div className="category-header">
+                          <h3>{category}</h3>
+                          {Object.entries(subcategories)
+                            .slice(0, 1)
+                            .map(([subcuisine, subcuisineArray]) => (
+                              <div key={subcuisine}>
+                                {subcuisineArray && subcuisineArray.length > 0 && (
+                                  <div>
+                                    <label
+                                      className={subcuisineArray[0].menuShared ? "switch2" : "switch1"}
+                                    >
+                                      <input
+                                        className={subcuisineArray[0].menuShared ? "checkbox2" : "checkbox1"}
+                                        type="checkbox"
+                                        checked={subcuisineArray[0].menuShared}
+                                        onChange={() => {
+                                          handleCheckboxChange(
+                                            subcuisineArray[0].category,
+                                            subcuisineArray[0].platformName
+                                          );
+                                        }}
+                                      />
+                                      <span
+                                        className={subcuisineArray[0].menuShared ? "slider2" : "slider1"}
+                                      />
+                                    </label>
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                        </div>
+
+                        {filteredSubcategories.map(([subCategory, menuItems]) => (
+                          <div key={subCategory}>
+                            <h5>{subCategory}</h5>
+                            <div className="card-deck">
+                              {menuItems.map((menuItem) => (
+                                <MenuCard
+                                  plateform={menuItem.platformName}
+                                  key={menuItem._id}
+                                  title={menuItem.item}
+                                  desc={menuItem.description}
+                                  price={menuItem.actualprice}
+                                  originalPrice={menuItem.actualPrice}
+                                  img={menuItem?.itemImage}
+                                  toggleState={menuItem.isShared}
+                                  discount={menuItem.discountPrice}
+                                  discountPerc={menuItem.discountPercentage}
+                                  handleToggleChange={() => handleToggleChange(menuItem._id)}
+                                  itemId={menuItem._id}
+                                  updateQuantity={updateQuantity}
+                                  quantity={menuItem.quantity}
+                                  onDelete={handleMenuDelete}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    )}
-                  </div>
-                ))}
-            </div>
+                    </div>
+                  );
+                })}
 
-            {filteredSubcategories.map(([subCategory, menuItems]) => (
-              <div key={subCategory}>
-                <h5>{subCategory}</h5>
-                <div className="card-deck">
-                  {menuItems.map((menuItem) => (
-                    <MenuCard
-                      plateform={menuItem.platformName}
-                      key={menuItem._id}
-                      title={menuItem.item}
-                      desc={menuItem.description}
-                      price={menuItem.actualprice}
-                      originalPrice={menuItem.actualPrice}
-                      img={menuItem?.itemImage}
-                      toggleState={menuItem.isShared}
-                      discount={menuItem.discountPrice}
-                      discountPerc={menuItem.discountPercentage}
-                      handleToggleChange={() => handleToggleChange(menuItem._id)}
-                      itemId={menuItem._id}
-                      updateQuantity={updateQuantity}
-                      quantity={menuItem.quantity}
-                      onDelete={handleMenuDelete}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
+
           </div>
-        </div>
-      );
-    })}
-
-            
-    </div>
-<section />
+          <section />
           <section>
             {change &&
               filteredData.map((category, index) => (
@@ -1026,7 +1026,7 @@ const othersMenuMenuOrganiesMenu = await organizeMenu(data.othersMenu)
                       {category.data.map((item) => (
                         <MenuCard
                           key={item._id}
-                    plateform={item.platformName}
+                          plateform={item.platformName}
 
                           title={item.item}
                           desc={item.description}

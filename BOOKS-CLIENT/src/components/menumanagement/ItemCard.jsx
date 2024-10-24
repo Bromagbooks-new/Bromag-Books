@@ -13,6 +13,7 @@ import { useState } from "react";
 import { formatImageUrl } from "@/helpers/helpers";
 import { Button } from "../ui/button";
 import { PencilLine, Trash } from "lucide-react";
+import { DeleteMenuItem } from "@/config/routeApi/owner";
 
 const ItemCard = memo(({
   img,
@@ -24,7 +25,7 @@ const ItemCard = memo(({
   updateMenuItemAvailableStatus
 }) => {
   // console.log('availableStatus:', availableStatus);
-  
+
   // console.log('itemId:', itemId)
   const [selectedFilter, setSelectedFilter] = useState(portions[0].type);
   const [isAvailable, setIsAvailable] = useState(availableStatus);
@@ -42,13 +43,22 @@ const ItemCard = memo(({
     updateMenuItemAvailableStatus(itemId, !isAvailable);
   };
 
-  const handleDeleteItem = async () => {
+  const handleDeleteItem = async (menuItemId) => {
     try {
+      console.log("Attempting to delete menu item...");
 
-    } catch(error) {
-      
+      const response = await DeleteMenuItem(menuItemId);
+      window.location.reload(); // temporary used ->change this use useeffect for changes
+      if (response && response.status === 200) {
+        console.log("Menu item deleted successfully");
+      } else {
+        console.log("Failed to delete menu item");
+      }
+    } catch (error) {
+      console.log("Error while deleting menu item:", error);
     }
   }
+
 
   return (
     <div className={`flex gap-1 items-center w-[24rem] h-[12rem] rounded-xl shadow bg-white p-2 ${!availableStatus ? "opacity-50" : ""}`}>
@@ -90,9 +100,10 @@ const ItemCard = memo(({
           <Button variant="icon" className="px-3 h-8 bg-landing-secondary hover:bg-landing-primary">
             <PencilLine className="w-4 h-4" />
           </Button>
-          <Button onClick={handleDeleteItem} variant="icon" className="px-3 h-8 bg-red-500 hover:bg-landing-primary">
+          <Button onClick={() => handleDeleteItem(itemId)} variant="icon" className="px-3 h-8 bg-red-500 hover:bg-landing-primary">
             <Trash className="w-4 h-4" />
           </Button>
+
         </div>
       </div>
     </div>

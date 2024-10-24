@@ -17,14 +17,14 @@ const upload = require("../utils/uploaders");
 
 // Rate limiting middleware
 const limiter = rateLimit({
-  windowMs : 15 * 60 * 1000, // 15 minutes
-  max : 100, // Limit each IP to 100 requests per windowMs
-  message : "Too many requests from this IP, please try again later." 
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  message: "Too many requests from this IP, please try again later."
 })
 
 /* restaurant */
 userRouter.get("/accessRestaurantHome", controller.accessRestaurantHome);
-userRouter.post("/login",limiter, controller.verifyLogin);
+userRouter.post("/login", limiter, controller.verifyLogin);
 userRouter.post("/verifyToken", controller.verifyToken);
 userRouter.post("/demo-request", controller.storeDemoRequest);
 userRouter.post("/user-query", controller.storeUserRequest);
@@ -265,6 +265,12 @@ userRouter.post(
   upload.ImageUploader.single("ItemImage"),
   interceptor.adminAuth,
   menuController.addMenuItem
+);
+
+userRouter.delete(
+  "/deleteMenuItem/:menuItemId",
+  interceptor.adminAuth,
+  menuController.deleteMenuItem
 );
 
 

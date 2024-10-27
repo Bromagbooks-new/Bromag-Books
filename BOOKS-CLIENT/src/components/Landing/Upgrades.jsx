@@ -7,8 +7,6 @@ import IntegrationManagement from "@/assets/images/landing-images/upgrades/Integ
 
 import ellipse545 from '@/assets/images/landing-images/Ellipse 545.svg'
 import ellipse544 from '@/assets/images/landing-images/Ellipse 544.svg'
-import BookADemo from "@/pages/BookADemo";
-
 
 const Upgrades = () => {
   return (
@@ -34,7 +32,6 @@ const Upgrades = () => {
           ))}
         </div>
       </div>
-      <BookADemo />
     </>
   );
 };

@@ -68,7 +68,7 @@ const BookADemo = () => {
 
   return (
     <>
-      {!isRoot && <Navbar />}
+      {isRoot && <Navbar />}
       <div className="bg-white h-screen mt-16 md:mt-0">
         <div className="relative h-0">
           <img

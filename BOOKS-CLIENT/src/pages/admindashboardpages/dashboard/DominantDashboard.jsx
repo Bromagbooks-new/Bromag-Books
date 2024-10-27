@@ -28,37 +28,48 @@ const TotalSales = () => {
 
     return (
         <div className="w-full border py-4 px-2 sm:px-4 flex flex-col gap-4 bg-white rounded-2xl">
-            <h2 className="text-2xl sm:text-3xl font-bold">Dominant</h2>
+            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">Dominant</h2>
             <div className="flex flex-col sm:flex-row gap-5 mb-4">
                 <div className="w-full sm:w-auto">
-                    <label className="block text-sm font-medium mb-1 ml-4 text-slate-500">Select Product</label>
-                    <select className="w-full border border-gray-300 p-2 rounded ml-4" style={{ height: '6vh', width: '14vw', background: 'rgba(245, 246, 250, 1)' }}>
+                    <label className="block text-sm font-medium mb-1 ml-2 sm:ml-4 text-slate-500">Select Product</label>
+                    <select
+                        className="w-full sm:w-56 border border-gray-300 p-2 rounded ml-2 sm:ml-4"
+                        style={{
+                            height: '6vh',
+                            background: 'rgba(245, 246, 250, 1)',
+                        }}
+                    >
                         <option value="All Products">All Products</option>
                         <option value="Product A">Product A</option>
-                        <option value="Product B">Product B</option>
+                        <option value="Product B">Product C</option>
                     </select>
                 </div>
-                <div className="w-full sm:w-auto">
-                    <label className="block text-sm font-medium mb-1 ml-4 text-slate-500">Sort by</label>
-                    <select className="w-full border border-gray-300 p-2 ml-4 rounded" style={{ height: '6vh', width: '14vw' }}>
+                <div className="w-full sm:w-auto mt-4 sm:mt-0">
+                    <label className="block text-sm font-medium mb-1 ml-2 sm:ml-4 text-slate-500">Sort by</label>
+                    <select
+                        className="w-full sm:w-56 border border-gray-300 p-2 rounded ml-2 sm:ml-4"
+                        style={{
+                            height: '6vh',
+                        }}
+                    >
                         <option value="Month">Month</option>
                         <option value="Day">Day</option>
                         <option value="Week">Week</option>
-
                     </select>
                 </div>
+
                 <div className="flex justify-between sm:justify-start sm:gap-4 w-full sm:w-auto">
                     <div className="flex flex-col items-center sm:items-start">
                         <span className="block text-sm font-medium mb-1 text-slate-500">Avg. Sales</span>
-                        <span className="text-5xl font-bold text-slate-500">0000</span>
+                        <span className="text-3xl sm:text-5xl font-bold text-slate-500">0000</span>
                     </div>
                     <div className="flex flex-col items-center sm:items-start">
                         <span className="block text-sm font-medium mb-1 text-slate-500">Total Avg. Sales</span>
-                        <span className="text-5xl font-bold text-slate-500">0000</span>
+                        <span className="text-3xl sm:text-5xl font-bold text-slate-500">0000</span>
                     </div>
                 </div>
             </div>
-            <div className="relative w-full h-64 sm:h-80">
+            <div className="relative w-full h-48 sm:h-64 md:h-80">
                 <Line data={salesData} options={{ responsive: true, maintainAspectRatio: false }} />
             </div>
         </div>
@@ -78,7 +89,7 @@ const DominantDashboard = () => {
                 <div className="flex gap-4">
                     <p className="text-2xl sm:text-3xl font-bold">Dashboard</p>
                 </div>
-                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 flex-wrap">
                     {orderOptions.map((item) => (
                         <Link to={item.url} key={item.id} className="flex-1">
                             <AnalyticsCard

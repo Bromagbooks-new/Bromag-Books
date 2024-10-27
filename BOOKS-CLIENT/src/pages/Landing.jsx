@@ -25,14 +25,14 @@ import QueryForm from '@/components/Landing/QueryForm';
 
 const Landing = () => {
     return (
-       <div className='w-screen'>
+        <div className='w-screen'>
             <Navbar />
             <Hero />
             <LandingFeatures />
             <Upgrades />
             <QueryForm />
             <Footer />
-       </div>
+        </div>
     )
 }
 export default Landing

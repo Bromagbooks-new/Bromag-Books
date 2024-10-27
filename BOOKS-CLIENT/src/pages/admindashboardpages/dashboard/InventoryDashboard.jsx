@@ -30,21 +30,33 @@ const TotalSales = () => {
             <h2 className="text-2xl sm:text-3xl font-bold">Total Sales</h2>
             <div className="flex flex-col sm:flex-row gap-5 mb-4">
                 <div className="w-full sm:w-auto">
-                    <label className="block text-sm font-medium mb-1 ml-4 text-slate-500">Select Product</label>
-                    <select className="w-full border border-gray-300 p-2 rounded ml-4" style={{ height: '6vh', width: '14vw', background: 'rgba(245, 246, 250, 1)' }}>
+                    <label className="block text-sm font-medium mb-1 ml-2 sm:ml-4 text-slate-500">Select Product</label>
+                    <select
+                        className="w-full sm:w-56 border border-gray-300 p-2 rounded ml-2 sm:ml-4"
+                        style={{
+                            height: '6vh',
+                            background: 'rgba(245, 246, 250, 1)',
+                        }}
+                    >
                         <option value="All Products">All Products</option>
                         <option value="Product A">Product A</option>
-                        <option value="Product B">Product B</option>
+                        <option value="Product B">Product C</option>
                     </select>
                 </div>
-                <div className="w-full sm:w-auto">
-                    <label className="block text-sm font-medium mb-1 ml-4 text-slate-500">Sort by</label>
-                    <select className="w-full border border-gray-300 p-2 rounded ml-4" style={{ height: '6vh', width: '14vw' }}>
+                <div className="w-full sm:w-auto mt-4 sm:mt-0">
+                    <label className="block text-sm font-medium mb-1 ml-2 sm:ml-4 text-slate-500">Sort by</label>
+                    <select
+                        className="w-full sm:w-56 border border-gray-300 p-2 rounded ml-2 sm:ml-4"
+                        style={{
+                            height: '6vh',
+                        }}
+                    >
                         <option value="Month">Month</option>
                         <option value="Day">Day</option>
                         <option value="Week">Week</option>
                     </select>
                 </div>
+
                 <div className="flex flex-col sm:flex-row justify-between sm:justify-start sm:gap-4 w-full">
                     <div className="flex flex-col items-center sm:items-start">
                         <span className="block text-sm font-medium mb-1 text-slate-500">Avg. Sales</span>

@@ -167,6 +167,7 @@ import Upgrade from "./pages/Upgrade";
 import DominantDashboard from "./pages/admindashboardpages/dashboard/DominantDashboard";
 import OrderDashboard from "./pages/admindashboardpages/dashboard/OrderDashboard";
 import InventoryDashboard from "./pages/admindashboardpages/dashboard/InventoryDashboard";
+import DashboardMain from "./pages/admindashboardpages/dashboard/DashboardMain";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -267,8 +268,13 @@ const router = createBrowserRouter([
         children: [
           {
             index: true,
-            element: <OrderDashboard />,
-            loader: newOrderChartsLoader,
+            element: <DashboardMain />,
+            // loader: newOrderChartsLoader,
+          },
+          {
+            path: 'sale',
+            element: <DashboardMain />,
+            // loader: newOrderChartsLoader,
           },
           {
             path: 'order',

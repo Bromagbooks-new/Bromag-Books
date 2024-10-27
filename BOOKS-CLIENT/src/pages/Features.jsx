@@ -34,9 +34,9 @@ import BookADemo from "./BookADemo";
 
 const Features = () => {
 
-  const [heroImg, setHeroImg] = useState(BillingManagement);
+  // const [heroImg, setHeroImg] = useState(BillingManagement);
 
-  const updateImg = (img) => setHeroImg(img)
+  // const updateImg = (img) => setHeroImg(img)
 
 
 

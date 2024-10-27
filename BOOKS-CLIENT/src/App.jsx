@@ -163,6 +163,10 @@ import DominantManagement from "./pages/admindashboardpages/dominanatmanagement/
 import NonVegOrderManagement from "./pages/admindashboardpages/dominanatmanagement/TotalNonVegOrder";
 import VegOrderManagement from "./pages/admindashboardpages/dominanatmanagement/TotalVegOrders";
 import RepeatOrderManagement from "./pages/admindashboardpages/dominanatmanagement/RepeatOrder";
+import Upgrade from "./pages/Upgrade";
+import DominantDashboard from "./pages/admindashboardpages/dashboard/DominantDashboard";
+import OrderDashboard from "./pages/admindashboardpages/dashboard/OrderDashboard";
+import InventoryDashboard from "./pages/admindashboardpages/dashboard/InventoryDashboard";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -212,6 +216,16 @@ const router = createBrowserRouter([
         element: <ComingSoon />,
       },
       {
+        path: "upgrade",
+        element: <Upgrade />,
+        children: [
+          {
+            path: "book-a-demo",
+            element: <BookADemo />
+          }
+        ],
+      },
+      {
         path: "admin-login",
         element: (
           <>
@@ -251,10 +265,26 @@ const router = createBrowserRouter([
           </>
         ),
         children: [
-          // {
-          //   index: true,
-          //   element: <Dashboard />,
-          // },
+          {
+            index: true,
+            element: <OrderDashboard />,
+            loader: newOrderChartsLoader,
+          },
+          {
+            path: 'order',
+            element: <OrderDashboard />,
+            loader: newOrderChartsLoader
+          },
+          {
+            path: 'dominant',
+            element: <DominantDashboard />
+          },
+          {
+            path: 'inventory',
+            element: <InventoryDashboard />,
+            loader: newOrderChartsLoader
+          },
+
           {
             path: 'billing-management',
             element: <BillingManagement />,
@@ -451,40 +481,40 @@ const router = createBrowserRouter([
               }
             ]
           },
-          // {
-          //   path: "vendor-management",
-          //   element: <Outlet />,
-          //   children: [
-          //     {
-          //       index: true,
-          //       element: <VendorManagement />,
-          //     },
-          //     {
-          //       path: "invoice",
-          //       element: <Invoice />,
-          //     },
-          //     {
-          //       path: "add-invoice",
-          //       element: <AddInvoice />,
-          //     },
-          //     {
-          //       path: "update-invoice",
-          //       element: <UpdateInvoice />,
-          //     },
-          //     {
-          //       path: "vendor-settings",
-          //       element: <VendorSettings />,
-          //     },
-          //     {
-          //       path: "add-vendor",
-          //       element: <AddVendor />,
-          //     },
-          //     {
-          //       path: "update-vendor",
-          //       element: <UpdateVendor />,
-          //     },
-          //   ],
-          // },
+          {
+            path: "vendor-management",
+            element: <Outlet />,
+            children: [
+              {
+                index: true,
+                element: <VendorManagement />,
+              },
+              {
+                path: "invoice",
+                element: <Invoice />,
+              },
+              {
+                path: "add-invoice",
+                element: <AddInvoice />,
+              },
+              {
+                path: "update-invoice",
+                element: <UpdateInvoice />,
+              },
+              {
+                path: "vendor-settings",
+                element: <VendorSettings />,
+              },
+              {
+                path: "add-vendor",
+                element: <AddVendor />,
+              },
+              {
+                path: "update-vendor",
+                element: <UpdateVendor />,
+              },
+            ],
+          },
           {
             path: "employee-management",
             element: <Outlet />,

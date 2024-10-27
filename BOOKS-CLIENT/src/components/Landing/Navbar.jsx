@@ -1,7 +1,9 @@
-import logo from "@/assets/images/BooksLogo.svg";
-import { Link, NavLink } from "react-router-dom";
+import React, { useState } from "react";
+import logoDesktop from "@/assets/images/BooksLogo.svg";
+import logoMobile from "@/assets/images/BooksLogo.png";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Menu, SquareMenuIcon, User } from "lucide-react";
+import { Menu, User } from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -11,14 +13,27 @@ import {
 import { Drawer, DrawerContent, DrawerTrigger } from "../ui/drawer";
 
 const Navbar = () => {
+  const [showUpgradeList, setShowUpgradeList] = useState(false);
+  const navigate = useNavigate();
+
+  const handleUpgradeClick = () => {
+    setShowUpgradeList(!showUpgradeList);
+  };
+
+  const handleUpgradeOptionClick = () => {
+    setShowUpgradeList(false);
+    navigate("/coming-soon");
+  };
+
   return (
     <nav className="h-0 relative top-20 -mt-12 w-screen pr-4 lg:px-10 py-4 flex items-center justify-between z-50">
       <NavLink
         className={({ isActive }) => isActive && "font-bold text-black"}
         to="/"
       >
-        <div className="">
-          <img src={logo} className="w-28 h-28 md:w-36 md:h-36" />
+        <div>
+          <img src={logoDesktop} className="hidden md:block w-20 h-20 md:w-36 md:h-36" alt="Desktop Logo" />
+          <img src={logoMobile} className="block md:hidden w-16 h-16 ml-1" alt="Mobile Logo" />
         </div>
       </NavLink>
       <div className="hidden lg:flex gap-10 items-center text-lg font-roboto text-muted">
@@ -34,9 +49,21 @@ const Navbar = () => {
         >
           Features
         </NavLink>
+        {/* <div className="relative">
+          <button onClick={handleUpgradeClick} className="font-roboto">
+            Upgrade
+          </button>
+          {showUpgradeList && (
+            <div className="absolute mt-2 p-2 bg-white shadow-lg rounded">
+              <button onClick={handleUpgradeOptionClick}>Option 1</button>
+              <button onClick={handleUpgradeOptionClick}>Option 2</button>
+              <button onClick={handleUpgradeOptionClick}>Option 3</button>
+            </div>
+          )}
+        </div> */}
         <NavLink
           className={({ isActive }) => isActive && "font-bold text-black"}
-          to="/coming-soon"
+          to="/upgrade"
         >
           Upgrade
         </NavLink>
@@ -92,7 +119,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 isActive && "underline text-blue-600"
               }
-              to="/coming-soon"
+              to="/upgrade"
             >
               Upgrade
             </NavLink>

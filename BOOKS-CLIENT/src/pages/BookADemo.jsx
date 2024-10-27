@@ -129,7 +129,7 @@ const BookADemo = () => {
               >
                 <p className=" text-5xl font-semibold text-center">Book Demo</p>
                 <p className=" text-gray-500 text-xl text-center">
-                PLEASE ENTER THE DETAILS TO LOGIN
+                  PLEASE ENTER THE DETAILS TO LOGIN
                 </p>
                 <Separator className="bg-[#0E69AC]" />
                 <div className="flex flex-col items-center md:flex-row gap-8">
@@ -197,7 +197,7 @@ const BookADemo = () => {
                                   <RadioGroupItem value="restraunt" />
                                 </FormControl>
                                 <FormLabel className="font-normal">
-                                Restaurant
+                                  Restaurant
                                 </FormLabel>
                               </FormItem>
                               <FormItem className="flex items-center space-x-3 space-y-0 border-2 rounded-xl p-2 w-32 md:w-auto">
@@ -281,8 +281,8 @@ const BookADemo = () => {
                     {form.formState.isSubmitting
                       ? "Submitting..."
                       : form.formState.isSubmitSuccessful
-                      ? "Submited"
-                      : "Submit"}
+                        ? "Submited"
+                        : "Submit"}
                   </Button>
                 </div>
               </form>

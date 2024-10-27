@@ -18,7 +18,7 @@ const TotalSales = () => {
                 label: "Sales",
                 data: Array(30).fill(0).map(() => Math.random() * 100),
                 fill: true,
-                backgroundColor: "rgba(0, 255, 0, 0.1)",
+                backgroundColor: "rgba(92, 122, 143, 1)",
                 borderColor: "#16A34A",
                 pointBackgroundColor: "#16A34A",
                 tension: 0.4
@@ -28,7 +28,7 @@ const TotalSales = () => {
 
     return (
         <div className="w-full border py-4 px-2 sm:px-4 flex flex-col gap-4 bg-white rounded-2xl">
-            <h2 className="text-2xl sm:text-3xl font-bold">Total Sales</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold">Dominant</h2>
             <div className="flex flex-col sm:flex-row gap-5 mb-4">
                 <div className="w-full sm:w-auto">
                     <label className="block text-sm font-medium mb-1 ml-4 text-slate-500">Select Product</label>
@@ -40,7 +40,7 @@ const TotalSales = () => {
                 </div>
                 <div className="w-full sm:w-auto">
                     <label className="block text-sm font-medium mb-1 ml-4 text-slate-500">Sort by</label>
-                    <select className="w-full border border-gray-300 p-2 rounded ml-4" style={{ height: '6vh', width: '14vw' }}>
+                    <select className="w-full border border-gray-300 p-2 ml-4 rounded" style={{ height: '6vh', width: '14vw' }}>
                         <option value="Month">Month</option>
                         <option value="Day">Day</option>
                         <option value="Week">Week</option>
@@ -65,7 +65,7 @@ const TotalSales = () => {
     );
 };
 
-const DashboardManagement = () => {
+const DominantDashboard = () => {
     const breakdown = {
         dailyBreakdown: { online: 2, takeaway: 4, dinein: 1, total: 7 },
         monthlyBreakdown: { online: 40, takeaway: 50, dinein: 10, total: 100 },
@@ -84,7 +84,6 @@ const DashboardManagement = () => {
                             <AnalyticsCard
                                 id={item.id}
                                 title={item.title}
-                                url={item.url}
                                 icon={item.icon}
                                 activatedIcon={item.activatedIcon}
                                 activatedClass={item.activatedClass}
@@ -94,12 +93,12 @@ const DashboardManagement = () => {
                     ))}
                 </div>
                 <TotalSales />
-            </ScrollArea>
-        </div>
+            </ScrollArea >
+        </div >
     );
 };
 
-export default DashboardManagement;
+export default DominantDashboard;
 
 const orderOptions = [
     {

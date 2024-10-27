@@ -3,7 +3,6 @@ import { ownerLogout } from "../../store/slices/owner";
 import { NavLink, useNavigate } from "react-router-dom";
 import logo from "@/assets/images/landing-images/bromag_books_white_BGLESS.png";
 import group from "@/assets/images/dashboard/Group 207 (1).svg";
-
 import billingManagement from "@/assets/images/dashboard/billing.svg";
 import salesManagement from "@/assets/images/dashboard/sales.svg";
 import orderManagement from "@/assets/images/dashboard/order.svg";
@@ -24,7 +23,7 @@ import payrollManagement from "@/assets/images/dashboard/payroll-management.svg"
 import { cn } from "@/lib/utils";
 import { ScrollArea } from "../ui/scroll-area";
 
-function Sidebar() {
+function Sidebar({ openSidebarToggle }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -35,16 +34,16 @@ function Sidebar() {
   };
 
   return (
-    // className = { openSidebarToggle? "sidebar-responsive": "" }
-    <aside id="sidebar" className=" md:w-[20%] h-screen py-4 text-white">
+    <aside
+      id="sidebar"
+      className={`fixed inset-y-0 left-0 transform ${openSidebarToggle ? "translate-x-0" : "-translate-x-full"
+        } transition-transform md:relative md:translate-x-0 md:w-[20%] w-3/4 bg-[#1F303C] h-screen py-4 text-white z-50`}
+    >
       <img src={logo} className="w-16 h-16 ml-4" />
       <div className="pt-4 flex h-full">
-        <ScrollArea
-          className="h-[45rem] w-full overflow-visible z-20"
-          type="scroll"
-        >
-          <nav className="flex flex-col h-full justify-center gap-3 w-[20rem] p-3 z-20">
-            {sideBarItems.map((item) => (
+        <ScrollArea className="h-[45rem] w-full overflow-visible z-20" type="scroll">
+          <nav className="flex flex-col h-full justify-center gap-3 w-full p-3 z-20">
+            {sideBarItems.map((item) =>
               item.isHeader ? (
                 <h3 key={item.id} className="text-lg font-semibold mt-6 mb-2 pl-2">
                   {item.title}
@@ -81,7 +80,7 @@ function Sidebar() {
                   )}
                 </NavLink>
               )
-            ))}
+            )}
           </nav>
         </ScrollArea>
       </div>
@@ -95,6 +94,7 @@ function Sidebar() {
   );
 }
 export default Sidebar;
+
 
 const sideBarItems = [
   {
@@ -169,43 +169,4 @@ const sideBarItems = [
     url: "crm-management",
     icon: crmManagement,
   },
-  // Add a header for the "Updates" section
-  {
-    id: "updates-header",
-    title: "Updates",
-    url: null,
-    icon: null,
-    isHeader: true,
-  },
-  {
-    id: 13,
-    title: "Captain Management",
-    url: "captain-management",
-    icon: captainManagement,
-  },
-  {
-    id: 14,
-    title: "Payroll Management",
-    url: "payroll-management",
-    icon: payrollManagement,
-  },
-  {
-    id: 15,
-    title: "KDS Management",
-    url: "kds-management",
-    icon: kdsManagement,
-  },
-  {
-    id: 16,
-    title: "Online Management",
-    url: "online-management",
-    icon: onlineManagement,
-  },
-  {
-    id: 17,
-    title: "Integration Management",
-    url: "integration-management",
-    icon: integrationManagement,
-  },
-];
-
+]

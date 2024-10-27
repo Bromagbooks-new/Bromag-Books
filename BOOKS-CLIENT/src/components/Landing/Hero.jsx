@@ -19,7 +19,7 @@ const Hero = () => {
         </div>
         {/* <div className="w-full h-full bg-white opacity-45"></div> */}
       </div>
-      <div className="relative bottom-[23rem] md:bottom-[36rem] font-bold md:w-[60%] h-0 py-10 md:p-0 pl-4 md:pl-20 flex flex-col gap-2 md:gap-4 font-roboto">
+      <div className="relative bottom-[25rem] md:bottom-[40rem] font-bold md:w-[60%] h-0 py-10 md:p-0 pl-4 md:pl-20 flex flex-col gap-2 md:gap-4 font-roboto">
         <p className="font-bold text-black text-5xl md:text-8xl lg:text-8xl font-roboto-condensed tracking-tighter">
           BROMAG <span className="text-landing-primary">BOOKS</span>
         </p>

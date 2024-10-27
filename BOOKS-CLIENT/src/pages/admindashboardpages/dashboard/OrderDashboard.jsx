@@ -1,5 +1,5 @@
 import React from "react";
-import { Line } from "react-chartjs-2";
+import { Pie } from "react-chartjs-2";
 import { Link } from "react-router-dom";
 import AnalyticsCard from "@/components/ordermanagement/AnalyticsCard";
 import Online from "@/assets/images/billing-management/Online.svg";
@@ -8,20 +8,18 @@ import Takeaway from "@/assets/images/billing-management/Takeaway.svg";
 import TakeawayActivated from "@/assets/images/billing-management/TakeawayActivated.svg";
 import Dinein from "@/assets/images/billing-management/Dinein.svg";
 import DineinActivated from "@/assets/images/billing-management/DineinActivated.svg";
+import NewOrderCharts from "@/components/ordermanagement/NewOrderCharts";
 import { ScrollArea } from "@/components/ui/scroll-area";
 
 const TotalSales = () => {
     const salesData = {
-        labels: Array(30).fill(0).map((_, i) => i + 1),
+        labels: ["Online", "Takeaway", "Dine-in"],
         datasets: [
             {
-                label: "Sales",
-                data: Array(30).fill(0).map(() => Math.random() * 100),
-                fill: true,
-                backgroundColor: "rgba(0, 255, 0, 0.1)",
-                borderColor: "#16A34A",
-                pointBackgroundColor: "#16A34A",
-                tension: 0.4
+                label: "Sales Breakdown",
+                data: [30, 50, 20], // Example data, replace with your actual data
+                backgroundColor: ["#16A34A", "#FFCE56", "#FF6384"],
+                hoverBackgroundColor: ["#2F9E44", "#F8B400", "#F76794"]
             }
         ]
     };
@@ -36,6 +34,7 @@ const TotalSales = () => {
                         <option value="All Products">All Products</option>
                         <option value="Product A">Product A</option>
                         <option value="Product B">Product B</option>
+                        {/* Add more products as needed */}
                     </select>
                 </div>
                 <div className="w-full sm:w-auto">
@@ -44,7 +43,6 @@ const TotalSales = () => {
                         <option value="Month">Month</option>
                         <option value="Day">Day</option>
                         <option value="Week">Week</option>
-
                     </select>
                 </div>
                 <div className="flex justify-between sm:justify-start sm:gap-4 w-full sm:w-auto">
@@ -59,13 +57,13 @@ const TotalSales = () => {
                 </div>
             </div>
             <div className="relative w-full h-64 sm:h-80">
-                <Line data={salesData} options={{ responsive: true, maintainAspectRatio: false }} />
+                <Pie data={salesData} options={{ responsive: true, maintainAspectRatio: false }} />
             </div>
         </div>
     );
 };
 
-const DashboardManagement = () => {
+const OrderDashboard = () => {
     const breakdown = {
         dailyBreakdown: { online: 2, takeaway: 4, dinein: 1, total: 7 },
         monthlyBreakdown: { online: 40, takeaway: 50, dinein: 10, total: 100 },
@@ -93,13 +91,13 @@ const DashboardManagement = () => {
                         </Link>
                     ))}
                 </div>
-                <TotalSales />
+                <NewOrderCharts />
             </ScrollArea>
         </div>
     );
 };
 
-export default DashboardManagement;
+export default OrderDashboard;
 
 const orderOptions = [
     {

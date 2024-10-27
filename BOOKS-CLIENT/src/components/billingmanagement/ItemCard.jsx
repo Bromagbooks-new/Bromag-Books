@@ -25,8 +25,8 @@ const ItemCard = ({
   const [selectedFilter, setSelectedFilter] = useState(portions[0].type);
 
 
-  const actualPrice = portions.filter(portion=> portion.type === selectedFilter)[0].actualPrice;
-  const discountedPrice = portions.filter(portion=> portion.type === selectedFilter)[0].discountPrice;
+  const actualPrice = portions.filter(portion => portion.type === selectedFilter)[0].actualPrice;
+  const discountedPrice = portions.filter(portion => portion.type === selectedFilter)[0].discountPrice;
 
 
   const maxCount = available;
@@ -58,7 +58,7 @@ const ItemCard = ({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {portions.map(portion=> <SelectItem value={portion.type} >{portion.type}</SelectItem>)}
+              {portions.map(portion => <SelectItem value={portion.type} >{portion.type}</SelectItem>)}
               {/* <SelectItem value="quater">Quater</SelectItem> */}
               {/* <SelectItem value="half">Half</SelectItem> */}
               {/* <SelectItem value="full">Full</SelectItem> */}

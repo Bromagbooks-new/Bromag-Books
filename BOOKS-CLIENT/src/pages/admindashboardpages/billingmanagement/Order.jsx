@@ -175,20 +175,21 @@ const Order = () => {
                 // console.log(currentAggregatorData);
 
                 return (
-                  <ItemCard
-                    key={item._id}
-                    img={item.image}
-                    name={item.name}
-                    portions={currentAggregatorData.portions}
-                    actualPrice={currentAggregatorData.actualPrice}
-                    discountedPrice={currentAggregatorData.discountPrice}
-                    available={item.quantity}
-                    itemId={item._id}
-                    quantity={quantity}
-                    addItem={addItem}
-                    subtractItem={subtractItem}
-                  />
-                );
+                  <div className="flex flex-wrap gap-3 -mx-4 p-4 bg-[#F5F6FA]">
+                    <ItemCard
+                      key={item._id}
+                      img={item.image}
+                      name={item.name}
+                      portions={currentAggregatorData.portions}
+                      actualPrice={currentAggregatorData.actualPrice}
+                      discountedPrice={currentAggregatorData.discountPrice}
+                      available={item.quantity}
+                      itemId={item._id}
+                      quantity={quantity}
+                      addItem={addItem}
+                      subtractItem={subtractItem}
+                    />
+                  </div>);
               })}
             </div>
             <Bill

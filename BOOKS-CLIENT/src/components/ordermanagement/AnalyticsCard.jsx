@@ -27,16 +27,16 @@ const AnalyticsCard = ({
   let selectedBreakdown = breakdown.dailyBreakdown;
   // console.log('selectedBreakdown:', selectedBreakdown)
 
-  if(selectedFilter === 'today') {
+  if (selectedFilter === 'today') {
     selectedBreakdown = breakdown.dailyBreakdown;
   }
-  if(selectedFilter === 'monthly') {
+  if (selectedFilter === 'monthly') {
     selectedBreakdown = breakdown.monthlyBreakdown;
   }
-  if(selectedFilter === 'weekly') {
+  if (selectedFilter === 'weekly') {
     selectedBreakdown = breakdown.weeklyBreakdown;
   }
-
+  console.log("aaa", url)
   // console.log(id);
   // console.log(selectedBreakdown);
 
@@ -45,8 +45,7 @@ const AnalyticsCard = ({
       to={url}
       className={({ isActive }) =>
         cn(
-          `rounded-2xl w-[16rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${
-            isActive && activatedClass
+          `rounded-2xl w-[16rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${isActive && activatedClass
           }`
         )
       }
@@ -72,7 +71,7 @@ const AnalyticsCard = ({
                 "text-black": isActive,
               })}
             >
-              {selectedBreakdown[id]}
+              {/* {selectedBreakdown[id]} */} ₹222
             </p>
             <img src={isActive ? activatedIcon : icon} className="w-14 h-14" />
           </div>

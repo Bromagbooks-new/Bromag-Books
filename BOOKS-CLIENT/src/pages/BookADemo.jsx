@@ -32,6 +32,7 @@ const bookADemoFormSchema = z.object({
   location: z.string().min(1, { message: "Kindly Enter your Location" }),
   type: z.string().min(1, { message: "Kindly Select one option" }),
   designation: z.string().min(1, { message: "Kindly select one option" }),
+  onlinePlatform: z.string().min(),
   purpose: z.string(),
 });
 const isRoot = location.pathname === "/features";
@@ -47,6 +48,7 @@ const BookADemo = () => {
       type: "",
       designation: "",
       purpose: "",
+      onlinePlatform: ""
     },
   });
 
@@ -175,6 +177,17 @@ const BookADemo = () => {
                         <FormItem>
                           <FormLabel>Location*</FormLabel>
                           <Textarea {...field} className="border-2" />
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      name="onlinePlatform"
+                      control={form.control}
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Online Platform</FormLabel>
+                          <Input {...field} className="border-2" placeholder="Enter the online platform" />
                           <FormMessage />
                         </FormItem>
                       )}

@@ -28,7 +28,7 @@
 // // file can be buffer or path
 // async function uploadFile(file, cloudFilePath) {
 // 	try {
-	
+
 // 		const fileBuffer = file instanceof Buffer ? file : await fs.promises.readFile(file.path)
 
 // 		const command = new PutObjectCommand({
@@ -95,7 +95,7 @@
 // }
 
 // function getS3FileUrl(path) {
-	
+
 // 	return `https://${process.env.S3_BUCKET}.s3.${process.env.S3_REGION}.amazonaws.com/${path}`
 // }
 
@@ -132,62 +132,62 @@ async function uploadFileLocally(file, localPath) {
 	try {
 		const dir = path.dirname(localPath);
 		if (!fs.existsSync(dir)) {
-		  fs.mkdirSync(dir, { recursive: true });
+			fs.mkdirSync(dir, { recursive: true });
 		}
-	
+
 		await fs.promises.copyFile(file.path, localPath);
 		return localPath; // Return the path as a string
-	  } catch (error) {
-		throw error;
-	  }
-  }
-  
-  async function deleteFileLocally(localFilePath) {
-	try {
-	  const fullPath = path.join(rootDir, 'uploads', localFilePath);
-	  if (fs.existsSync(fullPath)) {
-		await fs.promises.unlink(fullPath);
-		console.log(`File ${fullPath} deleted!`);
-		return true;
-	  } else {
-		console.error(`File ${fullPath} does not exist!`);
-		return false;
-	  }
 	} catch (error) {
-	  console.error("Error deleting file locally:", error);
-	  return false;
+		throw error;
 	}
-  }
-  
-  
-  function getFileUrlLocally(localPath) {
+}
+
+async function deleteFileLocally(localFilePath) {
+	try {
+		const fullPath = path.join(rootDir, 'uploads', localFilePath);
+		if (fs.existsSync(fullPath)) {
+			await fs.promises.unlink(fullPath);
+			console.log(`File ${fullPath} deleted!`);
+			return true;
+		} else {
+			console.error(`File ${fullPath} does not exist!`);
+			return false;
+		}
+	} catch (error) {
+		console.error("Error deleting file locally:", error);
+		return false;
+	}
+}
+
+
+function getFileUrlLocally(localPath) {
 	const resolvedPath = path.resolve(localPath);
-	return resolvedPath; 
-  }
+	return resolvedPath;
+}
 
 function deleteOldFiles(directory = 'uploads', maxAgeInMinutes = 5) {
-		try {
-			const currentTime = new Date()
-			const maxAge = maxAgeInMinutes * 60 * 1000
-	
-			const files = fs.readdirSync(directory)
-			for (const file of files) {
-				const filePath = directory + '/' + file
-				const stats = fs.statSync(filePath)
-				const fileAge = currentTime.getTime() - stats.birthtime.getTime()
-	
-				if (fileAge > maxAge) {
-					fs.unlinkSync(filePath)
-					console.log(`Deleted: ${filePath}`)
-				}
+	try {
+		const currentTime = new Date()
+		const maxAge = maxAgeInMinutes * 60 * 1000
+
+		const files = fs.readdirSync(directory)
+		for (const file of files) {
+			const filePath = directory + '/' + file
+			const stats = fs.statSync(filePath)
+			const fileAge = currentTime.getTime() - stats.birthtime.getTime()
+
+			if (fileAge > maxAge) {
+				fs.unlinkSync(filePath)
+				console.log(`Deleted: ${filePath}`)
 			}
-		} catch (err) {
-			console.error(err)
 		}
+	} catch (err) {
+		console.error(err)
 	}
+}
 
 
-	const feedbackEmailTemplate = (userName, userEmail, userPhoneNumber, feedbackMessage) => `
+const feedbackEmailTemplate = (userName, userEmail, userPhoneNumber, feedbackMessage) => `
 	<!DOCTYPE html>
 	<html lang="en">
 	<head>
@@ -259,7 +259,7 @@ function deleteOldFiles(directory = 'uploads', maxAgeInMinutes = 5) {
 	</html>
 	`;
 
-	const demoRequestEmailTemplate = (userName, userEmail, userPhone, userAddress, userType, employeeType, demoPurpose) => `
+const demoRequestEmailTemplate = (userName, userEmail, userPhone, userAddress, userType, employeeType, demoPurpose, onlinePlatform) => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -325,6 +325,7 @@ function deleteOldFiles(directory = 'uploads', maxAgeInMinutes = 5) {
       <p><strong>Employee Type:</strong> ${employeeType}</p>
       <p><strong>Purpose:</strong></p>
       <p>${demoPurpose}</p>
+	  <p>${onlinePlatform}</p>
     </div>
     <div class="footer">
       <p>Thank you for requesting a demo. We will get back to you soon!</p>
@@ -338,9 +339,9 @@ const helpers = {
 	uploadFileLocally,
 	deleteFileLocally,
 	getFileUrlLocally,
-	  deleteOldFiles,
-	  feedbackEmailTemplate,
-	  demoRequestEmailTemplate
-  }
-  
-  module.exports = helpers
+	deleteOldFiles,
+	feedbackEmailTemplate,
+	demoRequestEmailTemplate
+}
+
+module.exports = helpers

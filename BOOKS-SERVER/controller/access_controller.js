@@ -22,33 +22,30 @@ const feedback_model = require("../model/feedback_model");
 const Token = require('../model/token_model');
 const path = require('path');
 const { DemoRequestModel } = require("../model/demo_request");
-const {UserQuery} = require('../model/userQuery');
+const { UserQuery } = require('../model/userQuery');
 
 
 exports.getAllRegisteredPos = async (req, res) => {
   try {
-    
+
     if (req.restaurant) {
 
       const response = await AccessedEmployees.find({
         accessFor: "POS manager",
         restaurant: req.restaurant
       }).select('username _id');
-      
+
 
       if (response.length > 0) {
-        res.status(200).json({success:true,message:"Successfully Fetched",RegisteredPosManagers:response})
+        res.status(200).json({ success: true, message: "Successfully Fetched", RegisteredPosManagers: response })
       } else {
-        res.status(200).json({success:false,message:"PosManagers didn't Exist"})
+        res.status(200).json({ success: false, message: "PosManagers didn't Exist" })
       }
-
-
-
     }
 
   } catch (err) {
     console.log(err);
-  return  res.status(500).json({success:true,message:"Internal Server Error "})
+    return res.status(500).json({ success: true, message: "Internal Server Error " })
   }
 }
 
@@ -59,14 +56,14 @@ exports.GetRestaurantDetail = async (req, res) => {
     console.log(req.restaurant, "restaurant token");
     let restaurantData
     if (req.restaurant) {
-  
+
       restaurantData = await Restaurant.findById(req.restaurant)
-      
-      
-      return res.status(200).json({success:true,message:"Successfully Fetched",restaurantData})
+
+
+      return res.status(200).json({ success: true, message: "Successfully Fetched", restaurantData })
     } else {
-      
-      return res.status(200).json({success:false,message:"Something Went Wrong",restaurantData})
+
+      return res.status(200).json({ success: false, message: "Something Went Wrong", restaurantData })
     }
 
   } catch (err) {
@@ -79,46 +76,46 @@ exports.GetRestaurantDetail = async (req, res) => {
 exports.getAllSalesReport = async (req, res) => {
   try {
     const restro = req.restaurant;
-    const {POSManager,date} = req.query
+    const { POSManager, date } = req.query
     console.log(POSManager, "i am you");
     let response
-console.log(date,"datee");
+    console.log(date, "datee");
     if (date) {
 
       console.log(date);
-      
+
       const { start, end } = date
       const startDate = new Date(start);
       const endDate = new Date(end);
-   
+
       if (POSManager === 'All') {
-        
-        console.log(restro,POSManager,"heyy");
-     
-      response  = await posTodayClosing.find({
+
+        console.log(restro, POSManager, "heyy");
+
+        response = await posTodayClosing.find({
           date: {
             $gte: startDate,
             $lte: endDate,
           },
           restaurant: restro,
         }).sort({ date: -1 });
-        
-        console.log(response,"from date all");
-        
+
+        console.log(response, "from date all");
+
       } else {
-  
-      response = await posTodayClosing.find({
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
-        restaurant: restro,
-        posId: POSManager
-        
-      }).sort({ date: -1 });
-      
-      console.log(response,"from date ",POSManager);
-        
+
+        response = await posTodayClosing.find({
+          date: {
+            $gte: startDate,
+            $lte: endDate,
+          },
+          restaurant: restro,
+          posId: POSManager
+
+        }).sort({ date: -1 });
+
+        console.log(response, "from date ", POSManager);
+
       }
 
 
@@ -126,24 +123,24 @@ console.log(date,"datee");
 
 
     } else {
-      
-    
+
+
       if (POSManager === 'All') {
-      
+
         response = await posTodayClosing.find({
           restaurant: restro,
-        }).sort({date:-1});
-      
+        }).sort({ date: -1 });
+
       } else {
-      
+
         response = await posTodayClosing.find({
           restaurant: restro,
           posId: POSManager
-        }).sort({date:-1});
-      
+        }).sort({ date: -1 });
+
         console.log(response, " I am response");
       }
-    
+
       return res.json({ success: true, data: response });
     }
 
@@ -314,7 +311,7 @@ exports.verifyLogin = async (req, res) => {
         const newToken = new Token({
           token: token,
           employeeId: employee._id,
-          expiresAt: new Date(Date.now() + 60 * 60 * 1000), // 1 hour expiration
+          expiresAt: new Date(Date.now() + 60 * 60 * 1000),
         });
 
         await newToken.save();
@@ -440,29 +437,29 @@ exports.verifyToken = async (req, res) => {
 };
 
 
-exports.storeDemoRequest = async (req, res)=> {
+exports.storeDemoRequest = async (req, res) => {
 
   try {
-    const {name, email, phone, location, type, designation, purpose} = req.body;
+    const { name, email, phone, location, type, designation, purpose, onlinePlatform } = req.body;
 
-    const demoRequest = new DemoRequestModel({ name, email, phone, location, type, designation, purpose });
+    const demoRequest = new DemoRequestModel({ name, email, phone, location, type, designation, purpose, onlinePlatform });
     await demoRequest.save();
 
-    sendEmail("mag@bromagindia.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose));
+    sendEmail("mag@bromagindia.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose, onlinePlatform));
 
     res.json({ success: true, message: "Request Saved" });
 
   }
   catch (error) {
     res
-    .status(500)
-    .json({ success: false, serverMessage: "Internal Server Error" });
+      .status(500)
+      .json({ success: false, serverMessage: "Internal Server Error" });
   }
 };
-exports.storeUserRequest = async (req, res)=> {
+exports.storeUserRequest = async (req, res) => {
 
   try {
-    const {name, email, phone, query} = req.body;
+    const { name, email, phone, query } = req.body;
 
     const userQuery = new UserQuery({ name, email, phone, query });
     await userQuery.save();
@@ -474,8 +471,8 @@ exports.storeUserRequest = async (req, res)=> {
   }
   catch (error) {
     res
-    .status(500)
-    .json({ success: false, serverMessage: "Internal Server Error" });
+      .status(500)
+      .json({ success: false, serverMessage: "Internal Server Error" });
   }
 };
 
@@ -509,7 +506,7 @@ exports.searchCustomerDetail = async (req, res) => {
       restaurant: new mongoose.Types.ObjectId(restaurantId),
     };
 
-    
+
 
     if (searchValue) {
 
@@ -518,23 +515,23 @@ exports.searchCustomerDetail = async (req, res) => {
         console.log("case 1");
         query.phone = searchValue;
       } else {
-        
+
         query.$or = [
           { customer: { $regex: searchValue, $options: "i" } },
           { email: { $regex: searchValue, $options: "i" } },
           { city: { $regex: searchValue, $options: "i" } },
           { address: { $regex: searchValue, $options: "i" } },
-          
+
         ];
       }
     }
 
     const result = await Customers.find(query);
 
- 
+
     res.status(200).json({ success: true, data: result });
   } catch (err) {
-    
+
     return res
       .status(500)
       .json({ success: false, serverMessage: "Internal Server Error" });
@@ -676,7 +673,7 @@ exports.updatAccess = async (req, res) => {
     const { username, password, email, accessAs, ID } = req.body;
     const file = req.files[0];
     const restaurant = req.restaurant;
-console.log(accessAs,"i am accesss");
+    console.log(accessAs, "i am accesss");
     const response = await AccessedEmployees.findOne({ _id: ID });
 
     if (!response) {
@@ -693,22 +690,22 @@ console.log(accessAs,"i am accesss");
     if (accessAs) updates.accessFor = accessAs;
 
     if (file) {
-console.log(file," i am file");      
-      
-const dirPath = path.join('uploads', 'access', 'profileImage');
-const fileName = `${restaurant}/${file.filename}`;
-const imagePath = path.join(dirPath, fileName);
-// const imagePath = `/access/profileImage/${restaurant}/${file.filename}`;
+      console.log(file, " i am file");
 
-await helpers.uploadFileLocally(file, imagePath);
+      const dirPath = path.join('uploads', 'access', 'profileImage');
+      const fileName = `${restaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+      // const imagePath = `/access/profileImage/${restaurant}/${file.filename}`;
 
-const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
-updates.profileImage = relativeImagePath;
+      await helpers.uploadFileLocally(file, imagePath);
 
-if (response.profileImage) {
-  const oldImagePath = path.join(__dirname, response.profileImage);
-  helpers.deleteOldFiles(oldImagePath);
-}
+      const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+      updates.profileImage = relativeImagePath;
+
+      if (response.profileImage) {
+        const oldImagePath = path.join(__dirname, response.profileImage);
+        helpers.deleteOldFiles(oldImagePath);
+      }
 
     }
 
@@ -717,7 +714,7 @@ if (response.profileImage) {
     return res
       .status(200)
       .json({ success: true, message: "Update successful" });
-    
+
   } catch (err) {
     console.log(err);
     return res
@@ -728,11 +725,11 @@ if (response.profileImage) {
 
 exports.addAccess = async (req, res) => {
   try {
-    
+
     const { username, password, email, accessAs } = req.body;
     const file = req.files[0];
     const employeeId = await this.generateNextEmployeeId(req.restaurant);
-   console.log("emplueeID",employeeId)
+    console.log("emplueeID", employeeId)
     if (username) {
       const existingUsername = await AccessedEmployees.findOne({ username });
       const existingEmail = await AccessedEmployees.findOne({ email });
@@ -927,7 +924,7 @@ exports.employDetails = async (req, res) => {
     if (isRestaurant) {
       const employeeData = await Employees.find({
         restaurantId: isRestaurant,
-      }).sort({joinDate:-1  });
+      }).sort({ joinDate: -1 });
       res.status(200).json({
         success: true,
         EmployData: employeeData,
@@ -988,7 +985,7 @@ exports.addCustomer = async (req, res) => {
   try {
 
     console.log("called");
-    
+
     const token = req.headers["authorization"];
     const Token = token.replace(/"/g, "");
     const validUser = jwtToken.verify(Token, process.env.SECRET_KEY);
@@ -1010,79 +1007,79 @@ exports.addCustomer = async (req, res) => {
 
     const restaurant = validUser.restaurant;
 
-console.log(files,restaurant,"i am customer");
+    console.log(files, restaurant, "i am customer");
 
     if (restaurant) {
-      let aadharImages= []
+      let aadharImages = []
 
-    const result = await Customers.findOne({ phone: phone });
-    
-  
-    
-    if (result) {
-      return res
-      .status(200)
-      .json({ success: false, message: "Phone number already exist" });
-    }
-    const response = await Customers.findOne({ email: email });
-    if (response) {
-      return  res.status(200).json({ success: false, message: "Email already exist" });
-    }
-    
-      
-    if (files) {
-        
+      const result = await Customers.findOne({ phone: phone });
 
-      for (const file of req.files) {
-        // const imageURL = await S3uploadFile(file.originalname, file.buffer);
-        const dirPath = path.join('uploads', 'customer', 'aadharImages');
-        const fileName = `${restaurant}/${file.filename}`;
-        const imagePath = path.join(dirPath, fileName);
-        // const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
 
-        await helpers.uploadFileLocally(file, imagePath);
 
-        helpers.deleteFileLocally(file.path);
-
-        const imageURL = helpers.getFileUrlLocally(imagePath);
-        const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
-
-        // Store the URL in the array
-        aadharImages.push(relativeImagePath);
+      if (result) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Phone number already exist" });
       }
-   
-      
-    } 
-      
-    
-    const newUser = new Customers({
-      customer: customer,
-      phone: phone,
-      address: address,
-      email: email,
-      city: city,
-      state: state,
-      zipcode: zipcode,
-      limit: limit,
-      balance: limit,
-      aadharImage: aadharImages,
-      aadharNumber: aadharNumber,
-      restaurant: validUser.restaurant,
-    });
-      
-    await newUser.save();
-    return res.status(200).json({
-      success: true,
-      message: `${customer}'s details stored successfully!`,
-    }); 
-      
-  }
+      const response = await Customers.findOne({ email: email });
+      if (response) {
+        return res.status(200).json({ success: false, message: "Email already exist" });
+      }
+
+
+      if (files) {
+
+
+        for (const file of req.files) {
+          // const imageURL = await S3uploadFile(file.originalname, file.buffer);
+          const dirPath = path.join('uploads', 'customer', 'aadharImages');
+          const fileName = `${restaurant}/${file.filename}`;
+          const imagePath = path.join(dirPath, fileName);
+          // const imagePath = `customer/aadharImages/${restaurant}/${file.filename}`;
+
+          await helpers.uploadFileLocally(file, imagePath);
+
+          helpers.deleteFileLocally(file.path);
+
+          const imageURL = helpers.getFileUrlLocally(imagePath);
+          const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+
+          // Store the URL in the array
+          aadharImages.push(relativeImagePath);
+        }
+
+
+      }
+
+
+      const newUser = new Customers({
+        customer: customer,
+        phone: phone,
+        address: address,
+        email: email,
+        city: city,
+        state: state,
+        zipcode: zipcode,
+        limit: limit,
+        balance: limit,
+        aadharImage: aadharImages,
+        aadharNumber: aadharNumber,
+        restaurant: validUser.restaurant,
+      });
+
+      await newUser.save();
+      return res.status(200).json({
+        success: true,
+        message: `${customer}'s details stored successfully!`,
+      });
+
+    }
   } catch (error) {
     console.log(error);
   }
 
 
-  
+
 };
 
 exports.customerDetails = async (req, res) => {
@@ -1108,21 +1105,21 @@ exports.getcustomerDetail = async (req, res) => {
     const id = req.params.id;
     const customerData = await Customers.findById(id);
     res.status(200).json({ success: true, customerData: customerData });
-  } catch (error) {}
+  } catch (error) { }
 };
 
 exports.updateCustomerDetail = async (req, res) => {
   try {
-    
+
     const token = req.headers["authorization"];
     const Token = token.replace(/"/g, "");
     const validUser = jwtToken.verify(Token, process.env.SECRET_KEY);
 
-    
-// const Token = token.replace(/"/g, "");
+
+    // const Token = token.replace(/"/g, "");
     // const validUser = jwtToken.verify(Token, process.env.SECRET_KEY);
     const restaurant = validUser.restaurant;
-    
+
     const {
       customer,
       email,
@@ -1147,29 +1144,29 @@ exports.updateCustomerDetail = async (req, res) => {
 
       const resultByPhone = await Customers.findOne({ phone: phone, _id: { $ne: id } });
 
-          
-    if (resultByPhone) {
-      return res
-      .status(200)
-      .json({ success: false, message: "Phone number already exist" });
-    }
 
-    const resultByEmail = await Customers.findOne({ email: email, _id: { $ne: id } });
-    if (resultByEmail) {
-      return  res.status(200).json({ success: false, message: "Email already exist" });
+      if (resultByPhone) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Phone number already exist" });
       }
-      
 
-      if (files.length>0) {
+      const resultByEmail = await Customers.findOne({ email: email, _id: { $ne: id } });
+      if (resultByEmail) {
+        return res.status(200).json({ success: false, message: "Email already exist" });
+      }
+
+
+      if (files.length > 0) {
         console.log("entered files>0");
-     
+
         for (const imageUrl of data.aadharImage) {
           await helpers.deleteFileLocally(imageUrl);
         }
 
         for (const file of files) {
           // const imageURL = await S3uploadFile(file.originalname, file.buffer);
-          
+
 
           const dirPath = path.join('uploads', 'customer', 'aadharImages');
           const fileName = `${restaurant}/${file.filename}`;
@@ -1180,37 +1177,37 @@ exports.updateCustomerDetail = async (req, res) => {
           const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
           aadharImages.push(relativeImagePath);
         }
-  
-      } 
-        
-console.log(aadharImages," iam aadhar images arrays");
 
-const updateFields = {
-  $set: {
-    customer,
-    email,
-    phone,
-    limit,
-    zipcode,
-    address,
-    city,
-    aadharNumber,
-    state,
-  },
+      }
+
+      console.log(aadharImages, " iam aadhar images arrays");
+
+      const updateFields = {
+        $set: {
+          customer,
+          email,
+          phone,
+          limit,
+          zipcode,
+          address,
+          city,
+          aadharNumber,
+          state,
+        },
       };
-      
-      
+
+
       if (aadharImages && aadharImages.length > 0) {
         updateFields.$set.aadharImage = aadharImages;
       }
-      
+
       const result = await Customers.updateOne(
         { _id: id },
         updateFields
       );
 
 
-    
+
 
       if (data.limit == data.balance) {
         await Customers.updateOne(
@@ -1230,13 +1227,13 @@ const updateFields = {
       } else {
         res.json({ success: false, message: "Something went wrong" });
       }
-      
+
     } else {
       res.json({ success: false, message: "RestroId Unavailable" });
-      
+
     }
   } catch (error) {
-    console.log(error," i am error");
+    console.log(error, " i am error");
     res.json({ success: false, message: "Something went wrong" });
   }
 };
@@ -1573,7 +1570,7 @@ exports.getVenderDetails = async (req, res) => {
   try {
     const isRestaurant = req.restaurant;
     if (isRestaurant) {
-      const vendorsData = await Venders.find({ restaurant: isRestaurant }).sort({addedDate:-1});
+      const vendorsData = await Venders.find({ restaurant: isRestaurant }).sort({ addedDate: -1 });
       res.status(200).json({ success: true, VendorData: vendorsData });
     } else {
       res.status(200).json({ success: false, message: "session expired" });
@@ -1999,7 +1996,7 @@ exports.StockDashboard = async (req, res) => {
   } catch (err) {
     // Log any errors that occur during the process
     console.log(err);
-    
+
     // Send internal server error response in case of error
     res.status(500).json({ success: false, message: "Internal server error" });
   }
@@ -2117,8 +2114,8 @@ exports.updateEmploymentDetails = async (req, res) => {
   try {
     const employId = req.params.employId;
     // console.clear()
-    console.log(req.files, "filesss",employId);
-console.log(req.body,"bodyy");
+    console.log(req.files, "filesss", employId);
+    console.log(req.body, "bodyy");
     const {
       employ,
       dob,
@@ -2140,81 +2137,81 @@ console.log(req.body,"bodyy");
       bloodGroup,
     } = req.body;
     const restaurant = req.restaurant;
-    
+
     if (restaurant) {
-      
+
       const employee = await Employees.findOne({ _id: employId });
 
       let aadharImages = []
       let pancard
       let relativeImagePathpancard
-      
+
       if (req.files && Object.keys(req.files).length > 0) {
-console.log(req.files);
-        const aadharImage = req.files["aadharImage"]?req.files["aadharImage"]:false;
+        console.log(req.files);
+        const aadharImage = req.files["aadharImage"] ? req.files["aadharImage"] : false;
 
-        const pancardImage = req.files["pancardImage"][0]?req.files["pancardImage"][0]:false
+        const pancardImage = req.files["pancardImage"][0] ? req.files["pancardImage"][0] : false
 
-        
-        
+
+
         if (aadharImage) {
- 
+
 
 
           for (const file of aadharImage) {
             // const imageURL = await S3uploadFile(file.originalname, file.buffer);
-  
+
             const dirPath = path.join('uploads', 'employee', 'aadharImages');
             const fileName = `${restaurant}/${file.filename}`;
             const imagePath = path.join(dirPath, fileName);
-                  // const imagePath = `employee/aadharImages/${restaurant}/${file.filename}`
-        
-                  await helpers.uploadFileLocally(file, imagePath);
-                
-                  helpers.deleteFileLocally(file.path);
-                
-                  const imageURL = helpers.getFileUrlLocally(imagePath);
-                  console.log(imageURL);
-                  const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
-                  // Store the URL in the array
-                  aadharImages.push(relativeImagePath);
-                
-                }
-        
+            // const imagePath = `employee/aadharImages/${restaurant}/${file.filename}`
+
+            await helpers.uploadFileLocally(file, imagePath);
+
+            helpers.deleteFileLocally(file.path);
+
+            const imageURL = helpers.getFileUrlLocally(imagePath);
+            console.log(imageURL);
+            const relativeImagePath = `/${imagePath.replace(/\\/g, '/')}`;
+            // Store the URL in the array
+            aadharImages.push(relativeImagePath);
+
+          }
+
 
           if (employee.aadhar_image && employee.aadhar_image.length > 0) {
-           
+
             for (const imageURL of employee.aadhar_image) {
 
               await helpers.deleteFileLocally(imageURL);
-           
+
             }
 
           }
 
         }
-      
+
 
         if (pancardImage) {
-          
+
           const dirPath = path.join('uploads', 'employee', 'pancardImages');
           const fileName = `${restaurant}/${pancardImage.filename}`;
           const pancardImagePath = path.join(dirPath, fileName);
-              // const pancardImagePath = `employee/pancardImages/${restaurant}/${pancardImage.filename}`;
-            
-              await helpers.uploadFileLocally(pancardImage, pancardImagePath);
-            
-               pancard = helpers.getFileUrlLocally(pancardImagePath);
-               relativeImagePathpancard = `/${pancardImagePath.replace(/\\/g, '/')}`;
-              helpers.deleteFileLocally(pancardImage.path);
-    
-              const oldPanPicURL = employee.pancard_image;
-            
-              await helpers.deleteFileLocally(oldPanPicURL);
-    
-    
+          // const pancardImagePath = `employee/pancardImages/${restaurant}/${pancardImage.filename}`;
 
-        
+          await helpers.uploadFileLocally(pancardImage, pancardImagePath);
+
+          pancard = helpers.getFileUrlLocally(pancardImagePath);
+          relativeImagePathpancard = `/${pancardImagePath.replace(/\\/g, '/')}`;
+          helpers.deleteFileLocally(pancardImage.path);
+
+          const oldPanPicURL = employee.pancard_image;
+
+          await helpers.deleteFileLocally(oldPanPicURL);
+
+
+
+
         }
 
 
@@ -2244,7 +2241,7 @@ console.log(req.files);
       //   status: true,
       // };
 
-    
+
       // console.log(updatedData, "updatedData");
 
 
@@ -2271,14 +2268,14 @@ console.log(req.files);
         emergency_contact_person_relation: emergencyContactPersonRelation,
         status: true,
       };
-      
+
       // Remove properties with undefined, null, empty strings, or empty arrays
       Object.entries(updatedData).forEach(([key, value]) => {
         if (value === undefined || value === null || value === '' || (Array.isArray(value) && value.length === 0)) {
           delete updatedData[key];
         }
       });
-      
+
       const updatedEmployment = await Employees.findOneAndUpdate(
         { _id: employId, restaurant: restaurant },
         { $set: updatedData }
@@ -2348,7 +2345,7 @@ exports.updateEmploymentData = async (req, res) => {
 
 exports.sendFeedback = async (req, res) => {
   try {
-    console.log(req.body,"feedback");
+    console.log(req.body, "feedback");
 
     const isRestaurant = req.restaurant;
     const { name, email, phoneNumber, message } = req.body;

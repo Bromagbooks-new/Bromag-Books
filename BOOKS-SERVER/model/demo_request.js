@@ -8,6 +8,7 @@ const demoRequestSchema = mongoose.Schema({
   type: String,
   designation: String,
   purpose: String,
+  onlinePlatform: String
 });
 
 const DemoRequestModel = mongoose.model("demorequest", demoRequestSchema);

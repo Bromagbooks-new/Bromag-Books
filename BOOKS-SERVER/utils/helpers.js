@@ -325,6 +325,7 @@ const demoRequestEmailTemplate = (userName, userEmail, userPhone, userAddress, u
       <p><strong>Employee Type:</strong> ${employeeType}</p>
       <p><strong>Purpose:</strong></p>
       <p>${demoPurpose}</p>
+	  <p><strong>OnlinePlatform:</strong></p>
 	  <p>${onlinePlatform}</p>
     </div>
     <div class="footer">

@@ -20,7 +20,7 @@ const chartData = [
     { name: "Product Name 7", percent: 25, fill: "#D9480F" },
     { name: "Product Name 8", percent: 25, fill: "#38D9A9" },
     { name: "Product Name 9", percent: 25, fill: "#845EF7" },
-    { name: "Product Name 10", percent: 25, fill: "#F03E3E" },
+    { name: "Product Name 11", percent: 25, fill: "#F03E3E" },
 ];
 
 export function Chart({ data = chartData }) {

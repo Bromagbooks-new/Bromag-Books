@@ -10,7 +10,7 @@ import Dinein from "@/assets/images/billing-management/Dinein.svg";
 import DineinActivated from "@/assets/images/billing-management/DineinActivated.svg";
 import NewOrderCharts from "@/components/ordermanagement/NewOrderCharts";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import PieChartComponent from "@/components/dashboardmanagement/pieChart";
+import PieChartComponent from "@/components/dashboardmanagement/PieChartComponoent";
 
 const TotalSales = () => {
     const salesData = {

@@ -45,7 +45,7 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className={({ isActive }) => isActive && "font-bold text-black"}
-          to="/coming-soon"
+          to="/features"
         >
           Features
         </NavLink>
@@ -111,7 +111,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 isActive && "underline text-blue-600"
               }
-              to="/coming-soon"
+              to="/features"
             >
               Features
             </NavLink>

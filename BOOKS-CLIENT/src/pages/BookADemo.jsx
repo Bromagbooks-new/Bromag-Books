@@ -34,6 +34,7 @@ const bookADemoFormSchema = z.object({
   designation: z.string().min(1, { message: "Kindly select one option" }),
   purpose: z.string(),
 });
+const isRoot = location.pathname === "/features";
 
 const BookADemo = () => {
   const form = useForm({
@@ -67,7 +68,7 @@ const BookADemo = () => {
 
   return (
     <>
-      <Navbar />
+      {!isRoot && <Navbar />}
       <div className="bg-white h-screen mt-16 md:mt-0">
         <div className="relative h-0">
           <img

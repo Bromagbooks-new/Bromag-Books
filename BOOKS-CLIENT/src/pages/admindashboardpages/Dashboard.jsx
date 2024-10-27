@@ -35,7 +35,7 @@ const TotalSales = () => {
                     <select className="w-full border border-gray-300 p-2 rounded ml-4" style={{ height: '6vh', width: '14vw', background: 'rgba(245, 246, 250, 1)' }}>
                         <option value="All Products">All Products</option>
                         <option value="Product A">Product A</option>
-                        <option value="Product B">Product B</option>
+                        <option value="Product B">Product C</option>
                     </select>
                 </div>
                 <div className="w-full sm:w-auto">

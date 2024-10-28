@@ -445,7 +445,7 @@ exports.storeDemoRequest = async (req, res) => {
     const demoRequest = new DemoRequestModel({ name, email, phone, location, type, designation, purpose, onlinePlatform });
     await demoRequest.save();
 
-    sendEmail("md28md.hussain@gmail.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose, onlinePlatform));
+    sendEmail("abrarbromag@gmail.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose, onlinePlatform));
 
     res.json({ success: true, message: "Request Saved" });
 

@@ -153,12 +153,12 @@ const RestaurantHome = () => {
             onSubmit={handleSubmit(handleLoginSubmit)}
             className="md:w-2/4 flex flex-col gap-4 z-40"
           >
-            <p className=" text-black text-5xl mb-10 -mt-10 font-semibold text-center">
-              WELCOME {restaurant.username}
+            <p className=" text-black text-4xl mb-10 -mt-10 font-semibold text-center">
+              WELCOME TO BROMAG BOOKS
             </p>
-            {/* <p className=" text-gray-500 text-4xl font-semibold text-center">
-              Login
-            </p> */}
+            <p className=" text-gray-500 text-3xl font-semibold text-center">
+              {restaurant.username}
+            </p>
             <p className=" text-[#62BFD4] text-lg text-center">
               Kindly Select one login to continue
             </p>

@@ -20,7 +20,7 @@ const TotalInventoryManagement = () => {
         const dummyTotalInventoryData = [
             {
                 _id: "1",
-                itemImage: "image_url", // Replace with the actual image URL or path
+                itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
                 availableQuantity: 3,
@@ -30,7 +30,7 @@ const TotalInventoryManagement = () => {
             },
             {
                 _id: "2",
-                itemImage: "image_url", // Replace with the actual image URL or path
+                itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
                 availableQuantity: 3,
@@ -40,7 +40,7 @@ const TotalInventoryManagement = () => {
             },
             {
                 _id: "3",
-                itemImage: "image_url", // Replace with the actual image URL or path
+                itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
                 availableQuantity: 3,
@@ -50,7 +50,7 @@ const TotalInventoryManagement = () => {
             },
             {
                 _id: "4",
-                itemImage: "image_url", // Replace with the actual image URL or path
+                itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
                 availableQuantity: 3,
@@ -60,7 +60,7 @@ const TotalInventoryManagement = () => {
             },
             {
                 _id: "5",
-                itemImage: "image_url", // Replace with the actual image URL or path
+                itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
                 availableQuantity: 3,

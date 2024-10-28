@@ -219,12 +219,12 @@ const RestaurantHome = () => {
           </form>
         </div>
       </div>
-      <div className="relative h-0 hidden md:block">
+      {/* <div className="relative h-0 hidden md:block">
         <img
           className="relative z-0 left-[94%] bottom-[42rem]"
           src={logoWhite}
         />
-      </div>
+      </div> */}
       <div className="relative h-0 hidden md:block">
         <img
           className="relative z-0 left-[75%] w-[24rem] bottom-[34.5rem]"

@@ -20,7 +20,7 @@ const LinkExpired = () => {
       <div className="bg-white h-screen overflow-hidden">
         <div className="relative h-0">
           <img
-            className="relative z-10 left-[42%] w-[56rem] hidden md:block"
+            className="relative z-10 left-[42%] w-[70rem] hidden md:block"
             src={Vector}
           />
         </div>
@@ -38,7 +38,7 @@ const LinkExpired = () => {
         </div>
         <div className="relative h-0">
           <img
-            className="relative z-10 right-[0%] w-[23rem] top-[20rem]  hidden md:block"
+            className="relative z-10 right-[0%] w-[35rem] top-[20rem]  hidden md:block"
             src={Ellipse1}
           />
         </div>
@@ -105,15 +105,15 @@ const LinkExpired = () => {
             <p className="text-3xl md:text-5xl font-bold text-black">Link is not valid anymore!</p>
             <div className="flex flex-col gap-1 font-semibold w-11/12 md:w-full">
               <p className="md:text-xl">
-              Oops! The invite URL is not valid anymore.
+                Oops! The invite URL is not valid anymore.
               </p>
               <p className="md:text-xl">Please go back to the home page & try again. </p>
             </div>
-              <Link to="/">
-                <Button className="bg-[#1F303C] text-xl uppercase">
-                  Go To Home Page
-                </Button>
-              </Link>
+            <Link to="/">
+              <Button className="bg-[#1F303C] text-xl uppercase">
+                Go To Home Page
+              </Button>
+            </Link>
           </div>
         </div>
 

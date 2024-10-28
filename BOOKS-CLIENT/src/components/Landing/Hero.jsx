@@ -27,7 +27,7 @@ const Hero = () => {
           A platform that provides a comprehensive accounting system for
           businesses that are growing
         </p>
-        <Link to="#features">
+        <Link to="/book-a-demo">
           <Button className="bg-landing-secondary w-28 md:h-14 md:w-52 p-3 md:p-6 md:text-2xl">
             Explore Now
           </Button>

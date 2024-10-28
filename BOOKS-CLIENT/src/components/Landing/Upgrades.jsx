@@ -7,11 +7,15 @@ import IntegrationManagement from "@/assets/images/landing-images/upgrades/Integ
 
 import ellipse545 from '@/assets/images/landing-images/Ellipse 545.svg'
 import ellipse544 from '@/assets/images/landing-images/Ellipse 544.svg'
-
+import group212 from '@/assets/images/landing-images/Group 212.svg'
+import subtract from '@/assets/images/landing-images/Subtract.svg';
 const Upgrades = () => {
   return (
     <>
       <div className="-mt-[10rem] md:-mt-20 flex flex-col items-center bg-[#1F303C] font-roboto-condensed overflow-hidden ">
+        <div className="relative h-0 ">
+          <img className="relative z-10 w-[23rem] md:w-auto top-[1rem] left-[8%] md:left-[20%] opacity-50" src={subtract} />
+        </div>
         <div className="relative h-0">
           <img className="relative z-0 w-[9rem]  md:w-auto left-[70%] md:left-[100%] top-[10rem] md:top-10" src={ellipse545} />
         </div>
@@ -21,7 +25,7 @@ const Upgrades = () => {
         <p className="z-10 text-2xl md:text-5xl uppercase font-semibold mt-36  text-white py-10">
           Our Upgrades
         </p>
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 -mt-4 mb-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 -mt-4 mb-5">
           {upgrades.map((feature) => (
             <FeatureCard
               key={feature.id}
@@ -30,6 +34,9 @@ const Upgrades = () => {
               exploreUrl={feature.exploreUrl}
             />
           ))}
+        </div>
+        <div className="relative h-0 ">
+          <img className="relative z-0 w-[20rem]  md:w-auto right-[16%] md:right-[21%] bottom-[13rem] md:bottom-[43rem]" src={group212} />
         </div>
       </div>
     </>

@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 
 const sendEmail = (to, subject, html) => {
-  console.log(to,process.env.EMAIL);
+  console.log(to, process.env.EMAIL);
   const mailOptions = {
     from: process.env.EMAIL,
     to,
@@ -30,5 +30,5 @@ const sendEmail = (to, subject, html) => {
 };
 
 module.exports = {
-    sendEmail
+  sendEmail
 }

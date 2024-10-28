@@ -79,10 +79,10 @@ const RestaurantHome = () => {
     }
   }, []);
 
-  useEffect(()=> {
+  useEffect(() => {
 
     console.log(selectedRole);
-  
+
   }, [selectedRole]);
 
   const handleShow = () => {
@@ -119,7 +119,7 @@ const RestaurantHome = () => {
   const handleAdminLoginSubmit = async (data) => {
     try {
       const response = await adminLogin(data);
-      
+
       console.log(response.data);
 
       if (response.data.success) {
@@ -140,9 +140,9 @@ const RestaurantHome = () => {
     }
   };
 
-  const handleLoginSubmit = async (data)=> {
-    if(selectedRole === 'admin') await handleAdminLoginSubmit(data);
-    if(selectedRole === 'employee') await handleEmployeeLoginSubmit(data);
+  const handleLoginSubmit = async (data) => {
+    if (selectedRole === 'admin') await handleAdminLoginSubmit(data);
+    if (selectedRole === 'employee') await handleEmployeeLoginSubmit(data);
   }
 
   return (
@@ -154,11 +154,11 @@ const RestaurantHome = () => {
             className="md:w-2/4 flex flex-col gap-4 z-40"
           >
             <p className=" text-black text-5xl mb-10 -mt-10 font-semibold text-center">
-              Welcome {restaurant.username}
+              WELCOME {restaurant.username}
             </p>
-            <p className=" text-gray-500 text-4xl font-semibold text-center">
+            {/* <p className=" text-gray-500 text-4xl font-semibold text-center">
               Login
-            </p>
+            </p> */}
             <p className=" text-[#62BFD4] text-lg text-center">
               Kindly Select one login to continue
             </p>

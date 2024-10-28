@@ -92,7 +92,7 @@ const DominantManagement = () => {
                 <div className="page-content" >
                     <div className="page-header">
                         <div>
-                            <p className="text-3xl mt-3 mb-2 ml-9 font-bold">Dominant Management</p>
+                            <p className="text-3xl mt-3 mb-2 ml-1 font-bold">Dominant Management</p>
                         </div>
                     </div>
                     <div className="flex gap-[0.7rem]">

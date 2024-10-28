@@ -168,6 +168,9 @@ import DominantDashboard from "./pages/admindashboardpages/dashboard/DominantDas
 import OrderDashboard from "./pages/admindashboardpages/dashboard/OrderDashboard";
 import InventoryDashboard from "./pages/admindashboardpages/dashboard/InventoryDashboard";
 import DashboardMain from "./pages/admindashboardpages/dashboard/DashboardMain";
+import InventoryManagement from "./pages/admindashboardpages/inventorymanagement/InventoryManagement";
+import TotalInventoryManagement from "./pages/admindashboardpages/inventorymanagement/TotalInventoryItem";
+import AvailaibleInventoryManagement from "./pages/admindashboardpages/inventorymanagement/AvailaibleInventory";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -468,11 +471,11 @@ const router = createBrowserRouter([
             element: <DominantManagement />,
             loader: billingManagementLoader,
             children: [
-              {
-                index: true, // Default child route
-                element: <NonVegOrderManagement />,
-                loader: newOrderChartsLoader
-              },
+              // {
+              //   index: true, // Default child route
+              //   element: <NonVegOrderManagement />,
+              //   loader: newOrderChartsLoader
+              // },
               {
                 path: 'nonveg-order',
                 element: <NonVegOrderManagement />
@@ -485,6 +488,26 @@ const router = createBrowserRouter([
                 path: 'repeat-order',
                 element: <RepeatOrderManagement />
               }
+            ]
+          },
+          {
+            path: "inventory-management",
+            element: <InventoryManagement />,
+            // loader: billingManagementLoader,
+            children: [
+              // {
+              //   index: true, // Default child route
+              //   element: <NonVegOrderManagement />,
+              //   loader: newOrderChartsLoader
+              // },
+              {
+                path: 'total-inventory',
+                element: <TotalInventoryManagement />
+              },
+              {
+                path: 'available-inventory',
+                element: <AvailaibleInventoryManagement />
+              },
             ]
           },
           {

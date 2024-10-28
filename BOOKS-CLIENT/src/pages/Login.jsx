@@ -114,7 +114,7 @@ const Login = () => {
               Login
             </p>
             <p className=" text-gray-500 text-xl text-center">
-            ENTER THE DETAILS TO LOGIN
+              ENTER THE DETAILS TO LOGIN
             </p>
             <Separator className="bg-[#0E69AC]" />
             <div className="flex flex-col gap-2">
@@ -131,24 +131,32 @@ const Login = () => {
               <label>* Please enter the username</label>
             )}
             <div className="flex flex-col gap-2">
-            <p className="text-xl font-semibold">Password*</p>
-              <Input
-                {...register("password", { required: true })}
-                type={show ? "text" : "password"}
-                id="password"
-                placeholder="Enter Password"
-                className="text-black"
-              />
-              {/* <button type="button" className="eye-btn" onClick={handleShow}>
-                {show ? <IoEyeOff /> : <IoEye />}
-              </button> */}
+              <p className="text-xl font-semibold">Password*</p>
+              <div className="relative">
+                <Input
+                  {...register("password", { required: true })}
+                  type={show ? "text" : "password"}
+                  id="password"
+                  placeholder="Enter Password"
+                  className="text-black pr-10"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+                  onClick={handleShow}
+                >
+                  {show ? <IoEyeOff /> : <IoEye />}
+                </button>
+              </div>
             </div>
             {errors.password && errors.password.type === "required" && (
               <label>* Please enter the password</label>
             )}
             {/* <Link to="/forgot-password">Forgot password?</Link> */}
             <div>
-              <Button type="submit" variant="default" className="bg-[#56DDE8] hover:bg-cyan-300 w-full rounded-xl p-3 text-xl uppercase text-black">Login</Button>
+              <Button type="submit" variant="default" className="bg-[#56DDE8] hover:bg-cyan-300 w-full rounded-xl p-3 text-xl uppercase text-black">
+                Login
+              </Button>
             </div>
           </form>
         </div>

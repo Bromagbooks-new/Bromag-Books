@@ -61,7 +61,7 @@ const Login = () => {
 
       <div className="bg-[#1F303C] h-screen overflow-hidden">
         <div className="relative h-0 hidden md:block">
-          <img className="relative z-10 left-[42%] w-[70rem] " src={Vector} />
+          <img className="relative z-10 left-[42%] w-[63rem] " src={Vector} />
         </div>
         <div className="relative h-0">
           <img

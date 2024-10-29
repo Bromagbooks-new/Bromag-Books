@@ -1,387 +1,191 @@
+import React, { useState } from 'react';
 import Wrapper from "../../../assets/wrappers/adminwrappers/SalesManagement";
-// import ManagementCard from "../../../components/admindashboardcomponents/ManagementCard";
-// import Form from "react-bootstrap/Form";
-import Card from "react-bootstrap/Card";
+import Online from "@/assets/images/billing-management/Online.svg";
+import OnlineActivated from "@/assets/images/billing-management/OnlineActivated.svg";
+import Takeaway from "@/assets/images/billing-management/Takeaway.svg";
+import TakeawayActivated from "@/assets/images/billing-management/TakeawayActivated.svg";
+import { Button } from "@/components/ui/button";
+import { CalendarPlus, StoreIcon } from "lucide-react";
+
+import { Doughnut } from 'react-chartjs-2';
 import {
-  StockDashboard,
-  // VendorDashboard,
-  VendorDateFilter,
-} from "../../../config/routeApi/owner";
-import { useEffect, useState } from "react";
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-// import { Button } from "react-bootstrap";
-import { useForm } from "react-hook-form";
-// import { toastError } from "../../../helpers/helpers";
+  Chart as ChartJS,
+  ArcElement,
+  Tooltip,
+  Legend
+} from 'chart.js';
+import { Link, useLoaderData, Outlet } from 'react-router-dom';
+import AnalyticsCardDominant from '@/components/dominantmanagement/AnalyticCardDominant';
 
-const StockManagemnet = () => {
-  const [today, setToday] = useState([]);
-  const [total, setTotal] = useState([]);
-  const [lastWeek, setLastWeek] = useState([]);
-  const [lastMonth, setLastMonth] = useState([]);
-  const [lastYear, setLastYear] = useState([]);
-  const [yesterday, setYesterday] = useState([]);
+// Register Chart.js components for Doughnut charts
+ChartJS.register(
+  ArcElement,
+  Tooltip,
+  Legend
+);
 
-  const [showToday, setShowToday] = useState(true);
-  const [showTotal, setShowTotal] = useState(true);
-  const [showFiltered, setShowFiltered] = useState(false);
-  const [showLastWeek, setShowLastWeek] = useState(false);
-  const [showLastMonth, setShowLastMonth] = useState(false);
-  const [showYesterday, setShowYesterday] = useState(false);
-  const [showLastYear, setShowLastYear] = useState(false);
+const StockManagement = () => {
+  const breakdown = useLoaderData();
+  const [sortBy, setSortBy] = useState('Month');
+  //const isRoot = location.pathname === "/dashboard/stock-management";
 
-  const [filteredData, setFilteredData] = useState([]);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
-
-  const handleStockDashboard = async () => {
-    try {
-      console.log("i have been called by her");
-      const response = await StockDashboard();
-
-      if (response.data.success) {
-        setToday(response.data.stocks)
-      } else {
-
+  // Doughnut chart data
+  const doughnutData = {
+    labels: ['Available Inventory Items', 'Total Inventory Items'],
+    datasets: [
+      {
+        data: [40, 60], // Sample percentage values
+        backgroundColor: ['#FFD700', '#32CD32'], // Yellow for Available Inventory, Green for Total Inventory
+        borderColor: ['#FFD700', '#32CD32'],
+        borderWidth: 1
       }
-
-      console.log(response, "response from the stockmanger")
-
-      // if (response.data.success) {
-      //   //   setTotal(response.data.Total);
-      //   setYesterday(yesterdayArray)
-      //   // setToday(todaysArray);  
-      //   setLastWeek(lastweekArray);
-      //   setLastMonth(lastmontharray);
-      //   setLastYear(lastYeararray);
-      // // } else {
-      //   // toast(response.data.message);
-      // } else {
-      //   toastError(response.data.message)
-      // }
-    } catch (error) {
-      console.log(error);
-    }
+    ]
   };
 
-
-
-  useEffect(() => {
-    handleStockDashboard();
-  }, []);
-
-  const handleDateFilter = async (data) => {
-    try {
-      const response = await VendorDateFilter(data);
-
-      if (response.data.success) {
-        setFilteredData(response.data.data);
-        setShowFiltered(true);
-        setShowToday(false);
-        setShowTotal(false);
-        setShowLastWeek(false);
-        setShowLastMonth(false);
-        setShowLastYear(false);
-        console.log("filtered");
-
-      } else {
-
-
-
+  // Doughnut chart options
+  const doughnutOptions = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false // Hide the default legend to create a custom one
+      },
+      tooltip: {
+        callbacks: {
+          label: function (tooltipItem) {
+            return `${tooltipItem.label}: ${tooltipItem.raw}%`;
+          }
+        }
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const handleButtonClick = (dateRange) => {
-    // Update the state based on the clicked button
-    switch (dateRange) {
-      case "today":
-        setShowToday(true);
-        setShowTotal(false);
-        setShowYesterday(false);
-        setShowLastWeek(false);
-        setShowLastMonth(false);
-        setShowLastYear(false);
-        setShowFiltered(false);
-        break;
-      case "yesterday":
-        setShowToday(false);
-        setShowYesterday(true);
-        setShowTotal(false);
-        setShowLastWeek(false);
-        setShowLastMonth(false);
-        setShowLastYear(false);
-        setShowFiltered(false);
-        break;
-      case "total":
-        setShowToday(false);
-        setShowTotal(true);
-        setShowYesterday(false);
-        setShowLastWeek(false);
-        setShowLastMonth(false);
-        setShowLastYear(false);
-        setShowFiltered(false);
-
-        break;
-      case "lastWeek":
-        setShowToday(false);
-        setShowTotal(false);
-        setShowLastWeek(true);
-        setShowLastMonth(false);
-        setShowYesterday(false);
-        setShowLastYear(false);
-        break;
-      case "lastMonth":
-        setShowToday(false);
-        setShowTotal(false);
-        setShowLastWeek(false);
-        setShowYesterday(false);
-        setShowYesterday(false);
-        setShowLastMonth(true);
-        setShowLastYear(false);
-        setShowFiltered(false);
-
-        break;
-      case "lastYear":
-        setShowYesterday(false);
-        setShowToday(false);
-        setShowTotal(false);
-        setShowLastWeek(false);
-        setShowLastMonth(false);
-        setShowLastYear(true);
-        setShowFiltered(false);
-
-        break;
-      default:
-        // Do nothing
-        break;
     }
   };
 
   return (
     <Wrapper className="page">
+      {/* {isRoot && ( */}
       <div className="page-content">
         <div className="page-header">
-          <div>
-            <h3>Stock Management</h3>
+          <p className="text-3xl mt-3 mb-2 ml-1 font-bold">Inventory Management</p>
+          <div className="flex gap-4">
+            <Link to="add-vendor">
+              <Button className="bg-[#01A0A0] gap-2">
+                <CalendarPlus />
+                Add Vendor
+              </Button>
+            </Link>
+            <Link to="add-stock">
+              <Button className="bg-landing-secondary gap-2">
+                <StoreIcon />
+                Add Stock
+              </Button>
+            </Link>
           </div>
-
-          {/* <div className="dates">
-            <form onSubmit={handleSubmit(handleDateFilter)}>
-              <div className="dates">
-                <div className="date left">
-                  <Form.Label>From</Form.Label>
-                  <div>
-                    <Form.Control
-                      className="date-input"
-                      type="date"
-                      {...register("start", { required: true })}
-                    />
-                    {errors.start && (
-                      <Form.Control.Feedback type="invalid">
-                        Please enter a valid date
-                      </Form.Control.Feedback>
-                    )}
-                  </div>
-                </div>
-
-                <div className="date right">
-                  <Form.Label>To</Form.Label>
-                  <div>
-                    <Form.Control
-                      className="date-input"
-                      type="date"
-                      {...register("end", { required: true })}
-                    />
-                    {errors.end && (
-                      <Form.Control.Feedback type="invalid">
-                        Please enter a valid date
-                      </Form.Control.Feedback>
-                    )}
-                  </div>
-                </div>
-                <Button className="search-btn" type="submit">
-                  Submit
-                </Button>
-              </div>
-            </form>
-          </div> */}
         </div>
 
-        {/* <section>
-          <div className="card-deck" style={{justifyContent:"space-between"}}>
-            <Button
-              onClick={() => handleButtonClick("today")}
-              className={
-                showToday
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Today
-            </Button>
+        <div className="flex gap-[0.7rem]">
+          {inventoryOptions.map((item) => (
+            <Link to={item.url} key={item.id}>
+              <AnalyticsCardDominant
+                key={item.id}
+                id={item.id}
+                title={item.title}
+                url={item.url}
+                icon={item.icon}
+                activatedIcon={item.activatedIcon}
+                activatedClass={item.activatedClass}
+                breakdown={breakdown}
+              />
+            </Link>
+          ))}
+        </div>
+        {/* Main Doughnut Chart Section */}
+        {/* Main Doughnut Chart Section */}
+        <div className="flex justify-start items-start mt-5 p-5 bg-white rounded-2xl">
+          {/* Doughnut Chart Section */}
+          <div className="w-1/3"> {/* Adjust the width as needed */}
+            <Doughnut data={doughnutData} options={doughnutOptions} />
+          </div>
+          {/* Left Side Information Section - Column 1 */}
+          <div className="ml-10 w-1/3"> {/* Adjust the width as needed */}
+            <div className="flex flex-col items-start">
+              <div>
+                <p className="text-3xl mt-3 mb-2  font-bold">Inventory Management</p>
+              </div>
+              <label className="text-gray-500 mb-2">Sort by</label>
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="form-select mb-4">
+                <option value="Day">Day</option>
+                <option value="Week">Week</option>
+                <option value="Month">Month</option>
+              </select>
+              <div className="mt-4">
+                <p className="font-semibold">Chart Legends</p>
+                <div className="flex items-center mt-2">
+                  <span className="inline-block w-3 h-3 mr-2 bg-[#FFD700]"></span>
+                  <span>Available Stock</span>
+                </div>
+                <div className="flex items-center mt-2">
+                  <span className="inline-block w-3 h-3 mr-2 bg-[#32CD32]"></span>
+                  <span>Total Stock</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Right Side Information Section - Column 2 */}
+          <div className="mr-10 w-1/3"> {/* Adjust the width as needed */}
+            <div className="flex flex-col items-start">
+              <div className='mt-7'>
+                <div className="mb-4">
+                  <p className="text-[#5C7A8F]">Total Stock</p>
+                  <p className="text-5xl font-bold text-[#5C7A8F]">0000</p>
+                </div>
+                <div className="mb-4">
+                  <p className="text-[#5C7A8F]">Available Stock</p>
+                  <p className="text-5xl font-bold text-[#5C7A8F]">0000</p>
+                </div>
+                <div className="mb-4">
+                  <p className="text-[#5C7A8F]">Total Vendor</p>
+                  <p className="text-5xl font-bold text-[#5C7A8F]">0000</p>
+                </div>
+              </div>
+            </div>
+          </div>
 
-            <Button
-              onClick={() => handleButtonClick("yesterday")}
-              className={
-                showYesterday
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Yesterday
-            </Button>
+        </div>
 
-            <Button
-              onClick={() => handleButtonClick("lastWeek")}
-              className={
-                showLastWeek
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Last Week
-            </Button>
+      </div>
+      {/* )} */}
 
-            <Button
-              onClick={() => handleButtonClick("lastMonth")}
-              className={
-                showLastMonth
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Last Month
-            </Button>
-
-            <Button
-              onClick={() => handleButtonClick("lastYear")}
-              className={
-                showLastYear
-                  ? "quicklink-btn quicklink-btn-active"
-                  : "quicklink-btn"
-              }
-            >
-              Last Year
-            </Button> */}
-
-        {/* <Button
-              onClick={() => handleButtonClick("total")}
-              className={showTotal ? "quicklink-btn" : "quicklink-btn"}
-            >
-              Reset
-            </Button> */}
-        {/* </div>
-        </section> */}
-
-        <section className="sales-card-deck">
-          <Container>
-            <Row>
-              {showToday &&
-                today.map((item, index) => (
-                  <Card as={Col} md={"4"} key={index} className="sales-card">
-
-                    <Card.Body>
-                      <Card.Title className="sales-card-title ">
-                        <h3> {item.commodityName}</h3>
-                      </Card.Title>
-                      <h2>{item.quantity + " " + item.unit}</h2>
-
-                    </Card.Body>
-
-                    <div className="card-bg"></div>
-                  </Card>
-                ))}
-
-              {showLastWeek &&
-                lastWeek.map((item, index) => (
-                  <Card as={Col} md={"4"} key={index} className="sales-card">
-                    <Card.Body>
-                      <Card.Title className="sales-card-title">
-                        {item.vendor}
-                      </Card.Title>
-                      {/* <h2>{item.totalQuantity}</h2> */}
-                    </Card.Body>
-                    <div className="card-bg"></div>
-                  </Card>
-                ))}
-
-              {showLastMonth &&
-                lastMonth.map((item, index) => (
-                  <Card as={Col} md={"4"} key={index} className="sales-card">
-                    <Card.Body>
-                      <Card.Title className="sales-card-title">
-                        {item.vendor}
-                      </Card.Title>
-                      {/* <h2>{item.totalQuantity}</h2> */}
-                    </Card.Body>
-                    <div className="card-bg"></div>
-                  </Card>
-                ))}
-
-              {showLastYear &&
-                lastYear.map((item, index) => (
-                  <Card as={Col} md={"4"} key={index} className="sales-card">
-                    <Card.Body>
-                      <Card.Title className="sales-card-title">
-                        {item.vendor}
-                      </Card.Title>
-                      {/* <h2>{item.totalQuantity}</h2> */}
-                    </Card.Body>
-                    <div className="card-bg"></div>
-                  </Card>
-                ))}
-
-              {showYesterday &&
-                yesterday.map((item, index) => (
-                  <Card as={Col} md={"4"} key={index} className="sales-card">
-                    <Card.Body>
-                      <Card.Title className="sales-card-title">
-                        {item.vendor}
-                      </Card.Title>
-                      {/* <h2>{item.totalQuantity}</h2> */}
-                    </Card.Body>
-                    <div className="card-bg"></div>
-                  </Card>
-                ))}
-
-              {showTotal &&
-                total.map((item, index) => (
-                  <Card as={Col} md={"4"} key={index} className="sales-card">
-                    <Card.Body>
-                      <Card.Title className="sales-card-title">
-                        {item.vendor}
-                      </Card.Title>
-                      {/* <h2>{item.totalQuantity}</h2> */}
-                    </Card.Body>
-                    <div className="card-bg"></div>
-                  </Card>
-                ))}
-
-              {filteredData &&
-                filteredData.map((item, index) => (
-                  <Card as={Col} md={"4"} key={index} className="sales-card">
-                    <Card.Body>
-                      <Card.Title className="sales-card-title">
-                        {item.vendor}
-                      </Card.Title>
-                      {/* <h2>{item.totalQuantity}</h2> */}
-                    </Card.Body>
-                    <div className="card-bg"></div>
-                  </Card>
-                ))}
-            </Row>
-          </Container>
-        </section>
+      <div>
+        <Outlet />
       </div>
     </Wrapper>
   );
 };
-export default StockManagemnet;
+
+export default StockManagement;
+
+const inventoryOptions = [
+  {
+    id: "total-stock",
+    title: "Total Stock",
+    icon: Online,
+    activatedIcon: OnlineActivated,
+    url: "total-stock",
+    activatedClass: "bg-[#B5EAD7] border-2 border-[#4CAF50]",
+  },
+  {
+    id: "available-stock",
+    title: "Available Stock",
+    icon: Takeaway,
+    activatedIcon: TakeawayActivated,
+    url: "available-stock",
+    activatedClass: "bg-[#FFCCCB] border-2 border-[#FF5733]",
+  },
+  {
+    id: "total-vendor",
+    title: "Total Vendors",
+    icon: Takeaway,
+    activatedIcon: TakeawayActivated,
+    url: "total-vendor",
+    activatedClass: "bg-[#FFCCCB] border-2 border-[#FF5733]",
+  },
+];

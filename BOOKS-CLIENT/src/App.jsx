@@ -171,6 +171,10 @@ import DashboardMain from "./pages/admindashboardpages/dashboard/DashboardMain";
 import InventoryManagement from "./pages/admindashboardpages/inventorymanagement/InventoryManagement";
 import TotalInventoryManagement from "./pages/admindashboardpages/inventorymanagement/TotalInventoryItem";
 import AvailaibleInventoryManagement from "./pages/admindashboardpages/inventorymanagement/AvailaibleInventory";
+import AddVendorForm from "./components/stockmanagement/AddVendorForm";
+import AddVendorPage from "./pages/admindashboardpages/stockmanagement/AddVendorPage";
+import AddStockPage from "./pages/admindashboardpages/stockmanagement/AddStockPage";
+import TotalStock from "./pages/admindashboardpages/stockmanagement/TotalStock";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -675,6 +679,28 @@ const router = createBrowserRouter([
               {
                 path: "update-category/:categoryId",
                 element: <UpdateMenuCategory />,
+              },
+            ],
+          },
+          {
+            path: "stock-management",
+            element: <Outlet />,
+            children: [
+              {
+                index: true,
+                element: <StockManagement />,
+              },
+              {
+                path: 'add-vendor',
+                element: <AddVendorPage />,
+              },
+              {
+                path: 'add-stock',
+                element: <AddStockPage />,
+              },
+              {
+                path: 'total-stock',
+                element: <TotalStock />,
               },
             ],
           },

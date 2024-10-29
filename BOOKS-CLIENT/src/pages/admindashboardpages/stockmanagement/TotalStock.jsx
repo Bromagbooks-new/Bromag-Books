@@ -7,8 +7,8 @@ import { ArrowLeft } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const AvailaibleInventoryManagement = () => {
-    const [AvailaibleInventoryData, setAvailaibleInventoryData] = useState([]);
+const TotalStock = () => {
+    const [TotalStockData, setTotalStockData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
     const [startDate, setStartDate] = useState(null);
@@ -17,7 +17,7 @@ const AvailaibleInventoryManagement = () => {
 
     useEffect(() => {
         // Dummy data for non-veg orders
-        const dummyAvailaibleInventoryData = [
+        const dummyTotalStockData = [
             {
                 _id: "1",
                 itemImage: "image_url",
@@ -70,7 +70,7 @@ const AvailaibleInventoryManagement = () => {
             },
         ];
 
-        setAvailaibleInventoryData(dummyAvailaibleInventoryData);
+        setTotalStockData(dummyTotalStockData);
     }, []);
 
     useEffect(() => {
@@ -80,8 +80,8 @@ const AvailaibleInventoryManagement = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [searchQuery]);
 
-    // Filter the AvailaibleInventoryData based on the search query and date range
-    const filteredAvailaibleInventoryData = AvailaibleInventoryData?.filter((item) => {
+    // Filter the TotalStockData based on the search query and date range
+    const filteredTotalStockData = TotalStockData?.filter((item) => {
         const matchesSearch = item.itemName
             .toLowerCase()
             .includes(debouncedSearchQuery.toLowerCase());
@@ -93,7 +93,7 @@ const AvailaibleInventoryManagement = () => {
         <Wrapper className="page">
             <div className="page-content">
                 <div className="text-3xl flex gap-4 mt-4 items-center font-semibold">
-                    <Link to="/dashboard/inventory-management">
+                    <Link to="/dashboard/stock-management">
                         <ArrowLeft className="w-6 h-6" />
                     </Link>
                     <h3>Available Items List</h3>
@@ -144,7 +144,7 @@ const AvailaibleInventoryManagement = () => {
 
                     <div className="pagination-div mt-4 flex justify-between items-center">
                         <p>
-                            Showing <strong>{filteredAvailaibleInventoryData.length}</strong> from <strong>{AvailaibleInventoryData.length}</strong> results
+                            Showing <strong>{filteredTotalStockData.length}</strong> from <strong>{TotalStockData.length}</strong> results
                         </p>
                         <div className="pagination-controls">
                             <button>&lt;</button>
@@ -169,7 +169,7 @@ const AvailaibleInventoryManagement = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredAvailaibleInventoryData.map((item, i) => (
+                                {filteredTotalStockData.map((item, i) => (
                                     <tr key={item._id} className={item.availableQuantity === 0 ? 'bg-red-100' : ''}>
                                         <td>{i + 1}</td>
                                         <td>
@@ -195,4 +195,4 @@ const AvailaibleInventoryManagement = () => {
     );
 };
 
-export default AvailaibleInventoryManagement;
+export default TotalStock;

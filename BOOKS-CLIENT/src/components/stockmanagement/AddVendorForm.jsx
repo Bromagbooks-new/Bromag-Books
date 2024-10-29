@@ -30,7 +30,7 @@ import { z } from "zod";
 // Schema for vendor validation
 const vendorSchema = z.object({
     vendorName: z.string().min(1, { message: "Vendor name is required" }),
-    phoneNumber: z.string().min(10, { message: "Valid phoneNumber is required" }),
+    phoneNumber: z.string().min(10, { message: "Valid phoneNumber is required or invalid number" }),
     email: z.string().min(1, { message: "Vendor email is required" }),
     vendorType: z.string().min(1, { message: "Vendor type is required" }),
     vendorLicenceNo: z.string().min(1, { message: "vendorLicenceNo is required" }),

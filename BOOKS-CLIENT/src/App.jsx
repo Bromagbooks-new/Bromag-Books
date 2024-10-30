@@ -175,6 +175,9 @@ import AddVendorForm from "./components/stockmanagement/AddVendorForm";
 import AddVendorPage from "./pages/admindashboardpages/stockmanagement/AddVendorPage";
 import AddStockPage from "./pages/admindashboardpages/stockmanagement/AddStockPage";
 import TotalStock from "./pages/admindashboardpages/stockmanagement/TotalStock";
+import StockDetails from "./pages/admindashboardpages/stockmanagement/StockDetails";
+import EditStock from "./pages/admindashboardpages/stockmanagement/EditStock";
+import TotalVendor from "./pages/admindashboardpages/stockmanagement/TotalVendor";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -701,6 +704,18 @@ const router = createBrowserRouter([
               {
                 path: 'total-stock',
                 element: <TotalStock />,
+              },
+              {
+                path: 'total-vendor',
+                element: <TotalVendor />,
+              },
+              {
+                path: 'total-stock/stock-detail',
+                element: <StockDetails />,
+              },
+              {
+                path: 'total-stock/stock-detail/edit-stock',
+                element: <EditStock />,
               },
             ],
           },

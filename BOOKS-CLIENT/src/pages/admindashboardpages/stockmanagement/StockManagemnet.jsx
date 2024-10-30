@@ -98,7 +98,6 @@ const StockManagement = () => {
           ))}
         </div>
         {/* Main Doughnut Chart Section */}
-        {/* Main Doughnut Chart Section */}
         <div className="flex justify-start items-start mt-5 p-5 bg-white rounded-2xl">
           {/* Doughnut Chart Section */}
           <div className="w-1/3"> {/* Adjust the width as needed */}

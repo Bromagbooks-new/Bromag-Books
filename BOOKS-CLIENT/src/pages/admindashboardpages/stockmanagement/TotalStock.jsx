@@ -16,10 +16,9 @@ const TotalStock = () => {
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
 
     useEffect(() => {
-        // Dummy data for non-veg orders
         const dummyTotalStockData = [
             {
-                _id: "1",
+                _id: "stock-detail",
                 itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
@@ -29,7 +28,7 @@ const TotalStock = () => {
                 vendor: "SRS Enterprises",
             },
             {
-                _id: "2",
+                _id: "stock-detail",
                 itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
@@ -39,7 +38,7 @@ const TotalStock = () => {
                 vendor: "SRS Enterprises",
             },
             {
-                _id: "3",
+                _id: "stock-detail",
                 itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
@@ -49,7 +48,7 @@ const TotalStock = () => {
                 vendor: "SRS Enterprises",
             },
             {
-                _id: "4",
+                _id: "stock-detail",
                 itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
@@ -59,7 +58,7 @@ const TotalStock = () => {
                 vendor: "SRS Enterprises",
             },
             {
-                _id: "5",
+                _id: "stock-detail",
                 itemImage: "image_url",
                 itemName: "Chicken",
                 totalQuantity: 3,
@@ -80,12 +79,10 @@ const TotalStock = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [searchQuery]);
 
-    // Filter the TotalStockData based on the search query and date range
     const filteredTotalStockData = TotalStockData?.filter((item) => {
         const matchesSearch = item.itemName
             .toLowerCase()
             .includes(debouncedSearchQuery.toLowerCase());
-
         return matchesSearch;
     });
 
@@ -96,7 +93,7 @@ const TotalStock = () => {
                     <Link to="/dashboard/stock-management">
                         <ArrowLeft className="w-6 h-6" />
                     </Link>
-                    <h3>Available Items List</h3>
+                    <h3>Total Stock</h3>
                 </div>
 
                 <div className="mt-4" style={{ background: "white", padding: "2rem", borderRadius: '2rem' }}>
@@ -182,7 +179,11 @@ const TotalStock = () => {
                                         <td>{item.billNo}</td>
                                         <td>{item.vendor}</td>
                                         <td>
-                                            <button className="p-2 bg-[#486072] text-white rounded" style={{ backgroundColor: "#486072" }}>More Options</button>
+                                            <Link to={`/dashboard/stock-management/total-stock/${item._id}`}>
+                                                <button className="p-2 bg-[#486072] text-white rounded" style={{ backgroundColor: "#486072" }}>
+                                                    More Options
+                                                </button>
+                                            </Link>
                                         </td>
                                     </tr>
                                 ))}

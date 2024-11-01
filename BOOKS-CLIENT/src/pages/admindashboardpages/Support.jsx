@@ -8,7 +8,7 @@ import { IoMailOutline } from "react-icons/io5";
 const Support = () => {
   const whatsappNumber = "9150289762";
   const phoneNumber = "9150289762";
-  const emailAddress = "mag@bromagindia.com";
+  const emailAddress = "bromag0507@gmail.com";
 
   return (
     <Wrapper className="page">

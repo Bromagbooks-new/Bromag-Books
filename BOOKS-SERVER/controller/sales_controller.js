@@ -2,13 +2,15 @@ const Order = require("../model/order_model");
 const AccessedEmployees = require("../model/access_model");
 const moment = require('moment');
 const { takeAwayData } = require("./pos_controller");
+const bill_model = require("../model/bill_model");
+const order_model = require("../model/order_model");
 
 // Helper function to generate two-hour intervals for today
 const getTwoHourlyIntervals = () => {
   const now = new Date();
   const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
   const intervals = [];
-  
+
   for (let i = 0; i < 24; i += 2) {
     const start = new Date(startOfDay);
     start.setHours(i);
@@ -16,7 +18,7 @@ const getTwoHourlyIntervals = () => {
     end.setHours(start.getHours() + 2);
     intervals.push({ start, end });
   }
-  
+
   return intervals;
 };
 
@@ -48,7 +50,7 @@ exports.getTakeAwayForAdmin = async (req, res) => {
         restaurantId: isRestaurant,
         orderMode: "takeaway",
         billId: { $exists: true },
-      }).sort({date:-1});
+      }).sort({ date: -1 });
 
       return res.json({ success: true, takeAwayData });
     } else {
@@ -70,8 +72,8 @@ exports.getDineInForAdmin = async (req, res) => {
       const DineInDetails = await Order.find({
         restaurantId: isRestaurant,
         orderMode: "dineIn",
-      }).sort({date:-1});
-      
+      }).sort({ date: -1 });
+
 
       return res.json({ success: true, DineInDetails });
     } else {
@@ -94,15 +96,15 @@ exports.getTotalSalesData = async (req, res) => {
   try {
     // Check if the user is authenticated as a restaurant
     const restaurant = req.restaurant;
-
+    console.log("eeee", restaurant)
     if (restaurant) {
       // Use the Order model to find all orders for the restaurant and sort them by date in descending order
-      const orderData = await Order.find({
+      const orderData = await order_model.find({
         restaurantId: restaurant,
-      }).sort({date:-1});
+      }).sort({ date: -1 });
 
-      console.log(orderData);
-
+      // console.log(orderData);
+      console.log("Order data:", orderData);
       // Return a JSON response containing the sales data
       res.json({ success: true, SalesData: orderData });
     } else {
@@ -118,16 +120,18 @@ exports.getSalesDashboardData = async (req, res) => {
   try {
     const restaurant = req.restaurant;
     const { start, end } = req.query;
+
     if (restaurant) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
 
+      // Get two-hourly sales data
       const intervals = getTwoHourlyIntervals();
       const twoHourlySalesData = await Promise.all(intervals.map(async (interval) => {
-        const sales = await Order.aggregate([
+        const sales = await bill_model.aggregate([
           {
             $match: {
-              restaurantId: restaurant,
+              restrauntId: restaurant,
               date: {
                 $gte: interval.start,
                 $lt: interval.end,
@@ -137,7 +141,7 @@ exports.getSalesDashboardData = async (req, res) => {
           {
             $group: {
               _id: null,
-              totalAmount: { $sum: "$Amount" },
+              totalAmount: { $sum: "$netValue" },
             },
           },
         ]);
@@ -147,27 +151,27 @@ exports.getSalesDashboardData = async (req, res) => {
         };
       }));
 
-      // Existing aggregations
-      const startDate = new Date(start);
-      const endDate = new Date(end);
-
-      const totalSalesPerDay = await Order.aggregate([
+      // Today's total sales
+      const totalSalesPerDay = await bill_model.aggregate([
         {
           $match: {
-            restaurantId: restaurant,
-            date: { $gte: today },
+            restrauntId: restaurant,
+            date: {
+              $gte: today,
+              $lt: new Date(today.getTime() + 86400000), // Add one day
+            },
           },
         },
         {
           $group: {
             _id: null,
-            totalAmount: { $sum: "$Amount" },
+            totalSales: { $sum: "$total" }, // Total based on the total field
           },
         },
       ]);
+      const todaySalesAmount = totalSalesPerDay.length > 0 ? totalSalesPerDay[0].totalSales : 0;
 
-      const todaySalesAmount = totalSalesPerDay.length > 0 ? totalSalesPerDay[0].totalAmount : 0;
-
+      // Last hour's sales
       const now = new Date();
       const lastHourStart = new Date(now);
       lastHourStart.setMinutes(0, 0, 0);
@@ -176,219 +180,189 @@ exports.getSalesDashboardData = async (req, res) => {
       const lastHourEnd = new Date(lastHourStart);
       lastHourEnd.setMinutes(59, 59, 999);
 
-      const hourlySalesAmount = await Order.aggregate([
+      const hourlySalesAmount = await bill_model.aggregate([
         {
           $match: {
-            restaurantId: restaurant,
+            restrauntId: restaurant,
             date: {
               $gte: lastHourStart,
-              $lte: lastHourEnd,
+              $lt: lastHourEnd,
             },
           },
         },
         {
           $group: {
             _id: null,
-            totalAmount: { $sum: "$Amount" },
+            totalAmount: { $sum: "$netValue" },
           },
         },
       ]);
-
       const totalSalesAmountForLastHour = hourlySalesAmount.length > 0 ? hourlySalesAmount[0].totalAmount : 0;
 
-      const Yesterdays = await Order.aggregate([
+      // Today's highest billing amount for current hour
+      const HighestBillingAmountForCurrentHour = await bill_model.aggregate([
         {
           $match: {
-            restaurantId: restaurant,
+            restrauntId: restaurant,
             date: {
-              $gte: startDate,
-              $lt: endDate,
+              $gte: today,
+              $lt: now,
             },
           },
         },
         {
           $group: {
             _id: null,
-            totalAmount: { $sum: "$Amount" },
+            maxAmount: { $max: "$total" }, // Use total for maximum billing
           },
         },
       ]);
-
-      const currentHour = moment().hour();
-      const startOfToday = moment().startOf('day');
-      const startOfCurrentHour = moment().startOf('hour');
-      const endOfCurrentHour = moment().endOf('hour');
-
-      const HighestBillingAmountForCurrentHour = await Order.aggregate([
-        {
-          $match: {
-            billId: { $exists: true },
-            restaurantId: restaurant,
-            date: {
-              $gte: startOfToday.toDate(),
-              $lt: endOfCurrentHour.toDate(),
-            },
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            maxAmount: { $max: "$Amount" },
-          },
-        },
-      ]);
-
       const maxAmountForCurrentHour = HighestBillingAmountForCurrentHour.length > 0 ? HighestBillingAmountForCurrentHour[0].maxAmount : 0;
 
-      const averageBillingAmountPerDay = await Order.aggregate([
+      // Average billing amount per day
+      const averageBillingAmountPerDay = await bill_model.aggregate([
         {
           $match: {
-            restaurantId: restaurant,
+            restrauntId: restaurant,
+            date: {
+              $gte: new Date(start),
+              $lt: new Date(end),
+            },
           },
         },
         {
           $group: {
-            _id: {
-              startDate: {
-                $dateToString: { format: "%Y-%m-%d", date: new Date(start) },
-              },
-              endDate: {
-                $dateToString: { format: "%Y-%m-%d", date: new Date(end) },
-              },
-            },
-            totalAmount: { $sum: "$Amount" },
+            _id: null,
+            totalAmount: { $sum: "$netValue" },
             totalDays: { $sum: 1 },
           },
         },
         {
           $project: {
-            _id: 0,
-            startDate: "$_id.startDate",
-            endDate: "$_id.endDate",
             averageAmountPerDay: { $divide: ["$totalAmount", "$totalDays"] },
           },
         },
       ]);
 
-      const oneHourAgo = new Date(now);
-      oneHourAgo.setHours(now.getHours() - 1);
 
-      const OnlineAggregatesPerHour = await Order.aggregate([
+      // Dining, Take Away, and Online Aggregator Sales per day
+      const [dineInSales, takeAwaySales, onlineAggregatorSales] = await Promise.all([
+        // Dine-in sales
+        bill_model.aggregate([
+          {
+            $match: {
+              restrauntId: restaurant,
+              date: {
+                $gte: today,
+                $lt: new Date(today.getTime() + 86400000), // Add one day
+              },
+              mode: "dinein",
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$total" }, // Sum total for dine-in
+            },
+          },
+        ]),
+        // Take-away sales
+        bill_model.aggregate([
+          {
+            $match: {
+              restrauntId: restaurant,
+              date: {
+                $gte: today,
+                $lt: new Date(today.getTime() + 86400000), // Add one day
+              },
+              mode: "takeaway",
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$total" }, // Sum total for takeaway
+            },
+          },
+        ]),
+        // Online aggregator sales
+        bill_model.aggregate([
+          {
+            $match: {
+              restrauntId: restaurant,
+              date: {
+                $gte: today,
+                $lt: new Date(today.getTime() + 86400000), // Add one day
+              },
+              mode: "online",
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalAmount: { $sum: "$total" }, // Sum total for online aggregator
+            },
+          },
+        ])
+      ]);
+
+      // Highest amount per day for the last 30 days
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(today.getDate() - 30);
+
+      const highestDailySales = await bill_model.aggregate([
         {
           $match: {
-            restaurantId: restaurant,
-            billId: { $exists: true, $ne: "" },
-            paymentMethod: { $exists: true, $ne: null },
-            date: { $gte: oneHourAgo, $lt: now },
+            restrauntId: restaurant,
+            date: {
+              $gte: thirtyDaysAgo,
+              $lt: today,
+            },
           },
         },
         {
           $group: {
-            _id: "$paymentMethod",
-            count: { $sum: 1 },
+            _id: { $dateToString: { format: "%Y-%m-%d", date: "$date" } },
+            maxAmount: { $max: "$total" }, // Find max total for each day
           },
+        },
+        {
+          $sort: { _id: 1 }, // Sort by date
         },
       ]);
 
-      const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
-      const endOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1, 0, 0, 0);
-
-      const TakeAwayTotalAmount = await Order.aggregate([
-        {
-          $match: {
-            restaurantId: restaurant,
-            orderMode: "takeaway",
-            billId: { $exists: true, $ne: "" },
-            date: { $gte: startOfDay, $lt: endOfDay },
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            totalAmount: { $sum: "$Amount" },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            totalAmount: 1,
-          },
-        },
-      ]);
-
-      const totalTakeAwayTotalAmount = TakeAwayTotalAmount.length > 0 ? TakeAwayTotalAmount[0].totalAmount : 0;
-
-      const DineInPerDay = await Order.aggregate([
-        {
-          $match: {
-            restaurantId: restaurant,
-            orderMode: "dineIn",
-            billId: { $exists: true, $ne: "" },
-            date: { $gte: startOfDay, $lt: endOfDay },
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            totalAmount: { $sum: "$Amount" },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            totalAmount: 1,
-          },
-        },
-      ]);
-
-      const totalDineInPerDay = DineInPerDay.length > 0 ? DineInPerDay[0].totalAmount : 0;
-
-      const TotalOnlineAggregatorSalesAmount = await Order.aggregate([
-        {
-          $match: {
-            restaurantId: restaurant,
-            orderMode: { $in: ['Zomato', 'Swiggy', 'Bromag', 'Others'] },
-            billId: { $exists: true, $ne: "" },
-            date: { $gte: startOfDay, $lt: endOfDay },
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            totalAmount: { $sum: "$Amount" },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            totalAmount: 1,
-          },
-        },
-      ]);
-
-      const TotalOnlineSales = TotalOnlineAggregatorSalesAmount.length > 0 ? TotalOnlineAggregatorSalesAmount[0].totalAmount : 0;
+      const highestDailyChartData = highestDailySales.map(sale => ({
+        date: sale._id,
+        amount: sale?.maxAmount || 0,
+      }));
 
       res.json({
         success: true,
-        TotalSalesPerDay: totalSalesPerDay[0],
-        Yesterdays,
-        averageBillingAmountPerDay: averageBillingAmountPerDay[0],
-        HighestBillingAmountPerHr: maxAmountForCurrentHour,
-        OnlineAggregatesPerHour,
-        totalTakeAwayTotalAmount,
-        totalDineInPerDay,
-        TotalOnlineSales,
-        hourlySalesAmount: totalSalesAmountForLastHour,
-        twoHourlySalesData
+        TotalSalesPerDay: todaySalesAmount,
+        averageBillingAmountPerDay: averageBillingAmountPerDay[0] || { averageAmountPerDay: 0 },
+        HighestBillingAmountForCurrentHour: maxAmountForCurrentHour,
+        totalSalesAmountForLastHour,
+        twoHourlySalesData,
+        totalDineInPerDay: dineInSales.length > 0 ? dineInSales[0].totalAmount : 0,
+        takeAwaySalesPerDay: takeAwaySales.length > 0 ? takeAwaySales[0].totalAmount : 0,
+        onlineAggregatorSalesPerDay: onlineAggregatorSales.length > 0 ? onlineAggregatorSales[0].totalAmount : 0,
+        highestDailyChartData, // Include highest daily sales data for the last 30 days
       });
     } else {
       res.json({ success: false, message: "Session expired!" });
     }
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+
+
+
+
+
+
 
 exports.getOrderData = async (req, res) => {
   try {
@@ -552,6 +526,8 @@ exports.getOrderData = async (req, res) => {
         };
       }));
 
+      console.log("Today’s Orders Count:", TodayOrdersPerDay);
+
       return res.json({
         success: true,
         CompleteOrder: TotalOrder,
@@ -633,8 +609,8 @@ exports.TodaysOrderDataOfCap = async (req, res) => {
       console.log(totalDineInOrders, totalDineInSales);
 
       // Calculate the total number of dine-in orders and total sales for the current date
-      const TotalOrdersInDinIn = totalDineInOrders.length > 0? totalDineInOrders[0].totalDineInOrders : 0;
-      const TotalSalesInDinIn = totalDineInSales.length > 0? totalDineInSales[0].totalSales : 0;
+      const TotalOrdersInDinIn = totalDineInOrders.length > 0 ? totalDineInOrders[0].totalDineInOrders : 0;
+      const TotalSalesInDinIn = totalDineInSales.length > 0 ? totalDineInSales[0].totalSales : 0;
 
       // Return a JSON response containing the total number of dine-in orders and total sales for the current date
       return res.status(200).json({ success: true, message: "SuccessFully Fetched", TodayDineInOrdersPerDay: TotalOrdersInDinIn, TodaysSalesInDineIn: TotalSalesInDinIn });
@@ -651,7 +627,7 @@ exports.getOrderDataOfCap = async (req, res) => {
     const isRestaurant = req.restaurant;
     const captainId = req.params.captainId;
 
-    
+
     if (isRestaurant) {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
@@ -671,65 +647,65 @@ exports.getOrderDataOfCap = async (req, res) => {
 
 
 
-      if (captainId=='all') {
-  
-        console.log(captainId,"calleddd no capsis");
+      if (captainId == 'all') {
 
-     
+        console.log(captainId, "calleddd no capsis");
+
+
         const TodayDineInOrdersPerDay = await Order.countDocuments({
           orderMode: "dineIn",
           date: { $gte: today },
           billId: { $exists: true, $ne: null },
           restaurantId: isRestaurant,
-          
-        });
-        
-        
-        
-   
-      const todayDate = new Date().toISOString().split('T')[0];
-        
-   const todaysDineInTotalSalesByCapId = await  Order.aggregate([
-        {
-          $match: {
-            date: { $gte: new Date(todayDate), $lt: new Date(todayDate + 'T23:59:59.999Z') },
-            restaurantId: isRestaurant, // Replace with the actual restaurantId
-            orderMode: "dineIn",
-            billId: { $exists: true },
-          },
-        },
-        {
-          $group: {
-            _id: null,
-            totalSalesAmount: { $sum: "$Amount" },
-          },
-        },
-   ])
-        console.log(todaysDineInTotalSalesByCapId,"todaysDineInTotalSalesByCapId");
-      
-      const todaysDineInSalesAmount = todaysDineInTotalSalesByCapId.length > 0 ? todaysDineInTotalSalesByCapId[0].totalSalesAmount
-      : 0;
-      
-        
-      const TotalDineInOrders = await Order.countDocuments({
-        orderMode: "dineIn",
-        billId: { $exists: true, $ne: null },
-        restaurantId: isRestaurant,
 
-      });  
-      
-      
-      return res.json({
-        success: true,
-        message:"fetched All Dinin Sales",
-        todaysDineInSalesAmount:todaysDineInSalesAmount,
-        TodayDineInOrdersPerDay: TodayDineInOrdersPerDay,
-        TotalDineInOrders,
-      });
-        
-      }  else  if (captainId ) {
-  
-        
+        });
+
+
+
+
+        const todayDate = new Date().toISOString().split('T')[0];
+
+        const todaysDineInTotalSalesByCapId = await Order.aggregate([
+          {
+            $match: {
+              date: { $gte: new Date(todayDate), $lt: new Date(todayDate + 'T23:59:59.999Z') },
+              restaurantId: isRestaurant, // Replace with the actual restaurantId
+              orderMode: "dineIn",
+              billId: { $exists: true },
+            },
+          },
+          {
+            $group: {
+              _id: null,
+              totalSalesAmount: { $sum: "$Amount" },
+            },
+          },
+        ])
+        console.log(todaysDineInTotalSalesByCapId, "todaysDineInTotalSalesByCapId");
+
+        const todaysDineInSalesAmount = todaysDineInTotalSalesByCapId.length > 0 ? todaysDineInTotalSalesByCapId[0].totalSalesAmount
+          : 0;
+
+
+        const TotalDineInOrders = await Order.countDocuments({
+          orderMode: "dineIn",
+          billId: { $exists: true, $ne: null },
+          restaurantId: isRestaurant,
+
+        });
+
+
+        return res.json({
+          success: true,
+          message: "fetched All Dinin Sales",
+          todaysDineInSalesAmount: todaysDineInSalesAmount,
+          TodayDineInOrdersPerDay: TodayDineInOrdersPerDay,
+          TotalDineInOrders,
+        });
+
+      } else if (captainId) {
+
+
         const TodayDineInOrdersPerDay = await Order.countDocuments({
           orderMode: "dineIn",
           date: { $gte: today },
@@ -737,56 +713,56 @@ exports.getOrderDataOfCap = async (req, res) => {
           restaurantId: isRestaurant,
           capManagerId: captainId,
         });
-        
-        
-        
-   
-      const todayDate = new Date().toISOString().split('T')[0];
-        
-   const todaysDineInTotalSalesByCapId = await  Order.aggregate([
-        {
-          $match: {
-            date: { $gte: new Date(todayDate), $lt: new Date(todayDate + 'T23:59:59.999Z') },
-            restaurantId: isRestaurant, // Replace with the actual restaurantId
-            capManagerId: captainId, // Replace with the actual capManagerId
-            orderMode: "dineIn",
-            billId: { $exists: true },
+
+
+
+
+        const todayDate = new Date().toISOString().split('T')[0];
+
+        const todaysDineInTotalSalesByCapId = await Order.aggregate([
+          {
+            $match: {
+              date: { $gte: new Date(todayDate), $lt: new Date(todayDate + 'T23:59:59.999Z') },
+              restaurantId: isRestaurant, // Replace with the actual restaurantId
+              capManagerId: captainId, // Replace with the actual capManagerId
+              orderMode: "dineIn",
+              billId: { $exists: true },
+            },
           },
-        },
-        {
-          $group: {
-            _id: null,
-            totalSalesAmount: { $sum: "$Amount" },
+          {
+            $group: {
+              _id: null,
+              totalSalesAmount: { $sum: "$Amount" },
+            },
           },
-        },
-   ])
-        
-      
-      const todaysDineInSalesAmount = todaysDineInTotalSalesByCapId.length > 0 ? todaysDineInTotalSalesByCapId[0].totalSalesAmount
-      : 0;
-      
-        
-      const TotalDineInOrders = await Order.countDocuments({
-        orderMode: "dineIn",
-        billId: { $exists: true, $ne: null },
-        restaurantId: isRestaurant,
-        capManagerId:captainId
-      });  
-      
-      
-      return res.json({
-        success: true,
-        message:"fetched Specific  Captain  DinIn Sales",
-        todaysDineInSalesAmount:todaysDineInSalesAmount,
-        TodayDineInOrdersPerDay: TodayDineInOrdersPerDay,
-        TotalDineInOrders,
-      });
-  
+        ])
+
+
+        const todaysDineInSalesAmount = todaysDineInTotalSalesByCapId.length > 0 ? todaysDineInTotalSalesByCapId[0].totalSalesAmount
+          : 0;
+
+
+        const TotalDineInOrders = await Order.countDocuments({
+          orderMode: "dineIn",
+          billId: { $exists: true, $ne: null },
+          restaurantId: isRestaurant,
+          capManagerId: captainId
+        });
+
+
+        return res.json({
+          success: true,
+          message: "fetched Specific  Captain  DinIn Sales",
+          todaysDineInSalesAmount: todaysDineInSalesAmount,
+          TodayDineInOrdersPerDay: TodayDineInOrdersPerDay,
+          TotalDineInOrders,
+        });
+
 
       } else {
-         res.status(200).json({success:false,message:"CapId unavailable"})
+        res.status(200).json({ success: false, message: "CapId unavailable" })
 
-    }
+      }
 
 
     } else {

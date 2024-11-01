@@ -178,6 +178,9 @@ import TotalStock from "./pages/admindashboardpages/stockmanagement/TotalStock";
 import StockDetails from "./pages/admindashboardpages/stockmanagement/StockDetails";
 import EditStock from "./pages/admindashboardpages/stockmanagement/EditStock";
 import TotalVendor from "./pages/admindashboardpages/stockmanagement/TotalVendor";
+import WhoWeAre from "./pages/WhoWeAre";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermAndCondition from "./pages/TermAndCondition";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -235,6 +238,18 @@ const router = createBrowserRouter([
             element: <BookADemo />
           }
         ],
+      },
+      {
+        path: "who-we-are",
+        element: <WhoWeAre />
+      },
+      {
+        path: "privacy-policy",
+        element: <PrivacyPolicy />
+      },
+      {
+        path: "term-and-condition",
+        element: <TermAndCondition />
       },
       {
         path: "admin-login",

@@ -445,7 +445,7 @@ exports.storeDemoRequest = async (req, res) => {
     const demoRequest = new DemoRequestModel({ name, email, phone, location, type, designation, purpose, onlinePlatform });
     await demoRequest.save();
 
-    sendEmail("abrarbromag@gmail.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose, onlinePlatform));
+    sendEmail("bromag0507@gmail.com", "New Demo Request", helpers.demoRequestEmailTemplate(name, email, phone, location, type, designation, purpose, onlinePlatform));
 
     res.json({ success: true, message: "Request Saved" });
 
@@ -464,7 +464,7 @@ exports.storeUserRequest = async (req, res) => {
     const userQuery = new UserQuery({ name, email, phone, query });
     await userQuery.save();
 
-    sendEmail("mag@bromagindia.com", "User Feedback", helpers.feedbackEmailTemplate(name, email, phone, query));
+    sendEmail("bromag0507@gmail.com", "User Feedback", helpers.feedbackEmailTemplate(name, email, phone, query));
 
     res.json({ success: true, message: "Request Saved" });
 

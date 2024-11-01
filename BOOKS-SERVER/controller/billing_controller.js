@@ -1308,12 +1308,12 @@ exports.updateBillWithCompleteStatusController = async (req, res) => {
     currentBill.roundOff = calculatorResult?.roundOff || 0;
     currentBill.total = calculatorResult?.totalPayValValue || 0;
     currentBill.status = status;
-    
+
     await currentBill.save();
 
     return res.status(200).send({
       success: true,
-      message : "Payment has been done for this order! Thank you!"
+      message: "Payment has been done for this order! Thank you!"
     })
   } catch (error) {
     return res.status(500).send({
@@ -1339,12 +1339,12 @@ exports.updateBillWithHoldStatusController = async (req, res) => {
     }
 
     currentBill.status = status;
-    
+
     await currentBill.save();
 
     return res.status(200).send({
       success: true,
-      message : "Order has been puted on hold!"
+      message: "Order has been puted on hold!"
     })
   } catch (error) {
     return res.status(500).send({
@@ -1370,7 +1370,7 @@ exports.deleteOrderBill = async (req, res) => {
 
     return res.status(200).send({
       success: true,
-      message : "Order has been deleted!"
+      message: "Order has been deleted!"
     })
   } catch (error) {
     return res.status(500).send({
@@ -1396,7 +1396,7 @@ exports.cancelOrderBill = async (req, res) => {
 
     return res.status(200).send({
       success: true,
-      message : "Order has been deleted!"
+      message: "Order has been deleted!"
     })
   } catch (error) {
     return res.status(500).send({

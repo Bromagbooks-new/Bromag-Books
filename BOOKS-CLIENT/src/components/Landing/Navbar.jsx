@@ -69,7 +69,7 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className={({ isActive }) => isActive && "font-bold text-black"}
-          to="/coming-soon"
+          to="/who-we-are"
         >
           Who We Are
         </NavLink>

@@ -52,6 +52,10 @@ app.use(cors());
 // app.use(limiter);
 
 // Routers
+
+app.get("/hi", async (req, res) => {
+  res.send("hiii")
+})
 const User = require("./router/user");
 const KotManagementRouterRouter = require("./router/kot.routers.js");
 const BillingManagementRouterRouter = require("./router/billing.routers.js");

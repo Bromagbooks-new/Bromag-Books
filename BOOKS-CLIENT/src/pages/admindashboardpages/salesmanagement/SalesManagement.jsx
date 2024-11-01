@@ -1,8 +1,5 @@
-//styled-component import
 import Wrapper from "../../../assets/wrappers/adminwrappers/SalesManagement";
-//component imports
 import SalesManagementCard from "../../../components/admindashboardcomponents/SalesManagementCard";
-//bootstrap imports
 import Form from "react-bootstrap/Form";
 import { Button } from "react-bootstrap";
 import { useForm } from "react-hook-form";
@@ -30,106 +27,43 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-const data = {
-  labels: Array.from({ length: 26 }, (_, i) => `Day ${i + 1}`),
-  datasets: [
-    {
-      label: 'Sales Data',
-      data: [20, 40, 30, 50, 40, 20, 90, 50, 30, 60, 22, 40, 30, 50, 80, 40, 30, 70, 60, 40, 20],
-      fill: true,
-      backgroundColor: 'rgba(0, 123, 255, 0.2)',
-      borderColor: 'rgba(0, 123, 255, 1)',
-      pointBackgroundColor: 'rgba(0, 123, 255, 1)',
-      tension: 0.3
-    }
-  ]
-};
-
-const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      display: false
-    },
-    tooltip: {
-      mode: 'index',
-      intersect: false
-    }
-  },
-  scales: {
-    y: {
-      beginAtZero: true,
-      max: 100,
-      ticks: {
-        stepSize: 20,
-        callback: (value) => `${value}%`
-      }
-    },
-    x: {
-      beginAtZero: true,
-      ticks: {
-        autoSkip: true,
-        maxTicksLimit: 10
-      }
-    }
-  }
-};
-
-
 
 const SalesManagement = () => {
   const [totalSalesPerDay, setTotalSalesPerDay] = useState({});
   const [hourlySalesPerDay, setHourlySalesPerDay] = useState({});
-  const [highestBillingAmountPerHr, setHighestBillingAmountPerHr] =
-    useState("");
-  const [averageBillingAmountPerDay, setAverageBillingAmountPerDay] = useState(
-    {}
-  );
-  const [onlineAggregatesPerDay, setOnlineAggregatesPerDay] = useState([]);
-  const [takeAwayPerDay, setTakeAwayPerDay] = useState("");
-  const [dineInPerDay, setDineInPerDay] = useState("");
+  const [highestBillingAmountPerHr, setHighestBillingAmountPerHr] = useState({});
+  const [averageBillingAmountPerDay, setAverageBillingAmountPerDay] = useState({});
+  const [onlineAggregatesPerDay, setOnlineAggregatesPerDay] = useState(0);
+  const [takeAwayPerDay, setTakeAwayPerDay] = useState(0);
+  const [dineInPerDay, setDineInPerDay] = useState(0);
 
-  const [showToday, setShowToday] = useState(false);
-  const [showYesterday, setShowYesterday] = useState(false);
+  const [salesChartData, setSalesChartData] = useState({ labels: [], data: [] });
+  const [chartPeriod, setChartPeriod] = useState("");
 
-  const [showTotal, setShowTotal] = useState(true);
-  const [showFiltered, setShowFiltered] = useState(false);
-  const [showLastWeek, setShowLastWeek] = useState(false);
-  const [showLastMonth, setShowLastMonth] = useState(false);
-  const [showLastYear, setShowLastYear] = useState(false);
-
-  const [filteredData, setFilteredData] = useState([]);
-
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
   const handleSalesDashboard = async (dates) => {
-    console.log("here");
     try {
-      console.log("here");
-      const response = await SalesDashboard(dates || {});
-      console.log(response.data);
+      const response = await SalesDashboard(dates);
 
       if (response.data.success) {
-        // data as cards
-
-        console.log(response)
         setTotalSalesPerDay(response.data.TotalSalesPerDay);
-        setHourlySalesPerDay(response.data.hourlySalesAmount);
-        // console.log("hourlysalesamount",hourlySalesAmount)
-
-        setHighestBillingAmountPerHr(response.data.HighestBillingAmountPerHr);
+        setHourlySalesPerDay(response.data.totalSalesAmountForLastHour);
+        setHighestBillingAmountPerHr(response.data.HighestBillingAmountForCurrentHour);
         setAverageBillingAmountPerDay(response.data.averageBillingAmountPerDay);
-        if (response.data.TotalOnlineSales) {
-
-          setOnlineAggregatesPerDay(response.data.TotalOnlineSales);
-        }
-
-        setTakeAwayPerDay(response.data.totalTakeAwayTotalAmount);
+        setOnlineAggregatesPerDay(response.data.onlineAggregatorSalesPerDay);
+        setTakeAwayPerDay(response.data.takeAwaySalesPerDay);
         setDineInPerDay(response.data.totalDineInPerDay);
+
+        // Set chart data from API response
+        const salesLabels = response.data.highestDailyChartData.map(item => new Date(item.date).getDate());
+        const salesValues = response.data.highestDailyChartData.map(item => item.amount);
+        setSalesChartData({ labels: salesLabels, data: salesValues });
+
+        // Set the chart period for displaying month and year
+        const month = new Date(response.data.highestDailyChartData[0].date).toLocaleString('default', { month: 'long' });
+        const year = new Date(response.data.highestDailyChartData[0].date).getFullYear();
+        setChartPeriod(`${month} ${year}`);
       } else {
         toastError(response.data.message);
       }
@@ -139,119 +73,123 @@ const SalesManagement = () => {
   };
 
   const handleButtonClick = (dateRange) => {
-    const todayDate = new Date().toISOString().split("T")[0];
-    const defaultDates = { start: todayDate, end: todayDate };
-    console.log(defaultDates);
+    const now = new Date();
+    const offset = 5.5 * 60 * 60 * 1000;
+    const istDate = new Date(now.getTime() + offset);
+    const formattedTodayDate = istDate.toISOString().split("T")[0];
+    const defaultDates = { start: formattedTodayDate, end: formattedTodayDate };
 
-    const yesterdayDate = new Date();
+    const yesterdayDate = new Date(istDate);
     yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-    const yesterdayDates = yesterdayDate.toISOString().split("T")[0];
-    console.log(dateRange, "dates");
+    const formattedYesterdayDate = yesterdayDate.toISOString().split("T")[0];
+
     switch (dateRange) {
       case "today":
-        setShowToday(true);
-        setShowYesterday(false);
-        setShowTotal(false);
-        setShowLastWeek(false);
-        setShowLastMonth(false);
-        setShowLastYear(false);
-        setShowFiltered(false);
-        console.log("here");
         handleSalesDashboard(defaultDates);
         break;
       case "yesterday":
-        setShowToday(false);
-        setShowYesterday(true);
-        setShowTotal(false);
-        setShowLastWeek(false);
-        setShowLastMonth(false);
-        setShowLastYear(false);
-        setShowFiltered(false);
-        handleSalesDashboard({ start: yesterdayDates, end: todayDate });
+        handleSalesDashboard({ start: formattedYesterdayDate, end: formattedTodayDate });
         break;
       default:
-        // Handle other cases based on dateRange
-        // You can add more cases as needed
         break;
     }
   };
-
 
   useEffect(() => {
     handleButtonClick("today");
   }, []);
 
-  const handleDateFilter = async (data) => {
-    try {
-      //   const response = await VendorDateFilter(data);
-
-      if (response.data.success) {
-        setFilteredData(response.data.data);
-        setShowFiltered(true);
-        setShowToday(false);
-        setShowTotal(false);
-        setShowLastWeek(false);
-        setShowLastMonth(false);
-        setShowLastYear(false);
-        console.log("filtered");
-      } else {
-        toastError(response.data.filter);
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-
   const totalSales = [
     {
       title: "Total Sales Amount/Day",
-      quantity: totalSalesPerDay?.totalAmount || 2341,
+      quantity: totalSalesPerDay,
       borderColor: "#3357FF",
       image: "./../../../assets/images/billing-management/OnlineActivated.svg",
       url: "total-sales"
     },
     {
       title: "Hourly Sales Amount",
-      quantity: hourlySalesPerDay || 1230,
+      quantity: hourlySalesPerDay,
       borderColor: "#FF5733",
       image: "./../../../assets/images/billing-management/OnlineActivated.svg",
       url: "hourly-sales"
     },
     {
       title: "Highest Billing Amount/hr",
-      quantity: highestBillingAmountPerHr || 3784,
+      quantity: highestBillingAmountPerHr,
       borderColor: "#33FF57",
       image: "./../../../assets/images/billing-management/OnlineActivated.svg",
       url: "highest-billing"
     },
     {
       title: "Online Aggregator Sales/Day",
-      quantity: onlineAggregatesPerDay || 0,
+      quantity: onlineAggregatesPerDay,
       borderColor: "#A020F0",
       image: "./../../../assets/images/billing-management/OnlineActivated.svg",
       url: "online-sales"
     },
     {
       title: "Take Away Sales Amount/Day",
-      quantity: `${takeAwayPerDay || 2}`,
+      quantity: takeAwayPerDay,
       borderColor: "#0000FF",
       image: "./../../../assets/images/billing-management/OnlineActivated.svg",
       url: "take-away"
     },
     {
       title: "Dining Sales Amount/Day",
-      quantity: `${dineInPerDay || 269}`,
+      quantity: dineInPerDay,
       borderColor: "#8B0000",
       image: "./../../../assets/images/billing-management/OnlineActivated.svg",
       url: "dining-sales"
     }
   ];
 
+  const data = {
+    labels: salesChartData.labels.length > 0 ? salesChartData.labels : Array.from({ length: 30 }, (_, i) => `Day ${i + 1}`),
+    datasets: [
+      {
+        label: 'Sales Data',
+        data: salesChartData.data.length > 0 ? salesChartData.data : [60, 40, 20],
+        fill: true,
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+        borderColor: 'rgba(0, 123, 255, 1)',
+        pointBackgroundColor: 'rgba(0, 123, 255, 1)',
+        tension: 0.3
+      }
+    ]
+  };
 
-  console.log("hourlySalesPerDay", highestBillingAmountPerHr)
-
-
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        display: false
+      },
+      tooltip: {
+        mode: 'index',
+        intersect: false
+      }
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          stepSize: 20,
+          callback: (value) => `${value}%`
+        }
+      },
+      x: {
+        title: {
+          display: true,
+          text: `Sales Data for ${chartPeriod}`
+        },
+        ticks: {
+          autoSkip: true,
+          maxTicksLimit: 10
+        }
+      }
+    }
+  };
 
   return (
     <Wrapper className="page">
@@ -273,4 +211,5 @@ const SalesManagement = () => {
     </Wrapper>
   );
 };
+
 export default SalesManagement;

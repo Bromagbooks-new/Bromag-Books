@@ -1074,7 +1074,7 @@ const SalesDashboard = async (dates) => {
       "getSalesDashboardData",
       { params: dates }
     );
-    console.log(response);
+    console.log("owner", response);
     return response;
   } catch (error) {
     console.log(error);

@@ -39,7 +39,7 @@ const Footer = () => {
             </li>
             <li className="flex gap-2">
               <Mail />
-              <p className="">mag@bromagindia.com</p>
+              <p className="">bromag0507@gmail.com</p>
             </li>
             <li className="flex gap-2">
               <MapPin />
@@ -50,9 +50,9 @@ const Footer = () => {
         <div className="flex flex-col items-center md:items-start gap-4">
           <p className="text-3xl text-white font-bold">About Us</p>
           <ul className="text-gray-500 flex flex-col items-center md:items-start gap-2 text-xl z-20">
-            <Link to="/coming-soon" className="flex gap-2">Who we are</Link>
-            <Link to="/coming-soon" className="flex gap-2">Privacy Policy</Link>
-            <Link to="/coming-soon" className="flex gap-2">Terms and Conditions</Link>
+            <Link to="/who-we-are" className="flex gap-2">Who we are</Link>
+            <Link to="/privacy-policy" className="flex gap-2">Privacy Policy</Link>
+            <Link to="/term-and-condition" className="flex gap-2">Terms and Conditions</Link>
           </ul>
         </div>
         <div className="z-10 flex md:block flex-col items-center md:items-start">

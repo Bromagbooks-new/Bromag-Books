@@ -415,6 +415,16 @@ userRouter.get(
   salesController.getOnlineData
 );
 userRouter.get(
+  "/getHighestBillingAmountPerHour",
+  interceptor.adminAuth,
+  salesController.getHighestBillingAmountPerHour
+);
+userRouter.get(
+  "/getHourlySalesData",
+  interceptor.adminAuth,
+  salesController.getHourlySalesData
+);
+userRouter.get(
   "/getTotalSalesData",
   interceptor.adminAuth,
   salesController.getTotalSalesData

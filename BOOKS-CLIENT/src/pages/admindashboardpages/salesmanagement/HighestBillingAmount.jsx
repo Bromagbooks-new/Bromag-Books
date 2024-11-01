@@ -4,10 +4,10 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-// import { HighestBillingAmountDataForAdmin } from "../../../config/routeApi/owner";
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { HighestBillingAmountDataForAdmin } from "@/config/routeApi/owner";
 
 const HighestBillingAmount = () => {
     const [highestBillingData, setHighestBillingData] = useState([]);
@@ -17,66 +17,24 @@ const HighestBillingAmount = () => {
     const [endDate, setEndDate] = useState(null);
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
 
-    useEffect(() => {
-        const dummyHighestBillingData = [
-            {
-                _id: "1",
-                date: "2024-10-01T12:30:00Z",
-                billId: "HBIL1001",
-                Amount: 500.00,
-                paymentMethod: "Credit Card",
-                orderMode: "Online",
-            },
-            {
-                _id: "2",
-                date: "2024-10-02T14:45:00Z",
-                billId: "HBIL1002",
-                Amount: 650.25,
-                paymentMethod: "PayPal",
-                orderMode: "Offline",
-            },
-            {
-                _id: "3",
-                date: "2024-10-03T09:30:00Z",
-                billId: "HBIL1003",
-                Amount: 750.50,
-                paymentMethod: "Cash",
-                orderMode: "Online",
-            },
-            {
-                _id: "4",
-                date: "2024-10-04T16:00:00Z",
-                billId: "HBIL1004",
-                Amount: 900.00,
-                paymentMethod: "Debit Card",
-                orderMode: "Offline",
-            },
-            {
-                _id: "5",
-                date: "2024-10-05T11:15:00Z",
-                billId: "HBIL1005",
-                Amount: 1200.99,
-                paymentMethod: "Bank Transfer",
-                orderMode: "Online",
-            },
-        ];
+    const restaurantId = "670d0ac4ccb7b9e2452e4d1d"; // Replace with actual restaurant ID or get from props/context
 
-        // const handleHighestBillingData = async () => {
-        //     try {
-        //         const response = await HighestBillingAmountDataForAdmin();
-        //         if (response.data.success) {
-        //             // setHighestBillingData(response.data.highestBillingData);
-        //             setHighestBillingData(dummyHighestBillingData);
-        //         } else {
-        //             toastError(response.data.message);
-        //         }
-        //     } catch (error) {
-        //         console.log(error);
-        //     }
-        // };
-        // handleHighestBillingData();
-        setHighestBillingData(dummyHighestBillingData);
-    }, []);
+    useEffect(() => {
+        const handleHighestBillingData = async () => {
+            try {
+                const response = await HighestBillingAmountDataForAdmin(restaurantId); // Pass restaurant ID here
+                if (response.data.success) {
+                    setHighestBillingData(response.data.HighestBillingAmountData); // Adjust according to the API response structure
+                } else {
+                    toastError(response.data.message);
+                }
+            } catch (error) {
+                console.log(error);
+                toastError("Failed to load highest billing data."); // Display error toast
+            }
+        };
+        handleHighestBillingData();
+    }, [restaurantId]); // Only run when restaurantId changes
 
     // Debouncing for search input
     useEffect(() => {
@@ -88,10 +46,10 @@ const HighestBillingAmount = () => {
 
     // Filter the highest billing data based on the search query and date range
     const filteredHighestBillingData = highestBillingData.filter((item) => {
-        const dateObject = new Date(item.date);
+        const dateObject = new Date(item.billDate); // Assuming `billDate` is the field containing the date
 
         // Filter by search query (Bill ID)
-        const matchesSearch = item.billId
+        const matchesSearch = item.billID
             .toLowerCase()
             .includes(debouncedSearchQuery.toLowerCase());
 
@@ -189,21 +147,21 @@ const HighestBillingAmount = () => {
                             </thead>
                             <tbody>
                                 {filteredHighestBillingData.map((item, i) => {
-                                    const dateObject = new Date(item.date);
+                                    const dateObject = new Date(item.billDate); // Assuming billDate is a property in item
                                     const formattedDate = dateObject.toLocaleDateString();
                                     const formattedTime = dateObject.toLocaleTimeString([], {
                                         hour: "2-digit",
                                         minute: "2-digit",
                                     });
                                     return (
-                                        <tr key={item.id}>
+                                        <tr key={item.billID}>
                                             <td>{i + 1}</td>
                                             <td>{formattedDate}</td>
                                             <td>{formattedTime}</td>
-                                            <td>{item.billId}</td>
-                                            <td>{item.Amount.toFixed(2)}</td>
-                                            <td>{item.paymentMethod}</td>
-                                            <td>{item.orderMode}</td>
+                                            <td>{item.billID}</td>
+                                            <td>{item.billAmount.toFixed(2)}</td> {/* Ensure correct property name */}
+                                            <td>{item.modeOfPayment}</td>
+                                            <td>{item.modeOfOrder}</td>
                                         </tr>
                                     );
                                 })}

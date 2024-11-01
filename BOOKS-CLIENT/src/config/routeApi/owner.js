@@ -1044,7 +1044,26 @@ const TakeAwayDataForAdmin = async () => {
     console.log(error);
   }
 };
-
+const HighestBillingAmountDataForAdmin = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get(
+      "getHighestBillingAmountPerHour"
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getHourlySalesData = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get(
+      "getHourlySalesData"
+    );
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
 const DineInDataForAdmin = async () => {
   try {
     const response = await restaurantOwnerAxiosInstance.get(
@@ -1061,7 +1080,7 @@ const TotalSalesData = async () => {
     const response = await restaurantOwnerAxiosInstance.get(
       "getTotalSalesData"
     );
-    console.log("hello", response)
+    console.log("TotalSalesData", response)
     return response;
   } catch (error) {
     console.log(error);
@@ -1348,6 +1367,8 @@ export {
   TakeAwayDataForAdmin,
   DineInDataForAdmin,
   TotalSalesData,
+  HighestBillingAmountDataForAdmin,
+  getHourlySalesData,
   SalesDashboard,
   AddTableData,
   AddNewTableData,

@@ -1,7 +1,7 @@
 import Wrapper from "../../../assets/wrappers/adminwrappers/BasicDetails";
 import Table from "react-bootstrap/Table";
 import { IoSearchSharp } from "react-icons/io5";
-import { Link, useLoaderData } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toastError } from "../../../helpers/helpers";
@@ -10,64 +10,36 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const TotalSales = () => {
-  // Dummy sales data
-  const dummySalesData = [
-    {
-      _id: "1",
-      date: "2024-10-01T10:30:00Z",
-      billId: "BIL1001",
-      Amount: 150.00,
-      paymentMethod: "Credit Card",
-      orderMode: "Online",
-    },
-    {
-      _id: "2",
-      date: "2024-10-02T14:15:00Z",
-      billId: "BIL1002",
-      Amount: 200.50,
-      paymentMethod: "PayPal",
-      orderMode: "Offline",
-    },
-    {
-      _id: "3",
-      date: "2024-10-03T09:45:00Z",
-      billId: "BIL1003",
-      Amount: 300.75,
-      paymentMethod: "Debit Card",
-      orderMode: "Online",
-    },
-    {
-      _id: "4",
-      date: "2024-10-04T12:00:00Z",
-      billId: "BIL1004",
-      Amount: 100.00,
-      paymentMethod: "Bank Transfer",
-      orderMode: "Offline",
-    },
-    {
-      _id: "5",
-      date: "2024-10-05T11:30:00Z",
-      billId: "BIL1005",
-      Amount: 50.25,
-      paymentMethod: "Cash",
-      orderMode: "Online",
-    },
-  ];
-
-  const loadedSalesData = useLoaderData();
-  const [salesData, setSalesData] = useState(dummySalesData); //loadedSalesData (from api) Use dummy data if loadedSalesData is empty
+  const [salesData, setSalesData] = useState([]); // Initialize with an empty array
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-  const [startDate, setStartDate] = useState(null); // Add start date filter
-  const [endDate, setEndDate] = useState(null); // Add end date filter
+  const [startDate, setStartDate] = useState(null); // Start date filter
+  const [endDate, setEndDate] = useState(null); // End date filter
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null); // Error state
+
+  // Fetch total sales data from the API
+  const fetchTotalSalesData = async () => {
+    try {
+      setLoading(true); // Set loading to true
+      const response = await TotalSalesData();
+      if (response.data.success) {
+        setSalesData(response.data.SalesData); // Set sales data from API response
+      } else {
+        toastError(response.data.message); // Show error message if not successful
+      }
+    } catch (error) {
+      console.error("Failed to load total sales data:", error);
+      setError("Failed to load total sales data."); // Set error state
+      toastError(error.message); // Show error message
+    } finally {
+      setLoading(false); // Set loading to false after fetching data
+    }
+  };
 
   useEffect(() => {
-    if (!loadedSalesData && dummySalesData.length === 0) {
-      toastError("No sales data available");
-    } else {
-      setSalesData(loadedSalesData || dummySalesData);
-    }
-  }, [loadedSalesData]);
+    fetchTotalSalesData(); // Fetch data on component mount
+  }, []); // Empty dependency array to run only on mount
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
@@ -77,18 +49,28 @@ const TotalSales = () => {
   }, [searchQuery]);
 
   const filteredSalesData = salesData.filter((item) => {
-    const formattedAmount = String(item.Amount);
-    const matchesSearchQuery =
-      item.billId.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
-      formattedAmount.includes(debouncedSearchQuery);
+    const formattedAmount = String(item.billAmount); // Adjusted for API response
 
-    const itemDate = new Date(item.date);
+    // Ensure item.billID exists before accessing toLowerCase
+    const matchesSearchQuery =
+      (item.billID?.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        formattedAmount.includes(debouncedSearchQuery));
+
+    const itemDate = new Date(item.billDate); // Adjusted for API response
     const matchesDateRange =
       (!startDate || itemDate >= startDate) &&
       (!endDate || itemDate <= endDate);
 
     return matchesSearchQuery && matchesDateRange;
   });
+
+  if (loading) {
+    return <div>Loading...</div>; // Optional loading state
+  }
+
+  if (error) {
+    return <div>{error}</div>; // Show error message
+  }
 
   return (
     <Wrapper className="page">
@@ -111,7 +93,7 @@ const TotalSales = () => {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
-                <button className="search-button" style={{ width: "127px", height: "40px", background: "#486072", borderRadius: "7px", marginLeft: "2rem", color: "white" }} onClick={(e) => setSearchQuery(e.target.value)}>Search</button>
+                <button className="search-button" style={{ width: "127px", height: "40px", background: "#486072", borderRadius: "7px", marginLeft: "2rem", color: "white" }} onClick={() => setDebouncedSearchQuery(searchQuery)}>Search</button>
               </div>
               <div className="date-picker-group">
                 <p style={{ width: "33px", height: "16px", color: "#1F303C" }}>From</p>
@@ -155,21 +137,21 @@ const TotalSales = () => {
               </thead>
               <tbody>
                 {filteredSalesData.map((item, i) => {
-                  const dateObject = new Date(item.date);
+                  const dateObject = new Date(item.billDate); // Adjusted for API response
                   const formattedDate = dateObject.toLocaleDateString();
                   const formattedTime = dateObject.toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   });
                   return (
-                    <tr key={item._id}>
+                    <tr key={item.billID}>
                       <td>{i + 1}</td>
                       <td>{formattedDate}</td>
                       <td>{formattedTime}</td>
-                      <td>{item.billId}</td>
-                      <td>{item.Amount.toFixed(2)}</td>
-                      <td>{item.paymentMethod}</td>
-                      <td>{item.orderMode}</td>
+                      <td>{item.billID}</td>
+                      <td>{item.billAmount.toFixed(2)}</td>
+                      <td>{item.modeOfPayment}</td>
+                      <td>{item.modeOfOrder}</td>
                     </tr>
                   );
                 })}
@@ -181,12 +163,10 @@ const TotalSales = () => {
     </Wrapper>
   );
 };
-
 export const getTotalSalesDataFn = async () => {
   try {
     const response = await TotalSalesData();
     if (response.data.success) {
-      // console.log("total-sales", response.data.SalesData)
       return response.data.SalesData;
     } else {
       throw new Error(response.data.message);
@@ -196,5 +176,4 @@ export const getTotalSalesDataFn = async () => {
     throw error;
   }
 };
-
 export default TotalSales;

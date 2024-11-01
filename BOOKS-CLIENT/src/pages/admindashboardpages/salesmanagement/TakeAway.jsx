@@ -13,123 +13,40 @@ const TakeAway = () => {
   const [takeAwayData, setTakeAwayData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-  const [startDate, setStartDate] = useState(null); // Add start date filter
-  const [endDate, setEndDate] = useState(null); // Add end date filter
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
 
-  useEffect(() => {
-
-    const dummyTakeAwayData = [
-      {
-        _id: "1",
-        date: "2024-10-01T10:30:00Z",
-        billId: "BIL2001",
-        Amount: 120.00,
-        paymentMethod: "Credit Card",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "2",
-        date: "2024-10-02T11:15:00Z",
-        billId: "BIL2002",
-        Amount: 85.50,
-        paymentMethod: "Cash",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "3",
-        date: "2024-10-03T12:45:00Z",
-        billId: "BIL2003",
-        Amount: 150.75,
-        paymentMethod: "Debit Card",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "4",
-        date: "2024-10-04T13:30:00Z",
-        billId: "BIL2004",
-        Amount: 90.00,
-        paymentMethod: "PayPal",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "5",
-        date: "2024-10-05T14:00:00Z",
-        billId: "BIL2005",
-        Amount: 60.25,
-        paymentMethod: "Bank Transfer",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "6",
-        date: "2024-10-06T15:10:00Z",
-        billId: "BIL2006",
-        Amount: 45.99,
-        paymentMethod: "Cash",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "7",
-        date: "2024-10-07T16:20:00Z",
-        billId: "BIL2007",
-        Amount: 75.50,
-        paymentMethod: "Credit Card",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "8",
-        date: "2024-10-08T17:25:00Z",
-        billId: "BIL2008",
-        Amount: 30.00,
-        paymentMethod: "Debit Card",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "9",
-        date: "2024-10-09T18:40:00Z",
-        billId: "BIL2009",
-        Amount: 200.99,
-        paymentMethod: "Cash",
-        orderMode: "Take Away",
-      },
-      {
-        _id: "10",
-        date: "2024-10-10T19:50:00Z",
-        billId: "BIL2010",
-        Amount: 120.00,
-        paymentMethod: "PayPal",
-        orderMode: "Take Away",
-      },
-    ];
-
-    const handleTakeAwayData = async () => {
-      try {
-        const response = await TakeAwayDataForAdmin();
-        if (response.data.success) {
-          console.log("take-away", response.data.takeAwayData)
-          setTakeAwayData(response.data.takeAwayData);
-          // setTakeAwayData(dummyTakeAwayData);
-        } else {
-          toastError(response.data.message);
-        }
-      } catch (error) {
-        console.log(error);
+  // Fetch TakeAway data from the API
+  const fetchTakeAwayData = async (date) => {
+    try {
+      const response = await TakeAwayDataForAdmin(date);
+      if (response.data.success) {
+        setTakeAwayData(response.data.TakeAwayOrderData);
+      } else {
+        toastError(response.data.message);
       }
-    };
-    handleTakeAwayData();
-  }, []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  // Debouncing for search input
+  useEffect(() => {
+    // Initial data fetch
+    fetchTakeAwayData(startDate ? startDate.toISOString().split('T')[0] : null);
+  }, [startDate]);
+
+  // Debounce search input
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-    }, 300); // Adjust the delay as needed (e.g., 300 milliseconds)
+    }, 300); // Delay for debouncing (300ms)
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
-  // Filter the takeAwayData based on the search query and date range
+  // Filter data based on search query and date range
   const filteredTakeAwayData = takeAwayData.filter((item) => {
-    const dateObject = new Date(item.date);
+    const dateObject = new Date(item.billDate);
 
     // Filter by search query (Bill ID)
     const matchesSearch = item.billId
@@ -138,15 +55,16 @@ const TakeAway = () => {
 
     // Filter by date range only if the date search button is clicked
     const isWithinDateRange =
-      (!isDateSearchClicked ||
-        ((!startDate || dateObject >= startDate) && (!endDate || dateObject <= endDate)));
+      !isDateSearchClicked ||
+      ((!startDate || dateObject >= startDate) && (!endDate || dateObject <= endDate));
 
     return matchesSearch && isWithinDateRange;
   });
 
-  // Handler for date range search button
-  const handleDateSearch = () => {
+  // Date search button click handler
+  const handleDateSearch = async () => {
     setIsDateSearchClicked(true);
+    fetchTakeAwayData(startDate ? startDate.toISOString().split('T')[0] : null);
   };
 
   return (
@@ -230,7 +148,7 @@ const TakeAway = () => {
               </thead>
               <tbody>
                 {filteredTakeAwayData.map((item, i) => {
-                  const dateObject = new Date(item.date);
+                  const dateObject = new Date(item.billDate);
                   const formattedDate = dateObject.toLocaleDateString();
                   const formattedTime = dateObject.toLocaleTimeString([], {
                     hour: "2-digit",
@@ -238,14 +156,14 @@ const TakeAway = () => {
                   });
 
                   return (
-                    <tr key={item.id}>
+                    <tr key={item.billId}>
                       <td>{i + 1}</td>
                       <td>{formattedDate}</td>
                       <td>{formattedTime}</td>
                       <td>{item.billId}</td>
-                      <td>{item.Amount.toFixed(2)}</td>
-                      <td>{item.paymentMethod}</td>
-                      <td>{item.orderMode}</td>
+                      <td>{item.billAmount.toFixed(2)}</td>
+                      <td>{item.modeOfPayment}</td>
+                      <td>{item.mode}</td>
                     </tr>
                   );
                 })}

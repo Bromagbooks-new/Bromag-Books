@@ -1,7 +1,7 @@
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 // import "./App.css";
 import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { useEffect } from "react";
 import {
   Login,
   ForgotPassword,
@@ -179,8 +179,8 @@ import StockDetails from "./pages/admindashboardpages/stockmanagement/StockDetai
 import EditStock from "./pages/admindashboardpages/stockmanagement/EditStock";
 import TotalVendor from "./pages/admindashboardpages/stockmanagement/TotalVendor";
 import WhoWeAre from "./pages/WhoWeAre";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import TermAndCondition from "./pages/TermAndCondition";
+// import PrivacyPolicy from "./pages/PrivacyPolicy";
+// import TermAndCondition from "./pages/TermAndCondition";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -243,14 +243,14 @@ const router = createBrowserRouter([
         path: "who-we-are",
         element: <WhoWeAre />
       },
-      {
-        path: "privacy-policy",
-        element: <PrivacyPolicy />
-      },
-      {
-        path: "term-and-condition",
-        element: <TermAndCondition />
-      },
+      // {
+      //   path: "privacy-policy",
+      //   element: <PrivacyPolicy />
+      // },
+      // {
+      //   path: "term-and-condition",
+      //   element: <TermAndCondition />
+      // },
       {
         path: "admin-login",
         element: (
@@ -427,7 +427,7 @@ const router = createBrowserRouter([
           {
             path: 'sales-management',
             element: <Outlet />,
-            loader: getTotalSalesDataFn,
+            // loader: getTotalSalesDataFn,
             children: [
               {
                 index: true,
@@ -436,32 +436,32 @@ const router = createBrowserRouter([
               {
                 path: 'total-sales',
                 element: <TotalSales />,
-                loader: getTotalSalesDataFn,
+                // loader: getTotalSalesDataFn,
               },
               {
                 path: "hourly-sales",
                 element: <HourlySales />,
-                loader: getTotalSalesDataFn,
+                // loader: getTotalSalesDataFn,
               },
               {
                 path: "highest-billing",
                 element: <HighestBillingAmount />,
-                loader: getTotalSalesDataFn,
+                // loader: getTotalSalesDataFn,
               },
               {
                 path: "online-sales",
                 element: <OnlineOrders />,
-                loader: getTotalSalesDataFn,
+                // loader: getOnlineSalesData,
               },
               {
                 path: "take-away",
                 element: <TakeAway />,
-                loader: getTotalSalesDataFn,
+                // loader: getTotalSalesDataFn,
               },
               {
                 path: "dining-sales",
                 element: <Dining />,
-                loader: getTotalSalesDataFn,
+                // loader: getTotalSalesDataFn,
               },
             ],
           },

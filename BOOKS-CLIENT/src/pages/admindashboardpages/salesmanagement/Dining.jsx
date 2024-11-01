@@ -9,51 +9,12 @@ import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-// Dummy data for dine-in orders
-const dummyDineInData = [
-  {
-    _id: "1",
-    date: "2024-10-01T10:30:00Z",
-    billId: "BIL3001",
-    Amount: 200.00,
-    tableNumber: "A1",
-  },
-  {
-    _id: "2",
-    date: "2024-10-02T11:15:00Z",
-    billId: "BIL3002",
-    Amount: 150.50,
-    tableNumber: "B2",
-  },
-  {
-    _id: "3",
-    date: "2024-10-03T12:45:00Z",
-    billId: "BIL3003",
-    Amount: 300.75,
-    tableNumber: "C3",
-  },
-  {
-    _id: "4",
-    date: "2024-10-04T13:30:00Z",
-    billId: "BIL3004",
-    Amount: 90.00,
-    tableNumber: "D4",
-  },
-  {
-    _id: "5",
-    date: "2024-10-05T14:00:00Z",
-    billId: "BIL3005",
-    Amount: 60.25,
-    tableNumber: "E5",
-  },
-];
-
 const Dining = () => {
   const [dineIn, setDineIn] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-  const [startDate, setStartDate] = useState(null); // Add start date filter
-  const [endDate, setEndDate] = useState(null); // Add end date filter
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
   const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
 
   useEffect(() => {
@@ -61,12 +22,8 @@ const Dining = () => {
       try {
         const response = await DineInDataForAdmin();
         if (response.data.success) {
-          // Uncomment the line below to use the fetched data
-          console.log("dine-in", response.data.DineInDetails)
-          setDineIn(response.data.DineInDetails);
-
-          // For demo purposes, using dummy data
-          // setDineIn(dummyDineInData);
+          console.log("dine-in", response.data.DineInOrderData);
+          setDineIn(response.data.DineInOrderData);
         } else {
           toastError(response.data.message);
         }
@@ -77,36 +34,36 @@ const Dining = () => {
     handleDineInData();
   }, []);
 
-  // Filter the dineIn based on the search query
+  // Debounce search query
   useEffect(() => {
     const delayDebounceFn = setTimeout(() => {
       setDebouncedSearchQuery(searchQuery);
-    }, 300); // Adjust the delay as needed (e.g., 300 milliseconds)
+    }, 300);
 
     return () => clearTimeout(delayDebounceFn);
   }, [searchQuery]);
 
-  // Filter the dineIn based on the debounced search query
+  // Filter dineIn data based on the search query and date range
   const filteredDineIn = dineIn.filter((item) => {
-    const dateObject = new Date(item.date);
+    const dateObject = new Date(item.billDate);
 
     // Filter by search query (Bill ID)
     const matchesSearch = item.billId
       .toLowerCase()
       .includes(debouncedSearchQuery.toLowerCase());
 
-    // Filter by date range only if the date search button is clicked
+    // Filter by date range if the date search button is clicked
     const isWithinDateRange =
       (!isDateSearchClicked ||
         ((!startDate || dateObject >= startDate) && (!endDate || dateObject <= endDate)));
 
     return matchesSearch && isWithinDateRange;
   });
+
   // Handler for date range search button
   const handleDateSearch = () => {
     setIsDateSearchClicked(true);
   };
-
 
   return (
     <Wrapper className="page">
@@ -186,20 +143,20 @@ const Dining = () => {
               </thead>
               <tbody>
                 {filteredDineIn.map((item, i) => {
-                  const dateObject = new Date(item.date);
+                  const dateObject = new Date(item.billDate);
                   const formattedDate = dateObject.toLocaleDateString();
                   const formattedTime = dateObject.toLocaleTimeString([], {
                     hour: "2-digit",
                     minute: "2-digit",
                   });
                   return (
-                    <tr key={item._id}>
+                    <tr key={item.billId}>
                       <td>{i + 1}</td>
                       <td>{formattedDate}</td>
                       <td>{formattedTime}</td>
                       <td>{item.billId}</td>
-                      <td>{item.Amount.toFixed(2)}</td>
-                      <td>{item.tableNumber}</td>
+                      <td>{item.billAmount.toFixed(2)}</td>
+                      <td>{item.table}</td>
                     </tr>
                   );
                 })}

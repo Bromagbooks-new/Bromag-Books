@@ -4,55 +4,12 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { OnlineOrderData } from "../../../config/routeApi/owner";
+import { OnlineOrderData } from "../../../config/routeApi/owner"; // Ensure this points to the correct API function
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const OnlineOrders = () => {
-  const dummySalesData = [
-    {
-      _id: "1",
-      date: "2024-10-01T10:30:00Z",
-      billId: "BIL1001",
-      Amount: 150.00,
-      paymentMethod: "Credit Card",
-      orderMode: "Online",
-    },
-    {
-      _id: "2",
-      date: "2024-10-02T14:15:00Z",
-      billId: "BIL1002",
-      Amount: 200.50,
-      paymentMethod: "PayPal",
-      orderMode: "Offline",
-    },
-    {
-      _id: "3",
-      date: "2024-10-03T09:45:00Z",
-      billId: "BIL1003",
-      Amount: 300.75,
-      paymentMethod: "Debit Card",
-      orderMode: "Online",
-    },
-    {
-      _id: "4",
-      date: "2024-10-04T12:00:00Z",
-      billId: "BIL1004",
-      Amount: 100.00,
-      paymentMethod: "Bank Transfer",
-      orderMode: "Offline",
-    },
-    {
-      _id: "5",
-      date: "2024-10-05T11:30:00Z",
-      billId: "BIL1005",
-      Amount: 50.25,
-      paymentMethod: "Cash",
-      orderMode: "Online",
-    },
-  ];
-
   const [salesOnlineData, setOnlineSalesData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
@@ -64,16 +21,16 @@ const OnlineOrders = () => {
   useEffect(() => {
     const handleSalesData = async () => {
       try {
-        const response = await OnlineOrderData(); // online aggregator apis ???? in order management onlineorder api??
+        const response = await OnlineOrderData(); // Call your API to fetch online orders
         if (response.data.success) {
-          // console.log("online-away", response.data.OnlineOrderData)
-          // setOnlineSalesData(response.data.OnlineOrderData);
-          setOnlineSalesData(dummySalesData);
+          console.log("Fetched online sales data:", response.data.OnlineOrderData);
+          setOnlineSalesData(response.data.OnlineOrderData); // Set the state with the fetched data
         } else {
-          toastError(response.data.message);
+          toastError(response.data.message); // Show error message if the fetch was unsuccessful
         }
       } catch (error) {
-        console.log(error);
+        console.log("Error fetching online sales data:", error);
+        toastError("Failed to fetch online sales data."); // Notify about the error
       }
     };
     handleSalesData();
@@ -90,7 +47,7 @@ const OnlineOrders = () => {
 
   // Function to filter the data based on Bill ID and date range
   const filteredSalesOnlineData = salesOnlineData.filter((item) => {
-    const dateObject = new Date(item.date);
+    const dateObject = new Date(item.billDate); // Use billDate for filtering
 
     // Filter by search query (Bill ID)
     const matchesSearch = item.billId.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
@@ -184,12 +141,12 @@ const OnlineOrders = () => {
                   <th>Bill ID</th>
                   <th>Bill Amount</th>
                   <th>Mode of Payment</th>
-                  <th>Mode of Order</th>
+                  <th>Aggregator</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredSalesOnlineData.map((item, i) => {
-                  const dateObject = new Date(item.date);
+                  const dateObject = new Date(item.billDate); // Accessing billDate from the response
                   const formattedDate = dateObject.toLocaleDateString();
                   const formattedTime = dateObject.toLocaleTimeString([], {
                     hour: "2-digit",
@@ -197,14 +154,14 @@ const OnlineOrders = () => {
                   });
 
                   return (
-                    <tr key={item._id}>
+                    <tr key={item.billId}> {/* Using billId as the key */}
                       <td>{i + 1}</td>
                       <td>{formattedDate}</td>
                       <td>{formattedTime}</td>
                       <td>{item.billId}</td>
-                      <td>{item.Amount.toFixed(2)}</td>
-                      <td>{item.paymentMethod}</td>
-                      <td>{item.orderMode}</td>
+                      <td>{item.billAmount.toFixed(2)}</td> {/* Accessing billAmount */}
+                      <td>{item.modeOfPayment}</td> {/* Accessing modeOfPayment */}
+                      <td>{item.aggregator}</td> {/* Accessing modeOfOrder */}
                     </tr>
                   );
                 })}

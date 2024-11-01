@@ -4,11 +4,10 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-// import { HourlySalesDataForAdmin } from "../../../config/routeApi/owner";
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { TotalSalesData } from "@/config/routeApi/owner";
+import { getHourlySalesData } from "@/config/routeApi/owner";
 
 const HourlySales = () => {
     const [hourlySalesData, setHourlySalesData] = useState([]);
@@ -19,55 +18,12 @@ const HourlySales = () => {
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
 
     useEffect(() => {
-        const dummyHourlySalesData = [
-            {
-                _id: "1",
-                date: "2024-10-01T10:30:00Z",
-                billId: "BIL1001",
-                Amount: 150.00,
-                paymentMethod: "Credit Card",
-                orderMode: "Online",
-            },
-            {
-                _id: "2",
-                date: "2024-10-02T14:15:00Z",
-                billId: "BIL1002",
-                Amount: 200.50,
-                paymentMethod: "PayPal",
-                orderMode: "Offline",
-            },
-            {
-                _id: "3",
-                date: "2024-10-03T09:45:00Z",
-                billId: "BIL1003",
-                Amount: 300.75,
-                paymentMethod: "Debit Card",
-                orderMode: "Online",
-            },
-            {
-                _id: "4",
-                date: "2024-10-04T12:00:00Z",
-                billId: "BIL1004",
-                Amount: 100.00,
-                paymentMethod: "Bank Transfer",
-                orderMode: "Offline",
-            },
-            {
-                _id: "5",
-                date: "2024-10-05T11:30:00Z",
-                billId: "BIL1005",
-                Amount: 50.25,
-                paymentMethod: "Cash",
-                orderMode: "Online",
-            },
-        ];
-
         const handleHourlySalesData = async () => {
             try {
-                const response = await TotalSalesData();
+                const response = await getHourlySalesData();
                 if (response.data.success) {
-                    // setHourlySalesData(response.data.hourlySalesData);
-                    setHourlySalesData(dummyHourlySalesData);
+                    console.log("hourlySalesData", response.data.HourlySalesData);
+                    setHourlySalesData(response.data.HourlySalesData);
                 } else {
                     toastError(response.data.message);
                 }
@@ -88,7 +44,7 @@ const HourlySales = () => {
 
     // Filter the hourly sales data based on the search query and date range
     const filteredHourlySalesData = hourlySalesData.filter((item) => {
-        const dateObject = new Date(item.date);
+        const dateObject = new Date(item.billDate);
 
         // Filter by search query (Bill ID)
         const matchesSearch = item.billId
@@ -102,6 +58,7 @@ const HourlySales = () => {
 
         return matchesSearch && isWithinDateRange;
     });
+
     // Handler for date range search button
     const handleDateSearch = () => {
         setIsDateSearchClicked(true);
@@ -124,7 +81,7 @@ const HourlySales = () => {
                                 <IoSearchSharp className="search-icon" />
                                 <input
                                     type="text"
-                                    placeholder="Search by Hour"
+                                    placeholder="Search by Bill ID"
                                     className="search-bar"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -188,21 +145,21 @@ const HourlySales = () => {
                             </thead>
                             <tbody>
                                 {filteredHourlySalesData.map((item, i) => {
-                                    const dateObject = new Date(item.date);
+                                    const dateObject = new Date(item.billDate);
                                     const formattedDate = dateObject.toLocaleDateString();
                                     const formattedTime = dateObject.toLocaleTimeString([], {
                                         hour: "2-digit",
                                         minute: "2-digit",
                                     });
                                     return (
-                                        <tr key={item.id}>
+                                        <tr key={item.billId}>
                                             <td>{i + 1}</td>
                                             <td>{formattedDate}</td>
                                             <td>{formattedTime}</td>
                                             <td>{item.billId}</td>
-                                            <td>{item.Amount.toFixed(2)}</td>
-                                            <td>{item.paymentMethod}</td>
-                                            <td>{item.orderMode}</td>
+                                            <td>{item.billAmount.toFixed(2)}</td>
+                                            <td>{item.modeOfPayment}</td>
+                                            <td>{item.mode}</td>
                                         </tr>
                                     );
                                 })}

@@ -45,15 +45,15 @@ const SalesManagement = () => {
   const handleSalesDashboard = async (dates) => {
     try {
       const response = await SalesDashboard(dates);
-
+      console.log("aaa", response.data)
       if (response.data.success) {
-        setTotalSalesPerDay(response.data.TotalSalesPerDay);
-        setHourlySalesPerDay(response.data.totalSalesAmountForLastHour);
-        setHighestBillingAmountPerHr(response.data.HighestBillingAmountForCurrentHour);
+        setTotalSalesPerDay(response.data.TotalSalesPerDay.toFixed(2));
+        setHourlySalesPerDay(response.data.totalSalesAmountForLastHour.toFixed(2));
+        setHighestBillingAmountPerHr(response.data.HighestBillingAmountForCurrentHour.toFixed(2));
         setAverageBillingAmountPerDay(response.data.averageBillingAmountPerDay);
-        setOnlineAggregatesPerDay(response.data.onlineAggregatorSalesPerDay);
-        setTakeAwayPerDay(response.data.takeAwaySalesPerDay);
-        setDineInPerDay(response.data.totalDineInPerDay);
+        setOnlineAggregatesPerDay(response.data.onlineAggregatorSalesPerDay.toFixed(2));
+        setTakeAwayPerDay(response.data.takeAwaySalesPerDay.toFixed(2));
+        setDineInPerDay(response.data.totalDineInPerDay.toFixed(2));
 
         // Set chart data from API response
         const salesLabels = response.data.highestDailyChartData.map(item => new Date(item.date).getDate());

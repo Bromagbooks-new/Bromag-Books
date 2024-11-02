@@ -572,7 +572,7 @@ const GetPassbookData = async (data) => {
 }
 const GetCardAnalytics = async (data) => {
   try {
-    console.log("HERERE");
+    console.log("card owner");
     const response = await restaurantOwnerAxiosInstance.post("getCardAnalytics", data);
     return response;
   } catch (error) {
@@ -580,9 +580,9 @@ const GetCardAnalytics = async (data) => {
   }
 }
 const GetDashboardAnalytics = async (data) => {
-  console.log('data2:', data)
+  // console.log('data2:', data)
   try {
-    console.log("HERERE");
+    console.log("dashboard owner");
     const response = await restaurantOwnerAxiosInstance.post("getDashboardAnalytics", data);
     return response;
   } catch (error) {

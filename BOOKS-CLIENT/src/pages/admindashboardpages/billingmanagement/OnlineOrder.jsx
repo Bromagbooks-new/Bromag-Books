@@ -132,7 +132,7 @@ export default OnlineOrder;
 export const getTotalAndHoldOrdersCountForOnline = async () => {
   try {
     const { data } = await GetTotalAndHoldOrdersCountEitherForTakeAwayOrForOnline("online");
-    // console.log('data:', data)
+    console.log('data:', data)
     return { totalOrdersCount: data?.totalOrdersCount || 0, totalHoldOrdersCount: data?.totalholdOrdersCount }
   } catch (error) {
     console.log('table loader error:', error)

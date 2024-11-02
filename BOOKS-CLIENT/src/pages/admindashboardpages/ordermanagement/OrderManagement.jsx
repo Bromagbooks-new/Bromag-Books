@@ -13,16 +13,10 @@ import { GetCardAnalytics } from "@/config/routeApi/owner";
 
 const OrderManagement = () => {
   const location = useLocation(); // Get the current route location
+  const breakdown = useLoaderData();
   console.log("object", location)
   // Check if the current path is the root of OrderManagement
   const isRoot = location.pathname === "/dashboard/order-management";
-
-  const breakdown = {
-    dailyBreakdown: { online: 2, takeaway: 4, dinein: 1, total: 7 },
-    monthlyBreakdown: { online: 40, takeaway: 50, dinein: 10, total: 100 },
-    weeklyBreakdown: { online: 10, takeaway: 15, dinein: 2, total: 27 },
-  };
-
   return (
     <div className="w-full h-full border py-4 flex flex-col gap-4">
       {isRoot && (
@@ -58,10 +52,10 @@ const OrderManagement = () => {
 
 export default OrderManagement;
 
-export const billingManagementLoader = async () => {
+export const orderManagementLoader = async () => {
   try {
     const response = await GetCardAnalytics({ date: new Date() });
-    console.log('response2:', response)
+    console.log('orderManagement loader output:', response)
 
     if (response.status === 200) {
       console.log(response.data);

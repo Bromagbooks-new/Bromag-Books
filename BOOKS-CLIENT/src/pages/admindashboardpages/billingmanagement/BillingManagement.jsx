@@ -69,7 +69,7 @@ export default BillingManagement;
 export const billingManagementLoader = async () => {
   try {
     const response = await GetCardAnalytics({ date: new Date() });
-    // console.log('response2:', response)
+    console.log('response2:', response)
 
     if (response.status === 200) {
       console.log(response.data);

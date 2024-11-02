@@ -23,9 +23,9 @@ const AnalyticsCard = ({
 }) => {
   const [selectedFilter, setSelectedFilter] = useState("today");
 
-  // console.log('breakdown:', breakdown)
+  console.log('breakdown:', breakdown)
   let selectedBreakdown = breakdown.dailyBreakdown;
-  // console.log('selectedBreakdown:', selectedBreakdown)
+  console.log('selectedBreakdown:', selectedBreakdown)
 
   if (selectedFilter === 'today') {
     selectedBreakdown = breakdown.dailyBreakdown;
@@ -71,7 +71,7 @@ const AnalyticsCard = ({
                 "text-black": isActive,
               })}
             >
-              {/* {selectedBreakdown[id]} */} ₹222
+              {selectedBreakdown[id]}
             </p>
             <img src={isActive ? activatedIcon : icon} className="w-14 h-14" />
           </div>

@@ -27,27 +27,25 @@ const AnalyticsCard = ({
   let selectedBreakdown = breakdown.dailyBreakdown;
   // console.log('selectedBreakdown:', selectedBreakdown)
 
-  if(selectedFilter === 'today') {
+  if (selectedFilter === 'today') {
     selectedBreakdown = breakdown.dailyBreakdown;
   }
-  if(selectedFilter === 'monthly') {
+  if (selectedFilter === 'monthly') {
     selectedBreakdown = breakdown.monthlyBreakdown;
   }
-  if(selectedFilter === 'weekly') {
+  if (selectedFilter === 'weekly') {
     selectedBreakdown = breakdown.weeklyBreakdown;
   }
 
-  // console.log(id);
-  // console.log(selectedBreakdown);
+  console.log(id);
+  console.log("breakdown", selectedBreakdown);
 
   return (
     <NavLink
       to={url}
       className={({ isActive }) =>
         cn(
-          `rounded-2xl w-[16rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${
-            isActive && activatedClass
-          }`
+          `rounded-2xl w-[16rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${isActive && activatedClass}`
         )
       }
     >

@@ -179,6 +179,7 @@ import StockDetails from "./pages/admindashboardpages/stockmanagement/StockDetai
 import EditStock from "./pages/admindashboardpages/stockmanagement/EditStock";
 import TotalVendor from "./pages/admindashboardpages/stockmanagement/TotalVendor";
 import WhoWeAre from "./pages/WhoWeAre";
+import { orderManagementLoader } from "./pages/admindashboardpages/ordermanagement/OrderManagement";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermAndCondition from "./pages/TermAndCondition";
 // import src from "react-select/dist/declarations/src";
@@ -468,7 +469,7 @@ const router = createBrowserRouter([
           {
             path: "order-management",
             element: <OrderManagement />,
-            loader: billingManagementLoader,
+            loader: orderManagementLoader,
             children: [
               {
                 index: true,

@@ -80,10 +80,10 @@ export function Chart({ data }) {
 const NewOrderCharts = () => {
 
     const stats = useLoaderData();
-    // console.log(stats);
+    console.log(stats);
 
     const [filter, setFilter] = useState("monthly");
-    console.log('filter:', filter)
+    // console.log('filter:', filter)
 
     let filtredStats = stats.monthlyStats;
 
@@ -165,32 +165,8 @@ export const newOrderChartsLoader = async () => {
         console.log('response1:', response)
 
         if (response.status === 200) {
-            console.log(response.data);
+            // console.log(response.data);
             return response.data.stats;
-        }
-
-        return {
-            dailyStats: {
-                billsWithRepeatedItems: 0,
-                billsWithSameItems: 0,
-                orderTypeBreakdown: { online: 2, takeaway: 4, dinein: 1, total: 7 },
-                repeatRate: "2.00%",
-                totalBills: 0
-            },
-            monthlyStats: {
-                billsWithRepeatedItems: 0,
-                billsWithSameItems: 0,
-                orderTypeBreakdown: { online: 40, takeaway: 50, dinein: 10, total: 100 },
-                repeatRate: "25.00%",
-                totalBills: 0
-            },
-            weeklyStats: {
-                billsWithRepeatedItems: 0,
-                billsWithSameItems: 0,
-                orderTypeBreakdown: { online: 10, takeaway: 15, dinein: 2, total: 27 },
-                repeatRate: "40.00%",
-                totalBills: 0
-            }
         }
     } catch (error) {
         console.error(error);

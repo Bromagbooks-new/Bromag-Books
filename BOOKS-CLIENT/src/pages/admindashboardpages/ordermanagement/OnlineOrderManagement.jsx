@@ -4,7 +4,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { OnlineOrderData, OrderDataAtAdmin } from "../../../config/routeApi/owner"; // API for online orders
+import { OnlineOrderDataOrderManagement } from "../../../config/routeApi/owner"; // Adjust API import
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,63 +13,30 @@ const OnlineOrderManagement = () => {
     const [onlineOrdersData, setOnlineOrdersData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-    const [startDate, setStartDate] = useState(null); // Add start date filter
-    const [endDate, setEndDate] = useState(null); // Add end date filter
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10; // Define the number of items per page
 
     useEffect(() => {
-
-        const dummyOnlineOrdersData = [
-            {
-                _id: "1",
-                orderDetail: "hyderabadi biryani",
-                date: "2024-10-01T10:30:00Z",
-                orderId: "ORD1001",
-                billId: "BIL1001",
-                Amount: 150.00,
-                paymentMethod: "Credit Card",
-                orderMode: "Online",
-            },
-            {
-                _id: "2",
-                orderDetail: "delhi biryani",
-                date: "2024-10-02T11:15:00Z",
-                orderId: "ORD1002",
-                billId: "BIL1002",
-                Amount: 200.50,
-                paymentMethod: "Cash",
-                orderMode: "Online",
-            },
-            {
-                _id: "3",
-                orderDetail: "hyderabadi chicken",
-                date: "2024-10-02T11:15:00Z",
-                orderId: "ORD1003",
-                billId: "BIL1004",
-                Amount: 200.50,
-                paymentMethod: "Cash",
-                orderMode: "Online",
-            },
-            {
-                _id: "4",
-                orderDetail: "kanpur biryani",
-                date: "2024-10-02T11:15:00Z",
-                orderId: "ORD1004",
-                billId: "BIL1004",
-                Amount: 200.50,
-                paymentMethod: "Cash",
-                orderMode: "Online",
-            },
-            // Add more dummy data if needed
-        ];
-
         const handleOnlineOrdersData = async () => {
             try {
-                const response = await OnlineOrderData();
+                const response = await OnlineOrderDataOrderManagement();
                 if (response.data.success) {
-                    console.log("api result", response.data)
-                    // setOnlineOrdersData(response.data?.onlineOrdersData);
-                    setOnlineOrdersData(dummyOnlineOrdersData);
+                    const flattenedData = response.data.OnlineOrderData.flatMap((bill) =>
+                        bill.items.map((item) => ({
+                            billDate: bill.billDate,
+                            time: bill.time,
+                            billId: bill.billId,
+                            billAmount: bill.billAmount,
+                            modeOfPayment: bill.modeOfPayment,
+                            aggregator: bill.aggregator,
+                            itemName: item.itemName,
+                            itemId: item.itemId,
+                        }))
+                    );
+                    setOnlineOrdersData(flattenedData);
                 } else {
                     toastError(response.data.message);
                 }
@@ -84,30 +51,38 @@ const OnlineOrderManagement = () => {
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             setDebouncedSearchQuery(searchQuery);
-        }, 300); // Adjust the delay as needed (e.g., 300 milliseconds)
+        }, 300);
         return () => clearTimeout(delayDebounceFn);
     }, [searchQuery]);
 
-    // Filter the onlineOrdersData based on the search query and date range
-    const filteredOnlineOrdersData = onlineOrdersData?.filter((item) => {
-        const dateObject = new Date(item.date);
-
-        // Filter by search query (Order ID)
-        const matchesSearch = item.orderId
-            .toLowerCase()
-            .includes(debouncedSearchQuery.toLowerCase());
-
-        // Filter by date range only if the date search button is clicked
+    // Filter data based on search query and date range
+    const filteredOnlineOrdersData = onlineOrdersData.filter((item) => {
+        const dateObject = new Date(item.billDate);
+        const matchesSearch = item.billId.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+            item.itemId.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
         const isWithinDateRange =
             (!isDateSearchClicked ||
                 ((!startDate || dateObject >= startDate) && (!endDate || dateObject <= endDate)));
-
         return matchesSearch && isWithinDateRange;
     });
+
+    // Calculate paginated data
+    const totalPages = Math.ceil(filteredOnlineOrdersData.length / itemsPerPage);
+    const paginatedData = filteredOnlineOrdersData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
 
     // Handler for date range search button
     const handleDateSearch = () => {
         setIsDateSearchClicked(true);
+        setCurrentPage(1); // Reset to the first page when a new search is made
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
     };
 
     return (
@@ -127,7 +102,7 @@ const OnlineOrderManagement = () => {
                                 <IoSearchSharp className="search-icon" />
                                 <input
                                     type="text"
-                                    placeholder="Search by Order ID"
+                                    placeholder="Search by Order ID or Bill ID"
                                     className="search-bar"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -167,12 +142,12 @@ const OnlineOrderManagement = () => {
 
                     <div className="pagination-div">
                         <p>
-                            Showing <strong>{filteredOnlineOrdersData.length}</strong> from <strong>{onlineOrdersData.length}</strong> results
+                            Showing <strong>{paginatedData.length}</strong> from <strong>{filteredOnlineOrdersData.length}</strong> results
                         </p>
                         <div className="pagination-controls">
-                            <button>&lt;</button>
-                            <span>1 - 10</span>
-                            <button>&gt;</button>
+                            <button onClick={() => handlePageChange(currentPage - 1)}>&lt;</button>
+                            <span>{currentPage} / {totalPages}</span>
+                            <button onClick={() => handlePageChange(currentPage + 1)}>&gt;</button>
                         </div>
                     </div>
 
@@ -188,12 +163,12 @@ const OnlineOrderManagement = () => {
                                     <th>Bill ID</th>
                                     <th>Bill Amount</th>
                                     <th>Mode of Payment</th>
-                                    <th>Mode of Order</th>
+                                    <th>Aggregator</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredOnlineOrdersData.map((item, i) => {
-                                    const dateObject = new Date(item.date);
+                                {paginatedData.map((item, i) => {
+                                    const dateObject = new Date(item.billDate);
                                     const formattedDate = dateObject.toLocaleDateString();
                                     const formattedTime = dateObject.toLocaleTimeString([], {
                                         hour: "2-digit",
@@ -201,16 +176,16 @@ const OnlineOrderManagement = () => {
                                     });
 
                                     return (
-                                        <tr key={item._id}>
-                                            <td>{i + 1}</td>
-                                            <td>{item.orderDetail}</td>
-                                            <td>{item.orderId}</td>
+                                        <tr key={`${item.billId}-${item.itemId}`}>
+                                            <td>{(currentPage - 1) * itemsPerPage + i + 1}</td>
+                                            <td>{item.itemName}</td>
+                                            <td>{item.itemId}</td>
                                             <td>{formattedDate}</td>
                                             <td>{formattedTime}</td>
                                             <td>{item.billId}</td>
-                                            <td>{item.Amount.toFixed(2)}</td>
-                                            <td>{item.paymentMethod}</td>
-                                            <td>{item.orderMode}</td>
+                                            <td>{item.billAmount}</td>
+                                            <td>{item.modeOfPayment}</td>
+                                            <td>{item.aggregator}</td>
                                         </tr>
                                     );
                                 })}

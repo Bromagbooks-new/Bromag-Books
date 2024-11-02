@@ -4,61 +4,41 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { DineInDataForAdmin } from "../../../config/routeApi/owner";
+import { getTotalDineInOrderData } from "../../../config/routeApi/owner";
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { c } from "../../../../dist/assets/index-952caea0";
 
 const DineInOrderManagement = () => {
     const [dineInData, setDineInData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-    const [startDate, setStartDate] = useState(null); // Start date filter
-    const [endDate, setEndDate] = useState(null); // End date filter
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     useEffect(() => {
-        const dummyDineInData = [
-            {
-                _id: "1",
-                orderDetail: "Paneer Tikka",
-                date: "2024-10-01T12:00:00Z",
-                orderId: "DIN1001",
-                billId: "BIL2001",
-                Amount: 250.00,
-                paymentMethod: "Debit Card",
-                orderMode: "Dine In",
-            },
-            {
-                _id: "2",
-                orderDetail: "Butter Chicken",
-                date: "2024-10-05T13:30:00Z",
-                orderId: "DIN1002",
-                billId: "BIL2002",
-                Amount: 300.00,
-                paymentMethod: "Cash",
-                orderMode: "Dine In",
-            },
-            {
-                _id: "3",
-                orderDetail: "Biryani",
-                date: "2024-10-07T14:15:00Z",
-                orderId: "DIN1003",
-                billId: "BIL2003",
-                Amount: 400.00,
-                paymentMethod: "Credit Card",
-                orderMode: "Dine In",
-            },
-
-        ];
-
         const handleDineInData = async () => {
             try {
-                const response = await DineInDataForAdmin();
+                const response = await getTotalDineInOrderData();
+                console.log("response123", response.data.DineInOrderData)
                 if (response.data.success) {
-                    console.log("Dine In Data: ", response.data);
-                    //setDineInData(response.data.dineInData);
-                    setDineInData(dummyDineInData);
+                    const flattenedData = response.data.DineInOrderData.flatMap((bill) =>
+                        bill.items.map((item) => ({
+                            billDate: bill.billDate,
+                            time: bill.time,
+                            billId: bill.billId,
+                            billAmount: bill.billAmount,
+                            modeOfPayment: bill.modeOfPayment,
+                            tableNo: bill.tableNo,
+                            itemName: item.itemName,
+                            itemId: item.itemId,
+                        }))
+                    );
+                    setDineInData(flattenedData);
                 } else {
                     toastError(response.data.message);
                 }
@@ -76,23 +56,31 @@ const DineInOrderManagement = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [searchQuery]);
 
-    // Filter the dineInData based on the search query and date range
     const filteredDineInData = dineInData.filter((item) => {
-        const dateObject = new Date(item.date);
-
-        // Filter by search query (Order ID)
-        const matchesSearch = item.orderId
-            .toLowerCase()
-            .includes(debouncedSearchQuery.toLowerCase());
-
+        const dateObject = new Date(item.billDate);
+        const matchesSearch = item.billId.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+            item.itemId.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
         const isWithinDateRange =
             (!isDateSearchClicked ||
                 ((!startDate || dateObject >= startDate) && (!endDate || dateObject <= endDate)));
-
         return matchesSearch && isWithinDateRange;
     });
+
+    const totalPages = Math.ceil(filteredDineInData.length / itemsPerPage);
+    const paginatedData = filteredDineInData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     const handleDateSearch = () => {
         setIsDateSearchClicked(true);
+        setCurrentPage(1); // Reset to the first page when a new search is made
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
     };
 
     return (
@@ -112,7 +100,7 @@ const DineInOrderManagement = () => {
                                 <IoSearchSharp className="search-icon" />
                                 <input
                                     type="text"
-                                    placeholder="Search by Order ID"
+                                    placeholder="Search by Order ID or Bill ID"
                                     className="search-bar"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -152,12 +140,12 @@ const DineInOrderManagement = () => {
 
                     <div className="pagination-div">
                         <p>
-                            Showing <strong>{filteredDineInData.length}</strong> from <strong>{dineInData.length}</strong> results
+                            Showing <strong>{paginatedData.length}</strong> from <strong>{filteredDineInData.length}</strong> results
                         </p>
                         <div className="pagination-controls">
-                            <button>&lt;</button>
-                            <span>1 - 10</span>
-                            <button>&gt;</button>
+                            <button onClick={() => handlePageChange(currentPage - 1)}>&lt;</button>
+                            <span>{currentPage} / {totalPages}</span>
+                            <button onClick={() => handlePageChange(currentPage + 1)}>&gt;</button>
                         </div>
                     </div>
 
@@ -173,12 +161,12 @@ const DineInOrderManagement = () => {
                                     <th>Bill ID</th>
                                     <th>Bill Amount</th>
                                     <th>Mode of Payment</th>
-                                    <th>Mode of Order</th>
+                                    <th>Table No</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredDineInData.map((item, i) => {
-                                    const dateObject = new Date(item.date);
+                                {paginatedData.map((item, i) => {
+                                    const dateObject = new Date(item.billDate);
                                     const formattedDate = dateObject.toLocaleDateString();
                                     const formattedTime = dateObject.toLocaleTimeString([], {
                                         hour: "2-digit",
@@ -186,16 +174,16 @@ const DineInOrderManagement = () => {
                                     });
 
                                     return (
-                                        <tr key={item._id}>
-                                            <td>{i + 1}</td>
-                                            <td>{item.orderDetail}</td>
-                                            <td>{item.orderId}</td>
+                                        <tr key={`${item.billId}-${item.itemId}`}>
+                                            <td>{(currentPage - 1) * itemsPerPage + i + 1}</td>
+                                            <td>{item.itemName}</td>
+                                            <td>{item.itemId}</td>
                                             <td>{formattedDate}</td>
                                             <td>{formattedTime}</td>
                                             <td>{item.billId}</td>
-                                            <td>{item.Amount.toFixed(2)}</td>
-                                            <td>{item.paymentMethod}</td>
-                                            <td>{item.orderMode}</td>
+                                            <td>{item.billAmount}</td>
+                                            <td>{item.modeOfPayment}</td>
+                                            <td>{item.tableNo}</td>
                                         </tr>
                                     );
                                 })}

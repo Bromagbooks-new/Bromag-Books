@@ -10,10 +10,13 @@ const posController = require("../controller/pos_controller");
 const capController = require("../controller/cap_controller");
 const salesController = require("../controller/sales_controller");
 const tableController = require("../controller/table_controller");
+const orderController = require("../controller/order.management.controller")
 //middleware
 const interceptor = require("../middleware/interceptor");
 
 const upload = require("../utils/uploaders");
+const bill_model = require("../model/bill_model");
+const paginationMiddleware = require("../middleware/pagination");
 
 // Rate limiting middleware
 const limiter = rateLimit({
@@ -214,6 +217,8 @@ userRouter.post(
   interceptor.adminAuth,
   billingController.getPassbookData
 );
+
+//order management router start
 userRouter.post(
   "/getCardAnalytics",
   interceptor.adminAuth,
@@ -225,6 +230,22 @@ userRouter.post(
   billingController.getDashboardAnalytics
 );
 
+userRouter.get(
+  "/getOrderManagementDashboard",
+  interceptor.adminAuth,
+  orderController.orderManagementDashboard
+);
+userRouter.get(
+  "/getOnlineOrderData",
+  interceptor.adminAuth,
+  orderController.getTotalOnlineOrderData
+);
+
+userRouter.get(
+  "/TotalDineInOrderData",
+  interceptor.adminAuth,
+  orderController.getTotalDineInOrderData
+);
 userRouter.post(
   "/generateKOT",
   interceptor.adminAuth,

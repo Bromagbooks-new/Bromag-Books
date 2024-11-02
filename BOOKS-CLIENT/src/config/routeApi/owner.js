@@ -590,6 +590,25 @@ const GetDashboardAnalytics = async (data) => {
   }
 }
 
+const OnlineOrderDataOrderManagement = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getOnlineOrderData");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getTotalDineInOrderData = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("TotalDineInOrderData");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
 const GenerateKOT = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
@@ -1418,6 +1437,8 @@ export {
   GetPassbookData,
   GetCardAnalytics,
   GetDashboardAnalytics,
+  OnlineOrderDataOrderManagement,
+  getTotalDineInOrderData,
   AddAggregator,
   GetAllAggregators,
   AddCuisine,

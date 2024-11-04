@@ -23,7 +23,7 @@ const Token = require('../model/token_model');
 const path = require('path');
 const { DemoRequestModel } = require("../model/demo_request");
 const { UserQuery } = require('../model/userQuery');
-
+const crypto = require('crypto');
 
 exports.getAllRegisteredPos = async (req, res) => {
   try {
@@ -435,6 +435,104 @@ exports.verifyToken = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
+
+//send otp  for owner and employee verification for apk
+
+exports.loginForMobileUsingOtp = async (req, res) => {
+  try {
+    console.log("verify login called");
+    const Employee = req.body.data;
+    console.log("Employee data", Employee);
+
+    const employee = await Restaurant.findOne({
+      username: Employee.username,
+    });
+    console.log("Employee", employee);
+    if (employee && Employee.password === employee.password) {
+      const otp = crypto.randomInt(100000, 999999);
+      const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
+
+      const otpToken = new Token({
+        token: otp,
+        employeeId: employee._id,
+        expiresAt,
+      });
+
+      await otpToken.save();
+
+      const mailFormat = {
+        to: employee.email,
+        subject: "Bromag Books Private Limited : Login OTP",
+        html: `
+          <div style="font-family: Arial, sans-serif; text-align: center; padding: 20px; background-color: #f9f9f9;">
+            <div style="max-width: 600px; margin: auto; background-color: #ffffff; padding: 20px; border-radius: 10px;">
+              <img src="cid:logo" alt="Bromag Books" style="width: 120px; margin-bottom: 20px;">
+              <h2>Your OTP for BROMAG BOOKS Login</h2>
+              <p>Use the OTP below to verify & login:</p>
+              <h1 style="color: #007bff;">${otp}</h1>
+              <p>This OTP is valid for 10 minutes. Do not share it with anyone.</p>
+            </div>
+            <div style="margin-top: 20px; font-size: 12px;">
+              <p>&copy; 2024 Bromag Books. All rights reserved.</p>
+              <p><a href="https://www.bromagbooks.com" style="text-decoration: none; color: #007bff;">www.bromagbooks.com</a></p>
+            </div>
+          </div>
+        `,
+        attachments: [
+          {
+            filename: 'logo.svg',
+            path: '/public',
+            cid: 'logo'
+          }
+        ]
+      };
+
+      // Send OTP email
+      sendEmail(mailFormat.to, mailFormat.subject, mailFormat.html);
+      res.json({
+        success: true,
+        employeeId: employee._id,
+        message: "OTP sent to your email. Please check your inbox.",
+      });
+    } else {
+      res.json({ success: false, message: "Incorrect username or password!" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, serverMessage: "Internal Server Error" });
+  }
+};
+
+exports.verifyOtpForMobile = async (req, res) => {
+  try {
+    const { employeeId, otp } = req.body;
+
+    const otpToken = await Token.findOne({
+      employeeId,
+      token: otp,
+      expiresAt: { $gt: new Date() }
+    });
+
+    if (otpToken) {
+      const token = jwtToken.sign({ id: employeeId }, process.env.SECRET_KEY, {
+        expiresIn: "1hr",
+      });
+
+      // Clean up OTP from database after successful verification
+      // await otpToken.deleteOne();
+
+      res.json({
+        success: true,
+        token,
+        message: "OTP verified successfully!",
+      });
+    } else {
+      res.json({ success: false, message: "Invalid or expired OTP!" });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, serverMessage: "Internal Server Error" });
+  }
+};
+
 
 
 exports.storeDemoRequest = async (req, res) => {

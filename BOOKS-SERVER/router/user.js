@@ -33,6 +33,9 @@ userRouter.post("/verifyToken", controller.verifyToken);
 userRouter.post("/demo-request", controller.storeDemoRequest);
 userRouter.post("/user-query", controller.storeUserRequest);
 
+//router for apk login
+userRouter.post("/send-otp", limiter, controller.loginForMobileUsingOtp);
+userRouter.post("/verify-otp", controller.verifyOtpForMobile);
 
 /* restaurant owner */
 userRouter.post("/adminLoginVerification", controller.adminLoginVerification);

@@ -11,6 +11,7 @@ const capController = require("../controller/cap_controller");
 const salesController = require("../controller/sales_controller");
 const tableController = require("../controller/table_controller");
 const orderController = require("../controller/order.management.controller")
+const dominantController = require("../controller/dominant_controller")
 //middleware
 const interceptor = require("../middleware/interceptor");
 
@@ -246,6 +247,21 @@ userRouter.get(
   interceptor.adminAuth,
   orderController.getTotalDineInOrderData
 );
+
+userRouter.get(
+  "/TotalTakeAwayOrderData",
+  interceptor.adminAuth,
+  orderController.getTotalTakeawayOrderData
+);
+
+// dominant management router start
+userRouter.get(
+  "/dominantManagementHomePage",
+  interceptor.adminAuth,
+  dominantController.dominantManagementHomePage
+);
+
+
 userRouter.post(
   "/generateKOT",
   interceptor.adminAuth,

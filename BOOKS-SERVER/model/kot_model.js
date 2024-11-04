@@ -40,6 +40,7 @@ const kotSchema = mongoose.Schema({
       cuisine: String,
       discountPrice: Number,
       itemId: String,
+      itemType: String,
       name: String,
       portion: String,
       quantity: Number,

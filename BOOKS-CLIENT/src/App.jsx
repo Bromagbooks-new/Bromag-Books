@@ -180,7 +180,7 @@ import EditStock from "./pages/admindashboardpages/stockmanagement/EditStock";
 import TotalVendor from "./pages/admindashboardpages/stockmanagement/TotalVendor";
 import WhoWeAre from "./pages/WhoWeAre";
 import { orderManagementLoader } from "./pages/admindashboardpages/ordermanagement/OrderManagement";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
+// import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermAndCondition from "./pages/TermAndCondition";
 // import src from "react-select/dist/declarations/src";
 
@@ -244,10 +244,10 @@ const router = createBrowserRouter([
         path: "who-we-are",
         element: <WhoWeAre />
       },
-      {
-        path: "privacy-policy",
-        element: <PrivacyPolicy />
-      },
+      // {
+      //   path: "privacy-policy",
+      //   element: <PrivacyPolicy />
+      // },
       {
         path: "term-and-condition",
         element: <TermAndCondition />
@@ -492,7 +492,7 @@ const router = createBrowserRouter([
           {
             path: "dominant-management",
             element: <DominantManagement />,
-            loader: billingManagementLoader,
+            // loader: dominantManagementLoader,
             children: [
               // {
               //   index: true, // Default child route

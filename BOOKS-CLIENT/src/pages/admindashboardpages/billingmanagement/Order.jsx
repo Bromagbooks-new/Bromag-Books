@@ -11,7 +11,7 @@ const Order = () => {
   const [selectedCusine, setSelectedCusine] = useState("All");
   const [billItems, setBillItems] = useState([]);
 
-  console.log('billItems:', billItems)
+  console.log('billItems123:', billItems)
 
   const addItem = (itemId) => {
     console.log('itemId:', itemId)
@@ -21,7 +21,7 @@ const Order = () => {
       const newItem = filteredMenuItems.filter(
         (item) => item._id === itemId
       )[0];
-      console.log('newItem:', newItem)
+      console.log('newItem22:', newItem)
 
       if (newItem.quantity < 1) return;
 
@@ -32,6 +32,7 @@ const Order = () => {
       foundItem = {
         name: newItem?.name,
         quantity: 1,
+        itemType: newItem?.itemType,
         actualPrice: currentAggregatorData.portions[0].actualPrice,
         discountPrice: currentAggregatorData.portions[0].discountPrice,
         _id: newItem?._id,
@@ -42,7 +43,7 @@ const Order = () => {
       const newItem = filteredMenuItems.filter(
         (item) => item._id === itemId
       )[0];
-      // console.log(newItem);
+      console.log("item1234", newItem);
       foundItem = foundItems[0];
       if (foundItem.quantity >= newItem.quantity) return;
       foundItem.quantity += 1;
@@ -88,7 +89,7 @@ const Order = () => {
       // console.log(categoriesData);
       setCategories(categoriesData.data.cuisines);
       const menuData = await GetAllMenuItems();
-      // console.log('menuData getMenuData:', menuData)
+      console.log('menuData:', menuData)
       // console.log(menuData);
       setMenuItems(menuData.data.data);
       setFilteredMenuItems(menuData.data.data);
@@ -97,7 +98,7 @@ const Order = () => {
   }, []);
 
   const [filteredMenuItems, setFilteredMenuItems] = useState([]);
-  console.log('filteredMenuItems:', filteredMenuItems)
+  console.log('filteredMenuItems123:', filteredMenuItems)
 
   useEffect(() => {
     if (selectedCusine === "All") {

@@ -29,21 +29,24 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   const handleKOT = async () => {
     try {
       // console.log("HEree");
-      // console.log(billItems);
+      console.log("billitem in bills", billItems);
       const modifiedBillItems = billItems.map((item) => ({
         ...item,
         itemId: item._id,
+        itemType: item.itemType
       }));
+      console.log("modified bill item", modifiedBillItems)
       const response = await UpdateBill({
         billId: bill._id,
         items: modifiedBillItems,
         instructions,
       });
+      console.log("generateKot updatebill", response.data)
       if (response.status === 201) {
         const bill = response.data.bill;
         const kotResponse = await GenerateKOT({ billData: bill });
         if (kotResponse.status === 201) {
-          // console.log("generate kot", kotResponse.data);
+          console.log("generate kot", kotResponse.data);
           toastSuccess(
             `Sent to Kitchen Successfully!! ${kotResponse.data.KOT.kotNo}`
           );
@@ -91,6 +94,7 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
         status: "COMPLETED",
         paymentMode,
       });
+      console.log("updateBill->print", response)
 
       if (response.status === 201) {
         // console.log(response.data.bill);

@@ -12,18 +12,18 @@ exports.generateKOT = async (req, res) => {
 
     const { billData } = req.body;
     const { items, restrauntName, billNo } = billData;
-
+    console.log("kotNo2", isRestaurant, items);
     const kotNo = await kot_model.generateKOTNo(isRestaurant, restrauntName, billNo);
     // console.log("object", kotNo);
 
     const newKOT = new kot_model({ ...billData, kotNo, billId: billData._id });
-    // console.log("newkot", newKOT);
+    console.log("newkot", newKOT);
     await newKOT.save();
 
     const promises = items.map(async (item) => {
       return await menu_item_model.findOneAndUpdate(
         { _id: item._id },
-        { $inc: { quantity: -item.quantity } }
+        { $inc: { quantity: -item.quantity }, itemType: item?.itemType }
       );
     });
 

@@ -608,7 +608,23 @@ const getTotalDineInOrderData = async () => {
   }
 };
 
+const getTotalTakeAwayOrderData = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("TotalTakeAwayOrderData");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
+const GetDominantCardAnalytics = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("dominantManagementHomePage");
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
 const GenerateKOT = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
@@ -1439,6 +1455,7 @@ export {
   GetDashboardAnalytics,
   OnlineOrderDataOrderManagement,
   getTotalDineInOrderData,
+  getTotalTakeAwayOrderData,
   AddAggregator,
   GetAllAggregators,
   AddCuisine,
@@ -1446,5 +1463,6 @@ export {
   AddMenuItem,
   DeleteMenuItem,
   GetAllMenuItems,
-  UpdateMenuItemAvailableStatus
+  UpdateMenuItemAvailableStatus,
+  GetDominantCardAnalytics
 };

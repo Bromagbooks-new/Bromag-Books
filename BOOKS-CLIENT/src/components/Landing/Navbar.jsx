@@ -127,7 +127,7 @@ const Navbar = () => {
               className={({ isActive }) =>
                 isActive && "underline text-blue-600"
               }
-              to="/coming-soon"
+              to="/who-we-are"
             >
               Who We Are
             </NavLink>

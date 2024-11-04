@@ -9,17 +9,34 @@ const AnalyticsCardDominant = ({
     activatedIcon,
     activatedClass,
     url,
-    breakdown
+    breakdown // Breakdown should now have veg, nonVeg, and total
 }) => {
-    // const selectedBreakdown = breakdown?.dailyBreakdown; // Default to daily breakdown
+    // Determine the values based on the id of the card
+    const vegBreakdown = breakdown.veg; // Monthly veg orders
+    const nonVegBreakdown = breakdown.nonVeg; // Monthly non-veg orders
+    const totalBreakdown = breakdown.total; // Monthly total orders
+
+    // Determine if this card is related to veg, non-veg, or repeat orders
+    const isVegCard = id.includes('total-order-veg');
+    const isNonVegCard = id.includes('total-order-nonveg');
+    const isRepeatOrderCard = id.includes('repear-order');
+
+    // Select the breakdown value to display based on the card type
+    let selectedBreakdown;
+    if (isVegCard) {
+        selectedBreakdown = vegBreakdown;
+    } else if (isNonVegCard) {
+        selectedBreakdown = nonVegBreakdown;
+    } else if (isRepeatOrderCard) {
+        selectedBreakdown = totalBreakdown; // Assuming repeat orders are total orders
+    }
 
     return (
         <NavLink
             to={url}
             className={({ isActive }) =>
                 cn(
-                    `rounded-2xl w-[20rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${isActive && activatedClass
-                    }`
+                    `rounded-2xl w-[20rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${isActive && activatedClass}`
                 )
             }
         >
@@ -34,8 +51,7 @@ const AnalyticsCardDominant = ({
                                 "text-black": isActive,
                             })}
                         >
-                            {/* {selectedBreakdown[id]} */}
-                            23
+                            {selectedBreakdown}
                         </p>
                         <img src={isActive ? activatedIcon : icon} className="w-14 h-14" />
                     </div>

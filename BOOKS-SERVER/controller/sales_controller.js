@@ -58,7 +58,6 @@ exports.getOnlineData = async (req, res) => {
 
       return res.status(200).json({ success: true, OnlineOrderData: formattedBillData });
     } else {
-
       return res.status(401).json({ success: false, message: "Session expired!" });
     }
   } catch (error) {
@@ -264,47 +263,51 @@ exports.getDineInForAdmin = async (req, res) => {
  */
 exports.getTotalSalesData = async (req, res) => {
   try {
-
+    const restaurantId = req.restaurant;
     const now = new Date();
     const istDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
 
 
     const startDate = moment.tz(istDate, "Asia/Kolkata").startOf('day').toDate();
     const endDate = moment.tz(istDate, "Asia/Kolkata").endOf('day').toDate();
-
-    const salesData = await bill_model.aggregate([
-      {
-        $match: {
-          date: { $gte: startDate, $lte: endDate }, // Include the entire day
-          status: 'COMPLETED' // Only include completed sales
+    if (restaurantId) {
+      const salesData = await bill_model.aggregate([
+        {
+          $match: {
+            restrauntId: restaurantId,
+            date: { $gte: startDate, $lte: endDate }, // Include the entire day
+            status: 'COMPLETED' // Only include completed sales
+          }
+        },
+        {
+          $project: {
+            _id: 1,
+            billNo: 1,
+            date: 1,
+            total: 1,
+            paymentMode: 1,
+            mode: 1, // Mode of order (e.g., dine-in, takeout)
+            customerName: 1,
+            customerEmail: 1,
+            customerPhone: 1
+          }
         }
-      },
-      {
-        $project: {
-          _id: 1,
-          billNo: 1,
-          date: 1,
-          total: 1,
-          paymentMode: 1,
-          mode: 1, // Mode of order (e.g., dine-in, takeout)
-          customerName: 1,
-          customerEmail: 1,
-          customerPhone: 1
-        }
-      }
-    ]);
+      ]);
 
-    // Format response data to match the table structure
-    const formattedData = salesData.map((sale) => ({
-      billDate: sale.date,
-      time: sale.date.toISOString().split('T')[1].split('.')[0],
-      billID: sale.billNo,
-      billAmount: sale.total,
-      modeOfPayment: sale.paymentMode,
-      modeOfOrder: sale.mode
-    }));
+      // Format response data to match the table structure
+      const formattedData = salesData.map((sale) => ({
+        billDate: sale.date,
+        time: sale.date.toISOString().split('T')[1].split('.')[0],
+        billID: sale.billNo,
+        billAmount: sale.total,
+        modeOfPayment: sale.paymentMode,
+        modeOfOrder: sale.mode
+      }));
 
-    res.status(200).json({ success: true, SalesData: formattedData });
+      res.status(200).json({ success: true, SalesData: formattedData });
+    } else {
+      return res.status(401).json({ success: false, message: "Session expired!" });
+    }
   } catch (error) {
     console.error("Error fetching total sales data:", error);
     res.status(500).json({ success: false, message: "Failed to load total sales data" });

@@ -67,6 +67,7 @@ const billSchema = mongoose.Schema({
       discountPrice: Number,
       itemId: String,
       name: String,
+      itemType: String,
       portion: String,
       quantity: Number,
       subCuisine: String
@@ -131,7 +132,7 @@ billSchema.statics.generateBillId = async function (
 
   console.log("NEWWW BILLL ID-----------------------------------------");
   // console.log(lastOrder);
-  console.log('lastOrder.billNo:', lastOrder.billNo)
+  // console.log('lastOrder.billNo:', lastOrder.billNo)
   let count = 1;
   if (lastOrder && lastOrder.billNo) { // RAT0035
     // Extract the count from the last bill ID

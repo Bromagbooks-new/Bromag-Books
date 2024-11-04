@@ -4,7 +4,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { TakeAwayDataForAdmin } from "../../../config/routeApi/owner";
+import { getTotalTakeAwayOrderData } from "../../../config/routeApi/owner";
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -13,61 +13,31 @@ const TakeAwayOrderManagement = () => {
     const [takeAwayData, setTakeAwayData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
-    const [startDate, setStartDate] = useState(null); // Add start date filter
-    const [endDate, setEndDate] = useState(null); // Add end date filter
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     useEffect(() => {
-        const dummyTakeAwayData = [
-            {
-                _id: "1",
-                orderDetail: "hyderabadi biryani",
-                date: "2024-10-01T10:30:00Z",
-                orderId: "ORD1001",
-                billId: "BIL1001",
-                Amount: 150.00,
-                paymentMethod: "Credit Card",
-                orderMode: "Online",
-            },
-            {
-                _id: "2",
-                orderDetail: "delhi biryani",
-                date: "2024-10-06T11:15:00Z",
-                orderId: "ORD1002",
-                billId: "BIL1002",
-                Amount: 200.50,
-                paymentMethod: "Cash",
-                orderMode: "Online",
-            },
-            {
-                _id: "3",
-                orderDetail: "hyderabadi chicken",
-                date: "2024-10-10T11:15:00Z",
-                orderId: "ORD1003",
-                billId: "BIL1004",
-                Amount: 200.50,
-                paymentMethod: "Cash",
-                orderMode: "Online",
-            },
-            {
-                _id: "4",
-                orderDetail: "kanpur biryani",
-                date: "2024-10-02T11:15:00Z",
-                orderId: "ORD1004",
-                billId: "BIL1004",
-                Amount: 200.50,
-                paymentMethod: "Cash",
-                orderMode: "Online",
-            },
-        ];
-
         const handleTakeAwayData = async () => {
             try {
-                const response = await TakeAwayDataForAdmin();
+                const response = await getTotalTakeAwayOrderData();
+                console.log("helllo", response.data)
                 if (response.data.success) {
-                    console.log("hhhh", response.data)
-                    //setTakeAwayData(response.data.takeAwayData);
-                    setTakeAwayData(dummyTakeAwayData);
+                    const flattenedData = response.data.TakeawayOrderData.flatMap((bill) =>
+                        bill.items.map((item) => ({
+                            billDate: bill.billDate,
+                            time: bill.time,
+                            billId: bill.billId,
+                            billAmount: bill.billAmount,
+                            modeOfPayment: bill.modeOfPayment,
+                            mode: bill.mode,
+                            itemName: item.itemName,
+                            itemId: item.itemId,
+                        }))
+                    );
+                    setTakeAwayData(flattenedData);
                 } else {
                     toastError(response.data.message);
                 }
@@ -78,7 +48,6 @@ const TakeAwayOrderManagement = () => {
         handleTakeAwayData();
     }, []);
 
-    // Debouncing for search input
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
             setDebouncedSearchQuery(searchQuery);
@@ -86,24 +55,31 @@ const TakeAwayOrderManagement = () => {
         return () => clearTimeout(delayDebounceFn);
     }, [searchQuery]);
 
-    // Filter the takeAwayData based on the search query and date range
     const filteredTakeAwayData = takeAwayData.filter((item) => {
-        const dateObject = new Date(item.date);
-
-        // Filter by search query (Order ID)
-        const matchesSearch = item.orderId
-            .toLowerCase()
-            .includes(debouncedSearchQuery.toLowerCase());
-
+        const dateObject = new Date(item.billDate);
+        const matchesSearch = item.billId.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+            item.itemId.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
         const isWithinDateRange =
             (!isDateSearchClicked ||
                 ((!startDate || dateObject >= startDate) && (!endDate || dateObject <= endDate)));
-
         return matchesSearch && isWithinDateRange;
     });
 
+    const totalPages = Math.ceil(filteredTakeAwayData.length / itemsPerPage);
+    const paginatedData = filteredTakeAwayData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     const handleDateSearch = () => {
         setIsDateSearchClicked(true);
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
     };
 
     return (
@@ -123,7 +99,7 @@ const TakeAwayOrderManagement = () => {
                                 <IoSearchSharp className="search-icon" />
                                 <input
                                     type="text"
-                                    placeholder="Search by Order ID"
+                                    placeholder="Search by Order ID or Item ID"
                                     className="search-bar"
                                     value={searchQuery}
                                     onChange={(e) => setSearchQuery(e.target.value)}
@@ -163,12 +139,12 @@ const TakeAwayOrderManagement = () => {
 
                     <div className="pagination-div">
                         <p>
-                            Showing <strong>{filteredTakeAwayData.length}</strong> from <strong>{takeAwayData.length}</strong> results
+                            Showing <strong>{paginatedData.length}</strong> from <strong>{filteredTakeAwayData.length}</strong> results
                         </p>
                         <div className="pagination-controls">
-                            <button>&lt;</button>
-                            <span>1 - 10</span>
-                            <button>&gt;</button>
+                            <button onClick={() => handlePageChange(currentPage - 1)}>&lt;</button>
+                            <span>{currentPage} / {totalPages}</span>
+                            <button onClick={() => handlePageChange(currentPage + 1)}>&gt;</button>
                         </div>
                     </div>
 
@@ -188,8 +164,8 @@ const TakeAwayOrderManagement = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredTakeAwayData.map((item, i) => {
-                                    const dateObject = new Date(item.date);
+                                {paginatedData.map((item, i) => {
+                                    const dateObject = new Date(item.billDate);
                                     const formattedDate = dateObject.toLocaleDateString();
                                     const formattedTime = dateObject.toLocaleTimeString([], {
                                         hour: "2-digit",
@@ -197,16 +173,16 @@ const TakeAwayOrderManagement = () => {
                                     });
 
                                     return (
-                                        <tr key={item._id}>
-                                            <td>{i + 1}</td>
-                                            <td>{item.orderDetail}</td>
-                                            <td>{item.orderId}</td>
+                                        <tr key={`${item.orderId}-${item.itemId}`}>
+                                            <td>{(currentPage - 1) * itemsPerPage + i + 1}</td>
+                                            <td>{item.itemName}</td>
+                                            <td>{item.itemId}</td>
                                             <td>{formattedDate}</td>
                                             <td>{formattedTime}</td>
                                             <td>{item.billId}</td>
-                                            <td>{item.Amount.toFixed(2)}</td>
-                                            <td>{item.paymentMethod}</td>
-                                            <td>{item.orderMode}</td>
+                                            <td>{item.billAmount}</td>
+                                            <td>{item.modeOfPayment}</td>
+                                            <td>{item.mode}</td>
                                         </tr>
                                     );
                                 })}

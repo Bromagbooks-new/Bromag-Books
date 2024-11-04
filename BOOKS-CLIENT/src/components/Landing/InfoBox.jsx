@@ -18,9 +18,9 @@ const InfoBox = ({ title, content }) => {
             </div>
 
             {/* Centered White Box */}
-            <div className="bg-white p-8 rounded-lg shadow-lg max-w-md mx-auto mt-20 text-center z-20">
-                <h2 className="text-3xl font-bold mb-4">{title}</h2>
-                <p className="text-lg text-gray-700">{content}</p>
+            <div className="bg-white p-8 rounded-lg shadow-lg max-w-2xl mx-auto mt-20 text-center z-20">
+                <h2 className="text-3xl font-bold mb-4 pt-5">{title}</h2>
+                <div className="text-lg text-gray-700">{content}</div>
             </div>
         </div>
     );

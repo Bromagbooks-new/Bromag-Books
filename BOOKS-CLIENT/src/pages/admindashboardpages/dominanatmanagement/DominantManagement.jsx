@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Wrapper from "../../../assets/wrappers/adminwrappers/SalesManagement";
 import { Form } from "react-bootstrap";
 import Online from "@/assets/images/billing-management/Online.svg";
@@ -19,8 +19,8 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { Link, useLoaderData, Outlet } from 'react-router-dom';
 import AnalyticsCardDominant from '@/components/dominantmanagement/AnalyticCardDominant';
+import { GetDominantCardAnalytics } from '@/config/routeApi/owner';
 
-// Register Chart.js components for Bar charts
 ChartJS.register(
     CategoryScale,
     LinearScale,
@@ -31,29 +31,46 @@ ChartJS.register(
 );
 
 const DominantManagement = () => {
-    const breakdown = useLoaderData();
-    // console.log("objectww", breakdown)
+    const [breakdown, setBreakdown] = useState({
+        dailyBreakdown: { veg: 0, nonVeg: 0, total: 0 },
+        weeklyBreakdown: { veg: 0, nonVeg: 0, total: 0 },
+        monthlyBreakdown: { veg: 0, nonVeg: 0, total: 0 }
+    });
+    const monthlyBreakdown = breakdown.monthlyBreakdown;
+    console.log("breakdownnn", breakdown)
     const [sortBy, setSortBy] = useState('Today');
-    const isRoot = location.pathname === "/dashboard/dominant-management";
-    // Handle change in sorting option
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const data = await dominantManagementLoader();
+            console.log("object", data)
+            if (data) setBreakdown(data);
+        };
+        fetchData();
+    }, []);
+
     const handleSortChange = (e) => {
         setSortBy(e.target.value);
     };
 
-    // Bar chart data
+    // Bar chart data based on `sortBy` selection
+    const selectedBreakdown = sortBy === 'Today' ? breakdown.dailyBreakdown
+        : sortBy === 'This Week' ? breakdown.weeklyBreakdown
+            : breakdown.monthlyBreakdown;
+
     const barData = {
-        labels: Array.from({ length: 10 }, (_, i) => `Day ${i + 1}`),
+        labels: Array.from({ length: 15 }, (_, i) => `Day ${i + 1}`),
         datasets: [
             {
                 label: 'Non Veg Orders',
-                data: [80, 70, 60, 40, 50, 30, 90, 70, 80, 40], // Sample data for Non Veg orders
+                data: [selectedBreakdown.nonVeg], // Sample data for Non Veg orders
                 backgroundColor: 'rgba(255, 130, 85, 1)',
                 borderColor: 'rgba(255, 130, 85, 1)',
                 borderWidth: 1
             },
             {
                 label: 'Veg Orders',
-                data: [70, 60, 50, 30, 40, 20, 80, 60, 70, 30], // Sample data for Veg orders
+                data: [selectedBreakdown.veg], // Sample data for Veg orders
                 backgroundColor: 'rgba(255, 199, 66, 1)',
                 borderColor: 'rgba(255, 199, 66, 1)',
                 borderWidth: 1
@@ -61,139 +78,113 @@ const DominantManagement = () => {
         ]
     };
 
-    // Bar chart options
+
     const barOptions = {
         responsive: true,
         plugins: {
-            legend: {
-                display: true,
-                position: 'top'
-            },
-            tooltip: {
-                mode: 'index',
-                intersect: false
-            }
+            legend: { display: true, position: 'top' },
+            tooltip: { mode: 'index', intersect: false }
         },
         scales: {
             y: {
                 beginAtZero: true,
-                max: 100,
-                ticks: {
-                    stepSize: 10, // Increment by 10 for each tick
-                    callback: (value) => `${value}%` // Display percentage
-                }
+                ticks: { stepSize: 30 }
             }
         }
     };
 
     return (
-        <Wrapper className="page" >
-            {isRoot && (
-                <div className="page-content" >
-                    <div className="page-header">
+        <Wrapper className="page">
+            <div className="page-content">
+                <div className="page-header">
+                    <p className="text-3xl mt-3 mb-2 ml-1 font-bold">Dominant Management</p>
+                </div>
+                <div className="flex gap-[0.7rem]">
+                    {billingOptions.map((item) => (
+                        <Link to={item.url} key={item.id}>
+                            <AnalyticsCardDominant
+                                key={item.id}
+                                id={item.id}
+                                title={item.title}
+                                url={item.url}
+                                icon={item.icon}
+                                activatedIcon={item.activatedIcon}
+                                activatedClass={item.activatedClass}
+                                breakdown={monthlyBreakdown}
+                            />
+                        </Link>
+                    ))}
+                </div>
+
+                {/* Bar Chart Section */}
+                <div
+                    style={{
+                        height: '66vh',
+                        width: '95%',
+                        marginTop: '1rem',
+                        backgroundColor: '#fff',
+                        borderRadius: '1rem',
+                        padding: '1rem',
+                        position: 'relative'
+                    }}
+                >
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                         <div>
-                            <p className="text-3xl mt-3 mb-2 ml-1 font-bold">Dominant Management</p>
+                            <p className="text-2xl font-semibold">Total Orders</p>
+                            <div style={{ display: 'flex', alignItems: 'center', marginTop: '0.5rem' }}>
+                                <span style={{
+                                    display: 'inline-block',
+                                    width: '15px',
+                                    height: '15px',
+                                    backgroundColor: 'rgba(255, 130, 85, 1)',
+                                    borderRadius: '50%',
+                                    marginRight: '0.5rem'
+                                }}></span>
+                                <span>Non Veg Orders</span>
+
+                                <span style={{
+                                    display: 'inline-block',
+                                    width: '15px',
+                                    height: '15px',
+                                    backgroundColor: 'rgba(255, 199, 66, 1)',
+                                    borderRadius: '50%',
+                                    marginRight: '0.5rem'
+                                }}></span>
+                                <span>Veg Orders</span>
+                            </div>
+                        </div>
+
+                        {/* Sort by Dropdown */}
+                        <div style={{ position: 'absolute', top: '1rem', right: '2rem' }}>
+                            <Form.Group controlId="sortBySelect">
+                                <Form.Label>Sort by</Form.Label>
+                                <Form.Control
+                                    as="select"
+                                    value={sortBy}
+                                    onChange={handleSortChange}
+                                >
+                                    <option value="Today">Today</option>
+                                    <option value="This Week">This Week</option>
+                                    <option value="This Month">This Month</option>
+                                </Form.Control>
+                            </Form.Group>
                         </div>
                     </div>
-                    <div className="flex gap-[0.7rem]">
-                        {billingOptions.map((item) => (
-                            <Link to={item.url} key={item.id}>
-                                <AnalyticsCardDominant
-                                    key={item.id}
-                                    id={item.id}
-                                    title={item.title}
-                                    url={item.url}
-                                    icon={item.icon}
-                                    activatedIcon={item.activatedIcon}
-                                    activatedClass={item.activatedClass}
-                                    breakdown={breakdown}
-                                />
-                            </Link>
-                        ))}
-                    </div>
-                    {/* Bar Chart Section */}
+
+                    {/* Bar chart */}
                     <div
                         style={{
-                            height: '66vh',
-                            width: '95%',
-                            marginTop: '1rem',
-                            marginLeft: '0',
-                            marginBottom: '0',
-                            backgroundColor: '#fff',
+                            height: '80%',
+                            backgroundColor: '#e0f0ff',
                             borderRadius: '1rem',
                             padding: '1rem',
-                            position: 'relative'
+                            marginTop: '2rem'
                         }}
                     >
-                        {/* Title and Labels (Veg and Non-Veg Orders) */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                            <div>
-                                <p className="text-2xl font-semibold">Total Orders</p>
-                                <div style={{ display: 'flex', alignItems: 'center', marginTop: '0.5rem' }}>
-                                    <div style={{ display: 'flex', alignItems: 'center', marginRight: '1rem' }}>
-                                        <span
-                                            style={{
-                                                display: 'inline-block',
-                                                width: '15px',
-                                                height: '15px',
-                                                backgroundColor: 'rgba(255, 130, 85, 1)',
-                                                borderRadius: '50%',
-                                                marginRight: '0.5rem'
-                                            }}
-                                        ></span>
-                                        <span>Non Veg Orders</span>
-                                    </div>
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <span
-                                            style={{
-                                                display: 'inline-block',
-                                                width: '15px',
-                                                height: '15px',
-                                                backgroundColor: 'rgba(255, 199, 66, 1)',
-                                                borderRadius: '50%',
-                                                marginRight: '0.5rem'
-                                            }}
-                                        ></span>
-                                        <span>Veg Orders</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Sort by Dropdown */}
-                            <div style={{ position: 'absolute', top: '1rem', right: '2rem' }}>
-                                <Form.Group controlId="sortBySelect">
-                                    <Form.Label>Sort by</Form.Label>
-                                    <Form.Control
-                                        as="select"
-                                        value={sortBy}
-                                        onChange={handleSortChange}
-                                    >
-                                        <option value="Today">Today</option>
-                                        <option value="This Week">This Week</option>
-                                        <option value="This Month">This Month</option>
-                                    </Form.Control>
-                                </Form.Group>
-                            </div>
-                        </div>
-
-                        {/* Bar chart */}
-                        <div
-                            style={{
-                                height: '80%',
-                                backgroundColor: '#e0f0ff',
-                                borderRadius: '1rem',
-                                padding: '1rem',
-                                marginTop: '2rem'
-                            }}
-                        >
-                            <Bar data={barData} options={barOptions} />
-                        </div>
+                        <Bar data={barData} options={barOptions} />
                     </div>
-
                 </div>
-            )}
 
-            <div>
                 <Outlet />
             </div>
         </Wrapper>
@@ -201,6 +192,18 @@ const DominantManagement = () => {
 };
 
 export default DominantManagement;
+
+export const dominantManagementLoader = async () => {
+    try {
+        const response = await GetDominantCardAnalytics();
+        if (response.status === 200) {
+            return response.data;
+        }
+    } catch (error) {
+        console.error(error);
+    }
+}
+
 const billingOptions = [
     {
         id: "total-order-veg",

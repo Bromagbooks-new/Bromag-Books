@@ -157,3 +157,39 @@ exports.getTotalDineInOrderData = async (req, res) => {
     }
 };
 
+exports.getTotalTakeawayOrderData = async (req, res) => {
+    try {
+        const restaurantId = req.restaurant;
+
+        console.log("Restaurant ID:", restaurantId);
+
+        if (restaurantId) {
+            const billData = await bill_model.find({
+                restrauntId: restaurantId,
+                mode: "takeaway",
+            }).sort({ date: -1 });
+
+            console.log("Total Takeaway Bill Data:", billData);
+
+            const formattedBillData = billData.map(bill => ({
+                billDate: bill.date,
+                time: bill.date.toISOString().split('T')[1].split('.')[0],
+                billId: bill.billNo,
+                billAmount: bill.total,
+                modeOfPayment: bill.paymentMode,
+                mode: bill.mode,
+                items: bill.items.map(item => ({
+                    itemId: item.itemId,
+                    itemName: item.name,
+                }))
+            }));
+
+            return res.status(200).json({ success: true, TakeawayOrderData: formattedBillData });
+        } else {
+            return res.status(401).json({ success: false, message: "Session expired!" });
+        }
+    } catch (error) {
+        console.error("Error fetching total Takeaway data:", error);
+        return res.status(500).json({ success: false, message: "An error occurred while fetching the total Takeaway data." });
+    }
+};

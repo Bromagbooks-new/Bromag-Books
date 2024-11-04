@@ -8,7 +8,6 @@ import { getTotalDineInOrderData } from "../../../config/routeApi/owner";
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { c } from "../../../../dist/assets/index-952caea0";
 
 const DineInOrderManagement = () => {
     const [dineInData, setDineInData] = useState([]);

@@ -23,6 +23,8 @@ const WhoWeAre = () => {
                 We empower restaurant partners with industry-specific solutions tailored to their requirements, including customized packaging solutions, professional food photography services, video production, and an e-commerce platform on their own domain. Additionally, we provide individual Android and iOS apps, and POS billing software to enhance customer engagement and ensure reliable last-mile delivery.
                 <br /><br />
                 Our dedicated delivery riders operate with our own vehicles as full-time employees, ensuring a quality experience for our customers.
+                <br /><br />
+                As we have four products:<strong>BROMAG INDIA</strong>, <strong>BROMAG RESTRO</strong>, <strong>BROMAG BOOKS</strong>,<br></br> <strong>BROMAG RESTO</strong>, <strong>BROMAG PAY</strong>, and <strong>BROMAG CRM</strong>.
             </p>
         </div>
     );

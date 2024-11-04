@@ -509,16 +509,17 @@ exports.verifyOtpForMobile = async (req, res) => {
     const otpToken = await Token.findOne({
       employeeId,
       token: otp,
+      used: false,
       expiresAt: { $gt: new Date() }
     });
 
     if (otpToken) {
+      otpToken.used = true;
+      await otpToken.save();
+
       const token = jwtToken.sign({ id: employeeId }, process.env.SECRET_KEY, {
         expiresIn: "1hr",
       });
-
-      // Clean up OTP from database after successful verification
-      await otpToken.deleteOne();
 
       res.json({
         success: true,
@@ -526,12 +527,13 @@ exports.verifyOtpForMobile = async (req, res) => {
         message: "OTP verified successfully!",
       });
     } else {
-      res.json({ success: false, message: "Invalid or expired OTP!" });
+      res.json({ success: false, message: "Invalid, expired, or already used OTP!" });
     }
   } catch (error) {
     res.status(500).json({ success: false, serverMessage: "Internal Server Error" });
   }
 };
+
 
 
 

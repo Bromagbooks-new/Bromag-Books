@@ -441,14 +441,15 @@ exports.verifyToken = async (req, res) => {
 exports.loginForMobileUsingOtp = async (req, res) => {
   try {
     console.log("verify login called");
-    const Employee = req.body.data;
-    console.log("Employee data", Employee);
+    const Employee_username = req.body.username;
+    const Employee_password = req.body.password;
+    console.log("Employee data", Employee_username);
 
     const employee = await Restaurant.findOne({
-      username: Employee.username,
+      username: Employee_username,
     });
     console.log("Employee", employee);
-    if (employee && Employee.password === employee.password) {
+    if (employee && Employee_password === employee.password) {
       const otp = crypto.randomInt(100000, 999999);
       const expiresAt = new Date(Date.now() + 10 * 60 * 1000);
 

@@ -518,7 +518,7 @@ exports.verifyOtpForMobile = async (req, res) => {
       });
 
       // Clean up OTP from database after successful verification
-      // await otpToken.deleteOne();
+      await otpToken.deleteOne();
 
       res.json({
         success: true,

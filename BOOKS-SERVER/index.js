@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const path = require('path')
 const cron = require('./utils/cron.js')
+const axios = require('axios')
 const globalLevelErrorHandlerMiddleware = require("./errors/globalErrorHandlerMiddleware.js");
 // const rateLimit = require("express-rate-limit");
 
@@ -53,9 +54,30 @@ app.use(cors());
 
 // Routers
 
-app.get("/hi", async (req, res) => {
-  res.send("hiii")
-})
+// app.get("/hi", async (req, res) => {
+//   res.send("hiii")
+// })
+app.get("/test", async (req, res) => {
+  res.status(200).send("hiiiiii")
+});
+const SERVER_URL = "https://bromag-books-468g.onrender.com/test";
+const INTERVAL = 14 * 60 * 1000; // 14 minutes in milliseconds
+
+async function keepServerAlive() {
+  try {
+    const response = await axios.get(SERVER_URL);
+    console.log(`Keep-alive request sent. Status Code: ${response.status}`);
+  } catch (error) {
+    console.error(`Error in keep-alive bot: ${error.message}`);
+  } finally {
+    setTimeout(keepServerAlive, INTERVAL);
+  }
+}
+
+// Start the keep-alive bot
+keepServerAlive();
+
+
 const User = require("./router/user");
 const KotManagementRouterRouter = require("./router/kot.routers.js");
 const BillingManagementRouterRouter = require("./router/billing.routers.js");

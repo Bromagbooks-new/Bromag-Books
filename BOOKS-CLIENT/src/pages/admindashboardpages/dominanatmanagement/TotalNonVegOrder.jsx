@@ -4,7 +4,7 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { OrderDataAtAdmin } from "../../../config/routeApi/owner"; // API for orders
+import { getTotalNonVegOrderData } from "../../../config/routeApi/owner"; // API for orders
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -18,65 +18,17 @@ const NonVegOrderManagement = () => {
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
 
     useEffect(() => {
-
-        const dummyNonVegOrdersData = [
-            {
-                _id: "1",
-                orderDetail: "Chicken Biryani",
-                date: "2024-10-01T10:30:00Z",
-                orderId: "ORD2001",
-                billId: "BIL2001",
-                Amount: 150.00,
-                paymentMethod: "Credit Card",
-                orderMode: "Online",
-                isVeg: false,
-            },
-            {
-                _id: "2",
-                orderDetail: "Chicken Kebab",
-                date: "2024-10-02T11:15:00Z",
-                orderId: "ORD2002",
-                billId: "BIL2002",
-                Amount: 200.50,
-                paymentMethod: "Cash",
-                orderMode: "Offline",
-                isVeg: false,
-            },
-            {
-                _id: "3",
-                orderDetail: "Mutton Biryani",
-                date: "2024-10-02T11:15:00Z",
-                orderId: "ORD2003",
-                billId: "BIL2003",
-                Amount: 250.75,
-                paymentMethod: "UPI",
-                orderMode: "Online",
-                isVeg: false,
-            },
-            {
-                _id: "4",
-                orderDetail: "Fish Curry",
-                date: "2024-10-03T12:30:00Z",
-                orderId: "ORD2004",
-                billId: "BIL2004",
-                Amount: 180.00,
-                paymentMethod: "Card",
-                orderMode: "Offline",
-                isVeg: false,
-            },
-        ];
-
         const handleNonVegOrdersData = async () => {
             try {
-                // Use the actual API for fetching non-veg orders.
-                const response = await OrderDataAtAdmin();
+                const response = await getTotalNonVegOrderData();
                 if (response.data.success) {
-                    setNonVegOrdersData(dummyNonVegOrdersData); // Assuming API provides a similar structure
+                    setNonVegOrdersData(response.data.NonVegOrderData); // Assuming API provides a similar structure
                 } else {
                     toastError(response.data.message);
                 }
             } catch (error) {
                 console.log(error);
+                toastError("An error occurred while fetching data.");
             }
         };
 
@@ -92,18 +44,16 @@ const NonVegOrderManagement = () => {
     }, [searchQuery]);
 
     // Filter the nonVegOrdersData based on the search query and date range
-    const filteredNonVegOrdersData = nonVegOrdersData?.filter((item) => {
-        const dateObject = new Date(item.date);
+    const filteredNonVegOrdersData = nonVegOrdersData.filter((item) => {
+        const dateObject = new Date(item.billDate);
 
         // Filter by search query (Order ID)
-        const matchesSearch = item.orderId
-            .toLowerCase()
-            .includes(debouncedSearchQuery.toLowerCase());
+        const matchesSearch = item.billId.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
 
         // Filter by date range only if the date search button is clicked
         const isWithinDateRange =
             (!isDateSearchClicked ||
-                ((!startDate || dateObject >= startDate) && (!endDate || dateObject <= endDate)));
+                (!startDate || dateObject >= startDate) && (!endDate || dateObject <= endDate));
 
         return matchesSearch && isWithinDateRange;
     });
@@ -184,10 +134,9 @@ const NonVegOrderManagement = () => {
                                 <tr>
                                     <th>S.No.</th>
                                     <th>Order Details</th>
-                                    <th>Order ID</th>
+                                    <th>Bill ID</th>
                                     <th>Bill Date</th>
                                     <th>Time</th>
-                                    <th>Bill ID</th>
                                     <th>Bill Amount</th>
                                     <th>Mode of Payment</th>
                                     <th>Mode of Order</th>
@@ -195,7 +144,7 @@ const NonVegOrderManagement = () => {
                             </thead>
                             <tbody>
                                 {filteredNonVegOrdersData.map((item, i) => {
-                                    const dateObject = new Date(item.date);
+                                    const dateObject = new Date(item.billDate);
                                     const formattedDate = dateObject.toLocaleDateString();
                                     const formattedTime = dateObject.toLocaleTimeString([], {
                                         hour: "2-digit",
@@ -203,16 +152,15 @@ const NonVegOrderManagement = () => {
                                     });
 
                                     return (
-                                        <tr key={item._id}>
+                                        <tr key={item.billId}>
                                             <td>{i + 1}</td>
-                                            <td>{item.orderDetail}</td>
-                                            <td>{item.orderId}</td>
+                                            <td>{item.items.map(i => i.itemName).join(", ")}</td> {/* Displaying item names */}
+                                            <td>{item.billId}</td>
                                             <td>{formattedDate}</td>
                                             <td>{formattedTime}</td>
-                                            <td>{item.billId}</td>
-                                            <td>{item.Amount.toFixed(2)}</td>
-                                            <td>{item.paymentMethod}</td>
-                                            <td>{item.orderMode}</td>
+                                            <td>{item.billAmount.toFixed(2)}</td>
+                                            <td>{item.modeOfPayment}</td>
+                                            <td>{item.mode}</td>
                                         </tr>
                                     );
                                 })}

@@ -159,7 +159,7 @@ import HighestBillingAmount from "./pages/admindashboardpages/salesmanagement/Hi
 import OnlineOrderManagement from "./pages/admindashboardpages/ordermanagement/OnlineOrderManagement";
 import TakeAwayOrderManagement from "./pages/admindashboardpages/ordermanagement/TakeAwayOrderManagement";
 import DineInOrderManagement from "./pages/admindashboardpages/ordermanagement/DineInOrderManagement";
-import DominantManagement from "./pages/admindashboardpages/dominanatmanagement/DominantManagement";
+import DominantManagement, { dominantManagementLoader } from "./pages/admindashboardpages/dominanatmanagement/DominantManagement";
 import NonVegOrderManagement from "./pages/admindashboardpages/dominanatmanagement/TotalNonVegOrder";
 import VegOrderManagement from "./pages/admindashboardpages/dominanatmanagement/TotalVegOrders";
 import RepeatOrderManagement from "./pages/admindashboardpages/dominanatmanagement/RepeatOrder";
@@ -500,12 +500,12 @@ const router = createBrowserRouter([
               //   loader: newOrderChartsLoader
               // },
               {
-                path: 'nonveg-order',
-                element: <NonVegOrderManagement />
-              },
-              {
                 path: 'veg-order',
                 element: <VegOrderManagement />
+              },
+              {
+                path: 'nonveg-order',
+                element: <NonVegOrderManagement />
               },
               {
                 path: 'repeat-order',

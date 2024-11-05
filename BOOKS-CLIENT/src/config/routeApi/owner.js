@@ -625,6 +625,23 @@ const GetDominantCardAnalytics = async () => {
     console.error(error);
   }
 }
+const getTotalVegOrderData = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getTotalVegOrderData");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+const getTotalNonVegOrderData = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getTotalNonVegOrderData");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const GenerateKOT = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
@@ -1464,5 +1481,7 @@ export {
   DeleteMenuItem,
   GetAllMenuItems,
   UpdateMenuItemAvailableStatus,
-  GetDominantCardAnalytics
+  GetDominantCardAnalytics,
+  getTotalVegOrderData,
+  getTotalNonVegOrderData
 };

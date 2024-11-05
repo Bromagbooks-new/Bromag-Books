@@ -264,6 +264,16 @@ userRouter.get(
   dominantController.dominantManagementHomePage
 );
 
+userRouter.get(
+  "/getTotalVegOrderData",
+  interceptor.adminAuth,
+  dominantController.getTotalVegOrderData
+);
+userRouter.get(
+  "/getTotalNonVegOrderData",
+  interceptor.adminAuth,
+  dominantController.getTotalNonVegOrderData
+);
 
 userRouter.post(
   "/generateKOT",

@@ -31,6 +31,7 @@ ChartJS.register(
 );
 
 const DominantManagement = () => {
+    const isRoot = location.pathname === "/dashboard/dominant-management";
     const [breakdown, setBreakdown] = useState({
         dailyBreakdown: { veg: 0, nonVeg: 0, total: 0 },
         weeklyBreakdown: { veg: 0, nonVeg: 0, total: 0 },
@@ -96,96 +97,102 @@ const DominantManagement = () => {
     return (
         <Wrapper className="page">
             <div className="page-content">
-                <div className="page-header">
-                    <p className="text-3xl mt-3 mb-2 ml-1 font-bold">Dominant Management</p>
-                </div>
-                <div className="flex gap-[0.7rem]">
-                    {billingOptions.map((item) => (
-                        <Link to={item.url} key={item.id}>
-                            <AnalyticsCardDominant
-                                key={item.id}
-                                id={item.id}
-                                title={item.title}
-                                url={item.url}
-                                icon={item.icon}
-                                activatedIcon={item.activatedIcon}
-                                activatedClass={item.activatedClass}
-                                breakdown={monthlyBreakdown}
-                            />
-                        </Link>
-                    ))}
-                </div>
+                {isRoot && (<>
+                    <div className="page-header">
+                        <p className="text-3xl mt-3 mb-2 ml-1 font-bold">Dominant Management</p>
+                    </div>
+                    <div className="flex gap-[0.7rem]">
+                        {billingOptions.map((item) => (
+                            <Link to={item.url} key={item.id}>
+                                <AnalyticsCardDominant
+                                    key={item.id}
+                                    id={item.id}
+                                    title={item.title}
+                                    url={item.url}
+                                    icon={item.icon}
+                                    activatedIcon={item.activatedIcon}
+                                    activatedClass={item.activatedClass}
+                                    breakdown={monthlyBreakdown}
+                                />
+                            </Link>
+                        ))}
+                    </div>
 
-                {/* Bar Chart Section */}
-                <div
-                    style={{
-                        height: '66vh',
-                        width: '95%',
-                        marginTop: '1rem',
-                        backgroundColor: '#fff',
-                        borderRadius: '1rem',
-                        padding: '1rem',
-                        position: 'relative'
-                    }}
-                >
-                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <div>
-                            <p className="text-2xl font-semibold">Total Orders</p>
-                            <div style={{ display: 'flex', alignItems: 'center', marginTop: '0.5rem' }}>
-                                <span style={{
-                                    display: 'inline-block',
-                                    width: '15px',
-                                    height: '15px',
-                                    backgroundColor: 'rgba(255, 130, 85, 1)',
-                                    borderRadius: '50%',
-                                    marginRight: '0.5rem'
-                                }}></span>
-                                <span>Non Veg Orders</span>
+                    {/* Bar Chart Section */}
+                    <div
+                        style={{
+                            height: '66vh',
+                            width: '95%',
+                            marginTop: '1rem',
+                            backgroundColor: '#fff',
+                            borderRadius: '1rem',
+                            padding: '1rem',
+                            position: 'relative'
+                        }}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <div>
+                                <p className="text-2xl font-semibold">Total Orders</p>
+                                <div style={{ display: 'flex', alignItems: 'center', marginTop: '0.5rem' }}>
+                                    <span style={{
+                                        display: 'inline-block',
+                                        width: '15px',
+                                        height: '15px',
+                                        backgroundColor: 'rgba(255, 130, 85, 1)',
+                                        borderRadius: '50%',
+                                        marginRight: '0.5rem'
+                                    }}></span>
+                                    <span>Non Veg Orders</span>
 
-                                <span style={{
-                                    display: 'inline-block',
-                                    width: '15px',
-                                    height: '15px',
-                                    backgroundColor: 'rgba(255, 199, 66, 1)',
-                                    borderRadius: '50%',
-                                    marginRight: '0.5rem'
-                                }}></span>
-                                <span>Veg Orders</span>
+                                    <span style={{
+                                        display: 'inline-block',
+                                        width: '15px',
+                                        height: '15px',
+                                        backgroundColor: 'rgba(255, 199, 66, 1)',
+                                        borderRadius: '50%',
+                                        marginRight: '0.5rem'
+                                    }}></span>
+                                    <span>Veg Orders</span>
+                                </div>
+                            </div>
+
+                            {/* Sort by Dropdown */}
+                            <div style={{ position: 'absolute', top: '1rem', right: '2rem' }}>
+                                <Form.Group controlId="sortBySelect">
+                                    <Form.Label>Sort by</Form.Label>
+                                    <Form.Control
+                                        as="select"
+                                        value={sortBy}
+                                        onChange={handleSortChange}
+                                    >
+                                        <option value="Today">Today</option>
+                                        <option value="This Week">This Week</option>
+                                        <option value="This Month">This Month</option>
+                                    </Form.Control>
+                                </Form.Group>
                             </div>
                         </div>
 
-                        {/* Sort by Dropdown */}
-                        <div style={{ position: 'absolute', top: '1rem', right: '2rem' }}>
-                            <Form.Group controlId="sortBySelect">
-                                <Form.Label>Sort by</Form.Label>
-                                <Form.Control
-                                    as="select"
-                                    value={sortBy}
-                                    onChange={handleSortChange}
-                                >
-                                    <option value="Today">Today</option>
-                                    <option value="This Week">This Week</option>
-                                    <option value="This Month">This Month</option>
-                                </Form.Control>
-                            </Form.Group>
+                        {/* Bar chart */}
+                        <div
+                            style={{
+                                height: '80%',
+                                backgroundColor: '#e0f0ff',
+                                borderRadius: '1rem',
+                                padding: '1rem',
+                                marginTop: '2rem'
+                            }}
+                        >
+                            <Bar data={barData} options={barOptions} />
                         </div>
                     </div>
 
-                    {/* Bar chart */}
-                    <div
-                        style={{
-                            height: '80%',
-                            backgroundColor: '#e0f0ff',
-                            borderRadius: '1rem',
-                            padding: '1rem',
-                            marginTop: '2rem'
-                        }}
-                    >
-                        <Bar data={barData} options={barOptions} />
-                    </div>
-                </div>
 
-                <Outlet />
+                </>
+                )}
+                <div>
+                    <Outlet />
+                </div>
             </div>
         </Wrapper>
     );

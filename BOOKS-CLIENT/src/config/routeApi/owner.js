@@ -642,6 +642,15 @@ const getTotalNonVegOrderData = async () => {
   }
 };
 
+const getRepeatOrderData = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getRepeatOrderData");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const GenerateKOT = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
@@ -1483,5 +1492,6 @@ export {
   UpdateMenuItemAvailableStatus,
   GetDominantCardAnalytics,
   getTotalVegOrderData,
-  getTotalNonVegOrderData
+  getTotalNonVegOrderData,
+  getRepeatOrderData
 };

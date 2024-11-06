@@ -174,3 +174,92 @@ exports.getTotalNonVegOrderData = async (req, res) => {
         return res.status(500).json({ success: false, message: "An error occurred while fetching the total Takeaway Non-Veg data." });
     }
 };
+
+exports.getRepeatOrderData = async (req, res) => {
+    try {
+        const restaurantId = req.restaurant; // Assuming restaurantId is provided in request body
+
+        console.log("Restaurant ID:", restaurantId);
+
+        if (restaurantId) {
+            // Find all completed bills for the specific restaurant, and filter by dinein or takeaway
+            const billData = await bill_model.find({
+                restrauntId: restaurantId,
+                status: "COMPLETED",
+                mode: { $in: ["dinein", "takeaway"] } // Filter for dinein and takeaway only
+            }).sort({ date: 1 });
+
+            console.log("Filtered Bills for Repeat Order Check:", billData);
+
+            // Group repeat orders by customer phone number and item
+            const repeatOrderData = {};
+
+            billData.forEach(bill => {
+                bill.items.forEach(item => {
+                    const customerPhone = bill.customerPhone; // Customer phone number for identifying repeat orders
+                    const itemName = item.name; // Item name for comparison
+                    const itemDate = bill.date.toISOString().split('T')[0]; // Extract date without time
+
+                    // Initialize entry if it doesn't exist for this customer
+                    if (!repeatOrderData[customerPhone]) {
+                        repeatOrderData[customerPhone] = {};
+                    }
+
+                    // Initialize entry for this item if it doesn't exist
+                    if (!repeatOrderData[customerPhone][itemName]) {
+                        repeatOrderData[customerPhone][itemName] = {
+                            itemName: itemName,
+                            repeatCount: 0, // Initialize repeat count
+                            repeats: [] // Store repeat details
+                        };
+                    }
+
+                    // Add repeat order details
+                    repeatOrderData[customerPhone][itemName].repeatCount += 1; // Increment repeat count
+                    repeatOrderData[customerPhone][itemName].repeats.push({
+                        date: itemDate,
+                        time: bill.date.toISOString().split('T')[1].split('.')[0],
+                        quantity: item.quantity,
+                        actualPrice: item.actualPrice,
+                        discountPrice: item.discountPrice
+                    });
+                });
+            });
+
+            // Flatten the object to an array of repeat data
+            const formattedRepeatOrderData = Object.keys(repeatOrderData).map(customerPhone => {
+                return Object.values(repeatOrderData[customerPhone]).map(item => {
+                    return {
+                        customerPhone: customerPhone,
+                        itemName: item.itemName,
+                        repeatCount: item.repeatCount,
+                        repeats: item.repeats
+                    };
+                });
+            }).flat();
+
+            // Format the data as required (similar to your example structure)
+            const formattedBillData = billData.map(bill => ({
+                billDate: bill.date,
+                time: bill.date.toISOString().split('T')[1].split('.')[0],
+                billId: bill.billNo,
+                billAmount: bill.total,
+                modeOfPayment: bill.paymentMode,
+                mode: bill.mode,
+                items: bill.items.map(item => ({
+                    itemId: item.itemId,
+                    itemName: item.name
+                }))
+            }));
+
+            // Return the formatted bill data sorted by repeat count
+            return res.status(200).json({ success: true, RepeatOrderData: formattedBillData });
+        } else {
+            return res.status(400).json({ success: false, message: "Invalid request parameters!" });
+        }
+    } catch (error) {
+        console.error("Error fetching repeat order data:", error);
+        return res.status(500).json({ success: false, message: "An error occurred while fetching repeat order data." });
+    }
+};
+

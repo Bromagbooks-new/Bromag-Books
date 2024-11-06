@@ -4,75 +4,39 @@ import { IoSearchSharp } from "react-icons/io5";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { OrderDataAtAdmin } from "../../../config/routeApi/owner"; // API for orders
+import { getRepeatOrderData } from "../../../config/routeApi/owner";
 import { toastError } from "../../../helpers/helpers";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 const RepeatOrderManagement = () => {
-    const [repeatOrdersData, setrepeatOrdersData] = useState([]);
+    const [repeatOrdersData, setRepeatOrdersData] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearchQuery, setDebouncedSearchQuery] = useState("");
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
 
     useEffect(() => {
-
-        const dummyrepeatOrdersData = [
-            {
-                _id: "1",
-                orderDetail: "Chicken Biryani",
-                date: "2024-10-01T10:30:00Z",
-                orderId: "ORD2001",
-                billId: "BIL2001",
-                Amount: 150.00,
-                paymentMethod: "Credit Card",
-                orderMode: "Online",
-                isVeg: false,
-            },
-            {
-                _id: "2",
-                orderDetail: "Chicken Kebab",
-                date: "2024-10-02T11:15:00Z",
-                orderId: "ORD2002",
-                billId: "BIL2002",
-                Amount: 200.50,
-                paymentMethod: "Cash",
-                orderMode: "Offline",
-                isVeg: false,
-            },
-            {
-                _id: "3",
-                orderDetail: "Mutton Biryani",
-                date: "2024-10-02T11:15:00Z",
-                orderId: "ORD2003",
-                billId: "BIL2003",
-                Amount: 250.75,
-                paymentMethod: "UPI",
-                orderMode: "Online",
-                isVeg: false,
-            },
-            {
-                _id: "4",
-                orderDetail: "Fish Curry",
-                date: "2024-10-03T12:30:00Z",
-                orderId: "ORD2004",
-                billId: "BIL2004",
-                Amount: 180.00,
-                paymentMethod: "Card",
-                orderMode: "Offline",
-                isVeg: false,
-            },
-        ];
-
         const handlerepeatOrdersData = async () => {
             try {
-                // Use the actual API for fetching non-veg orders.
-                const response = await OrderDataAtAdmin();
+                const response = await getRepeatOrderData();
                 if (response.data.success) {
-                    console.log("orderDataAtAdmin", response.data)
-                    setrepeatOrdersData(dummyrepeatOrdersData);
+                    const formattedData = response.data.RepeatOrderData.map((item, index) => ({
+                        _id: index.toString(),
+                        orderDetail: item.items.map(i => i.itemName).join(", "), // Combine item names (has to be change later)
+                        date: item.billDate,
+                        orderId: `ORD${item.billId}`, // has to be change later
+                        billId: item.billId,
+                        Amount: item.billAmount,
+                        paymentMethod: item.modeOfPayment,
+                        orderMode: item.mode,
+                        isVeg: item.items.some(i => i.itemName.toLowerCase().includes("veg")),
+                    }));
+
+                    setRepeatOrdersData(formattedData);
                 } else {
                     toastError(response.data.message);
                 }
@@ -93,7 +57,7 @@ const RepeatOrderManagement = () => {
     }, [searchQuery]);
 
     // Filter the repeatOrdersData based on the search query and date range
-    const filteredrepeatOrdersData = repeatOrdersData?.filter((item) => {
+    const filteredRepeatOrdersData = repeatOrdersData.filter((item) => {
         const dateObject = new Date(item.date);
 
         // Filter by search query (Order ID)
@@ -109,8 +73,21 @@ const RepeatOrderManagement = () => {
         return matchesSearch && isWithinDateRange;
     });
 
+    const totalPages = Math.ceil(filteredRepeatOrdersData.length / itemsPerPage);
+    const paginatedData = filteredRepeatOrdersData.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
     const handleDateSearch = () => {
         setIsDateSearchClicked(true);
+        setCurrentPage(1);
+    };
+
+    const handlePageChange = (newPage) => {
+        if (newPage > 0 && newPage <= totalPages) {
+            setCurrentPage(newPage);
+        }
     };
 
     return (
@@ -170,12 +147,12 @@ const RepeatOrderManagement = () => {
 
                     <div className="pagination-div">
                         <p>
-                            Showing <strong>{filteredrepeatOrdersData.length}</strong> from <strong>{repeatOrdersData.length}</strong> results
+                            Showing <strong>{paginatedData.length}</strong> from <strong>{filteredRepeatOrdersData.length}</strong> results
                         </p>
                         <div className="pagination-controls">
-                            <button>&lt;</button>
-                            <span>1 - 10</span>
-                            <button>&gt;</button>
+                            <button onClick={() => handlePageChange(currentPage - 1)}>&lt;</button>
+                            <span>{currentPage} / {totalPages}</span>
+                            <button onClick={() => handlePageChange(currentPage + 1)}>&gt;</button>
                         </div>
                     </div>
 
@@ -195,7 +172,7 @@ const RepeatOrderManagement = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredrepeatOrdersData.map((item, i) => {
+                                {paginatedData.map((item, i) => {
                                     const dateObject = new Date(item.date);
                                     const formattedDate = dateObject.toLocaleDateString();
                                     const formattedTime = dateObject.toLocaleTimeString([], {
@@ -205,7 +182,7 @@ const RepeatOrderManagement = () => {
 
                                     return (
                                         <tr key={item._id}>
-                                            <td>{i + 1}</td>
+                                            <td>{(currentPage - 1) * itemsPerPage + i + 1}</td>
                                             <td>{item.orderDetail}</td>
                                             <td>{item.orderId}</td>
                                             <td>{formattedDate}</td>

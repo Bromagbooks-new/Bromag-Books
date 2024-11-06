@@ -275,6 +275,12 @@ userRouter.get(
   dominantController.getTotalNonVegOrderData
 );
 
+userRouter.get(
+  "/getRepeatOrderData",
+  interceptor.adminAuth,
+  dominantController.getRepeatOrderData
+);
+
 userRouter.post(
   "/generateKOT",
   interceptor.adminAuth,

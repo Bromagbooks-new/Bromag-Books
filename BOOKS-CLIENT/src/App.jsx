@@ -182,6 +182,7 @@ import WhoWeAre from "./pages/WhoWeAre";
 import { orderManagementLoader } from "./pages/admindashboardpages/ordermanagement/OrderManagement";
 // import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermAndCondition from "./pages/TermAndCondition";
+import BarGraph from "./components/dominantmanagement/BarGraph";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -492,26 +493,26 @@ const router = createBrowserRouter([
           {
             path: "dominant-management",
             element: <DominantManagement />,
-            // loader: dominantManagementLoader,
+            loader: dominantManagementLoader,
             children: [
-              // {
-              //   index: true, // Default child route
-              //   element: <NonVegOrderManagement />,
-              //   loader: newOrderChartsLoader
-              // },
               {
-                path: 'veg-order',
-                element: <VegOrderManagement />
+                index: true,
+                element: <BarGraph />,
+                loader: dominantManagementLoader,
               },
               {
-                path: 'nonveg-order',
-                element: <NonVegOrderManagement />
+                path: "veg-order",
+                element: <VegOrderManagement />,
               },
               {
-                path: 'repeat-order',
-                element: <RepeatOrderManagement />
+                path: "nonveg-order",
+                element: <NonVegOrderManagement />,
+              },
+              {
+                path: "repeat-order",
+                element: <RepeatOrderManagement />,
               }
-            ]
+            ],
           },
           {
             path: "inventory-management",

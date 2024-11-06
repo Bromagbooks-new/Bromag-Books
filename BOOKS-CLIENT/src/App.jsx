@@ -165,7 +165,7 @@ import VegOrderManagement from "./pages/admindashboardpages/dominanatmanagement/
 import RepeatOrderManagement from "./pages/admindashboardpages/dominanatmanagement/RepeatOrder";
 import Upgrade from "./pages/Upgrade";
 import DominantDashboard from "./pages/admindashboardpages/dashboard/DominantDashboard";
-import OrderDashboard from "./pages/admindashboardpages/dashboard/OrderDashboard";
+import OrderDashboard, { DashboardOrderLoader } from "./pages/admindashboardpages/dashboard/OrderDashboard";
 import InventoryDashboard from "./pages/admindashboardpages/dashboard/InventoryDashboard";
 import DashboardMain from "./pages/admindashboardpages/dashboard/DashboardMain";
 import InventoryManagement from "./pages/admindashboardpages/inventorymanagement/InventoryManagement";
@@ -306,7 +306,7 @@ const router = createBrowserRouter([
           {
             path: 'order',
             element: <OrderDashboard />,
-            loader: newOrderChartsLoader
+            loader: DashboardOrderLoader
           },
           {
             path: 'dominant',

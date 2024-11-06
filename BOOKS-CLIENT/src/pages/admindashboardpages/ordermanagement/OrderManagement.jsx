@@ -42,7 +42,6 @@ const OrderManagement = () => {
         </>
       )}
 
-      {/* This will render either the charts or the sales data depending on the route */}
       <div>
         <Outlet />
       </div>

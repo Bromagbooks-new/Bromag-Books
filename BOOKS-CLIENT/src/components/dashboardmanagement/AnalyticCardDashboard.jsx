@@ -23,29 +23,29 @@ const AnalyticsCardDashboard = ({
 }) => {
     const [selectedFilter, setSelectedFilter] = useState("today");
 
-    // console.log('breakdown:', breakdown)
-    let selectedBreakdown = breakdown.dailyBreakdown;
-    // console.log('selectedBreakdown:', selectedBreakdown)
+    console.log('breakdown:', breakdown)
+    let selectedBreakdown = breakdown.dailyStats?.totalBills;
+    console.log('selectedBreakdown:', selectedBreakdown)
 
     if (selectedFilter === 'today') {
-        selectedBreakdown = breakdown.dailyBreakdown;
+        selectedBreakdown = breakdown.dailyStats?.totalBills;
     }
     if (selectedFilter === 'monthly') {
-        selectedBreakdown = breakdown.monthlyBreakdown;
+        selectedBreakdown = breakdown.monthlyStats?.totalBills;
     }
     if (selectedFilter === 'weekly') {
-        selectedBreakdown = breakdown.weeklyBreakdown;
+        selectedBreakdown = breakdown.weeklyStats?.totalBills;
     }
 
     // console.log(id);
-    // console.log(selectedBreakdown);
+    console.log("filtered", selectedBreakdown);
 
     return (
         <NavLink
             to={url}
             className={({ isActive }) =>
                 cn(
-                    `rounded-2xl w-[16rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${isActive && activatedClass
+                    `rounded-2xl w-[20rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${isActive && activatedClass
                     }`
                 )
             }
@@ -71,7 +71,8 @@ const AnalyticsCardDashboard = ({
                                 "text-black": isActive,
                             })}
                         >
-                            {selectedBreakdown[id]}
+                            {selectedBreakdown}
+                            {/* {console.log("ghgjghjb", selectedBreakdown[id])} */}
                         </p>
                         <img src={isActive ? activatedIcon : icon} className="w-14 h-14" />
                     </div>

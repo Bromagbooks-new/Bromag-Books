@@ -66,8 +66,6 @@ exports.getOnlineData = async (req, res) => {
   }
 };
 
-
-
 exports.getHighestBillingAmountPerHour = async (req, res) => {
   try {
     const restaurantId = req.restaurant;
@@ -125,7 +123,6 @@ exports.getHighestBillingAmountPerHour = async (req, res) => {
   }
 };
 
-
 exports.getHourlySalesData = async (req, res) => {
   try {
     const restaurantId = req.restaurant;
@@ -167,9 +164,6 @@ exports.getHourlySalesData = async (req, res) => {
     return res.status(500).json({ success: false, message: "An error occurred while fetching the hourly sales data." });
   }
 };
-
-
-
 
 exports.getTakeAwayForAdmin = async (req, res) => {
   try {
@@ -313,10 +307,6 @@ exports.getTotalSalesData = async (req, res) => {
     res.status(500).json({ success: false, message: "Failed to load total sales data" });
   }
 };
-
-
-
-
 
 exports.getSalesDashboardData = async (req, res) => {
   try {
@@ -557,13 +547,6 @@ exports.getSalesDashboardData = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal Server Error" });
   }
 };
-
-
-
-
-
-
-
 
 exports.getOrderData = async (req, res) => {
   try {

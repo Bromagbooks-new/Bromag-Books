@@ -9,6 +9,7 @@ import TakeawayActivated from "@/assets/images/billing-management/TakeawayActiva
 import Dinein from "@/assets/images/billing-management/Dinein.svg";
 import DineinActivated from "@/assets/images/billing-management/DineinActivated.svg";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import AnalyticsCardDashboard from "@/components/dashboardmanagement/AnalyticCardDashboard";
 
 const TotalSales = () => {
     const salesData = {
@@ -16,7 +17,7 @@ const TotalSales = () => {
         datasets: [
             {
                 label: "Sales",
-                data: Array(30).fill(0).map(() => Math.random() * 100),
+                data: [22, 34, 67, 3, 5, 78, 56, 89, 24,],
                 fill: true,
                 backgroundColor: "rgba(0, 255, 0, 0.1)",
                 borderColor: "#16A34A",
@@ -92,7 +93,7 @@ const DashboardMain = () => {
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 flex-wrap">
                     {orderOptions.map((item) => (
                         <Link to={item.url} key={item.id} className="flex-1">
-                            <AnalyticsCard
+                            <AnalyticsCardDashboard
                                 id={item.id}
                                 title={item.title}
                                 url={item.url}

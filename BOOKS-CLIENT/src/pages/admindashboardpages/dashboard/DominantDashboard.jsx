@@ -9,6 +9,7 @@ import TakeawayActivated from "@/assets/images/billing-management/TakeawayActiva
 import Dinein from "@/assets/images/billing-management/Dinein.svg";
 import DineinActivated from "@/assets/images/billing-management/DineinActivated.svg";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import AnalyticsCardDashboard from "@/components/dashboardmanagement/AnalyticCardDashboard";
 
 const TotalSales = () => {
     const salesData = {
@@ -92,9 +93,10 @@ const DominantDashboard = () => {
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 flex-wrap">
                     {orderOptions.map((item) => (
                         <Link to={item.url} key={item.id} className="flex-1">
-                            <AnalyticsCard
+                            <AnalyticsCardDashboard
                                 id={item.id}
                                 title={item.title}
+                                url={item.url}
                                 icon={item.icon}
                                 activatedIcon={item.activatedIcon}
                                 activatedClass={item.activatedClass}
@@ -104,8 +106,8 @@ const DominantDashboard = () => {
                     ))}
                 </div>
                 <TotalSales />
-            </ScrollArea >
-        </div >
+            </ScrollArea>
+        </div>
     );
 };
 
@@ -117,7 +119,7 @@ const orderOptions = [
         title: "Sales",
         icon: Online,
         activatedIcon: OnlineActivated,
-        url: "/dashboard",
+        url: "/dashboard/sale",
         activatedClass: "bg-[#FFE588] border-2 border-[#CF9710]",
     },
     {

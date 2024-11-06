@@ -1224,7 +1224,7 @@ exports.getDashboardAnalytics = async (req, res) => {
     const isRestraunt = req.restaurant;
 
     const { date } = req.body;
-    // console.log('date:', date)
+    console.log('dateq1234567:', date)
 
     const dailyStats = await Bill.getStats(isRestraunt, date, "day");
     const weeklyStats = await Bill.getStats(isRestraunt, date, "week");

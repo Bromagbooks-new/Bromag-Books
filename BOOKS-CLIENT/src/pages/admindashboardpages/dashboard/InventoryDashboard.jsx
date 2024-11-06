@@ -11,6 +11,7 @@ import DineinActivated from "@/assets/images/billing-management/DineinActivated.
 import NewOrderCharts from "@/components/ordermanagement/NewOrderCharts";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import PieChartComponent from "@/components/dashboardmanagement/PieChartComponoent";
+import AnalyticsCardDashboard from "@/components/dashboardmanagement/AnalyticCardDashboard";
 
 const TotalSales = () => {
     const salesData = {
@@ -91,7 +92,7 @@ const InventoryDashboard = () => {
                 <div className="flex flex-col sm:flex-row gap-2 sm:gap-4">
                     {orderOptions.map((item) => (
                         <Link to={item.url} key={item.id} className="flex-1">
-                            <AnalyticsCard
+                            <AnalyticsCardDashboard
                                 id={item.id}
                                 title={item.title}
                                 url={item.url}
@@ -119,7 +120,7 @@ const orderOptions = [
         title: "Sales",
         icon: Online,
         activatedIcon: OnlineActivated,
-        url: "/dashboard",
+        url: "/dashboard/sale",
         activatedClass: "bg-[#FFE588] border-2 border-[#CF9710]",
     },
     {

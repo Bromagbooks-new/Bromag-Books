@@ -12,6 +12,7 @@ const salesController = require("../controller/sales_controller");
 const tableController = require("../controller/table_controller");
 const orderController = require("../controller/order.management.controller")
 const dominantController = require("../controller/dominant_controller")
+const dashboard = require("../controller/dashboard_controller")
 //middleware
 const interceptor = require("../middleware/interceptor");
 
@@ -280,6 +281,33 @@ userRouter.get(
   interceptor.adminAuth,
   dominantController.getRepeatOrderData
 );
+
+//Dashboard routes
+userRouter.get(
+  "/getSalesSummary",
+  interceptor.adminAuth,
+  dashboard.getSalesSummary
+);
+
+userRouter.get(
+  "/getVegNonVegSummary",
+  interceptor.adminAuth,
+  dashboard.getVegNonVegSummary
+);
+
+userRouter.post(
+  "/getDashboardCard",
+  interceptor.adminAuth,
+  dashboard.getDashboardCard
+);
+
+userRouter.post(
+  "/getOrderSummary",
+  interceptor.adminAuth,
+  dashboard.getOrderSummary
+);
+
+
 
 userRouter.post(
   "/generateKOT",

@@ -6,11 +6,9 @@ import {
     SelectContent,
 } from "@/components/ui/select";
 import { useState } from "react";
-
-import Online from "@/assets/images/billing-management/Online.svg";
-import trend from "@/assets/images/trend.svg";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import trend from "@/assets/images/trend.svg";
 
 const AnalyticsCardDashboard = ({
     title,
@@ -23,22 +21,14 @@ const AnalyticsCardDashboard = ({
 }) => {
     const [selectedFilter, setSelectedFilter] = useState("today");
 
-    console.log('breakdown:', breakdown)
-    let selectedBreakdown = breakdown.dailyStats?.totalBills;
-    console.log('selectedBreakdown:', selectedBreakdown)
 
-    if (selectedFilter === 'today') {
-        selectedBreakdown = breakdown.dailyStats?.totalBills;
-    }
-    if (selectedFilter === 'monthly') {
-        selectedBreakdown = breakdown.monthlyStats?.totalBills;
-    }
-    if (selectedFilter === 'weekly') {
-        selectedBreakdown = breakdown.weeklyStats?.totalBills;
-    }
+    const stats = selectedFilter === 'today'
+        ? breakdown.today
+        : selectedFilter === 'monthly'
+            ? breakdown.lastMonth
+            : breakdown.lastWeek;
 
-    // console.log(id);
-    console.log("filtered", selectedBreakdown);
+    const data = id === "sales" ? `₹${stats}` : stats
 
     return (
         <NavLink
@@ -71,12 +61,11 @@ const AnalyticsCardDashboard = ({
                                 "text-black": isActive,
                             })}
                         >
-                            {selectedBreakdown}
-                            {/* {console.log("ghgjghjb", selectedBreakdown[id])} */}
+                            {data}
                         </p>
                         <img src={isActive ? activatedIcon : icon} className="w-14 h-14" />
                     </div>
-                    <div className=" flex gap-1">
+                    <div className="flex gap-1">
                         <img src={trend} className="w-5 h-5" />
                         <span className="text-green-500">1.3%</span>
                         <span>Up from past Week</span>

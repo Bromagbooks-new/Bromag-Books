@@ -590,6 +590,49 @@ const GetDashboardAnalytics = async (data) => {
   }
 }
 
+const getSalesSummary = async () => {
+  // console.log('data2:', data)
+  try {
+    console.log("dashboard owner");
+    const response = await restaurantOwnerAxiosInstance.get("getSalesSummary");
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const getVegNonVegSummary = async () => {
+  // console.log('data2:', data)
+  try {
+    console.log("dashboard owner");
+    const response = await restaurantOwnerAxiosInstance.get("getVegNonVegSummary");
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const getDashboardCard = async (data) => {
+  // console.log('data2:', data)
+  try {
+    console.log("dashboard cards", data);
+    const response = await restaurantOwnerAxiosInstance.post("getDashboardCard", data);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+const getOrderSummary = async (data) => {
+  // console.log('data2:', data)
+  try {
+    console.log("dashboard owner");
+    const response = await restaurantOwnerAxiosInstance.post("getOrderSummary", data);
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
 const OnlineOrderDataOrderManagement = async () => {
   try {
     const response = await restaurantOwnerAxiosInstance.get("getOnlineOrderData");
@@ -1493,5 +1536,9 @@ export {
   GetDominantCardAnalytics,
   getTotalVegOrderData,
   getTotalNonVegOrderData,
-  getRepeatOrderData
+  getRepeatOrderData,
+  getSalesSummary,
+  getOrderSummary,
+  getVegNonVegSummary,
+  getDashboardCard
 };

@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import AnalyticsCard from "@/components/ordermanagement/AnalyticsCard";
 import Online from "@/assets/images/billing-management/Online.svg";
 import OnlineActivated from "@/assets/images/billing-management/OnlineActivated.svg";
@@ -10,9 +10,12 @@ import Dinein from "@/assets/images/billing-management/Dinein.svg";
 import DineinActivated from "@/assets/images/billing-management/DineinActivated.svg";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import AnalyticsCardDashboard from "@/components/dashboardmanagement/AnalyticCardDashboard";
+import { getDashboardCard, getVegNonVegSummary } from "@/config/routeApi/owner";
 
 const TotalSales = () => {
-    const salesData = {
+    const [selectedProduct, setSelectedProduct] = useState("Veg");
+    const [sortOption, setSortOption] = useState("Month");
+    const [salesData, setSalesData] = useState({
         labels: Array(30).fill(0).map((_, i) => i + 1),
         datasets: [
             {
@@ -25,32 +28,133 @@ const TotalSales = () => {
                 tension: 0.4
             }
         ]
+    });
+
+    // Fetch data based on selected product and sort option
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getVegNonVegSummary();
+                if (response.status === 200) {
+                    const data = response.data.chartData;
+                    let chartData = [];
+                    let labels = [];
+
+                    if (selectedProduct === "Both") {
+                        chartData = [
+                            {
+                                label: "Veg Sales",
+                                data:
+                                    sortOption === "Month"
+                                        ? data.month.veg
+                                        : sortOption === "Week"
+                                            ? data.week.veg
+                                            : data.day.veg,
+                                fill: true,
+                                backgroundColor: "rgba(92, 122, 143, 1)",
+                                borderColor: "#16A34A",
+                                pointBackgroundColor: "#16A34A",
+                                tension: 0.4
+                            },
+                            {
+                                label: "Non-Veg Sales",
+                                data:
+                                    sortOption === "Month"
+                                        ? data.month.nonVeg
+                                        : sortOption === "Week"
+                                            ? data.week.nonVeg
+                                            : data.day.nonVeg,
+                                fill: true,
+                                backgroundColor: "rgba(247, 103, 103, 0.3)",
+                                borderColor: "#F44336",
+                                pointBackgroundColor: "#F44336",
+                                tension: 0.4
+                            }
+                        ];
+                    } else {
+                        // Handle individual product selection
+                        chartData = selectedProduct === "Veg"
+                            ? (sortOption === "Month"
+                                ? data.month.veg
+                                : sortOption === "Week"
+                                    ? data.week.veg
+                                    : data.day.veg)
+                            : (sortOption === "Month"
+                                ? data.month.nonVeg
+                                : sortOption === "Week"
+                                    ? data.week.nonVeg
+                                    : data.day.nonVeg);
+
+                        chartData = [{
+                            label: `${selectedProduct} Sales`,
+                            data: chartData,
+                            fill: true,
+                            backgroundColor: "rgba(92, 122, 143, 1)",
+                            borderColor: "#16A34A",
+                            pointBackgroundColor: "#16A34A",
+                            tension: 0.4
+                        }];
+                    }
+
+                    // Adjust labels based on the selected sorting
+                    if (sortOption === "Month") {
+                        labels = Array(30).fill(0).map((_, i) => i + 1);
+                    } else if (sortOption === "Week") {
+                        labels = Array(7).fill(0).map((_, i) => `Day ${i + 1}`);
+                    } else if (sortOption === "Day") {
+                        labels = Array(24).fill(0).map((_, i) => `Hour ${i + 1}`);
+                    }
+
+                    setSalesData({
+                        labels: labels,
+                        datasets: chartData
+                    });
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, [selectedProduct, sortOption]);
+
+    const handleProductChange = (e) => {
+        setSelectedProduct(e.target.value);
+    };
+
+    const handleSortChange = (e) => {
+        setSortOption(e.target.value);
     };
 
     return (
-        <div className="w-full border py-4 px-2 sm:px-4 flex flex-col gap-4 bg-white rounded-2xl">
+        <div className="w-full border py-4 px-2 sm:px-4 flex flex-col gap-2 bg-white rounded-2xl mt-4">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold">Dominant</h2>
             <div className="flex flex-col sm:flex-row gap-5 mb-4">
                 <div className="w-full sm:w-auto">
                     <label className="block text-sm font-medium mb-1 ml-2 sm:ml-4 text-slate-500">Select Product</label>
                     <select
+                        value={selectedProduct}
+                        onChange={handleProductChange}
                         className="w-full sm:w-56 border border-gray-300 p-2 rounded ml-2 sm:ml-4"
                         style={{
                             height: '6vh',
                             background: 'rgba(245, 246, 250, 1)',
                         }}
                     >
-                        <option value="All Products">All Products</option>
-                        <option value="Product A">Product A</option>
-                        <option value="Product B">Product C</option>
+                        <option value="Veg">Veg</option>
+                        <option value="Non-Veg">Non-Veg</option>
+                        <option value="Both">Both</option>
                     </select>
                 </div>
-                <div className="w-full sm:w-auto mt-4 sm:mt-0">
+                <div className="w-full sm:w-auto sm:mt-0">
                     <label className="block text-sm font-medium mb-1 ml-2 sm:ml-4 text-slate-500">Sort by</label>
                     <select
+                        value={sortOption}
+                        onChange={handleSortChange}
                         className="w-full sm:w-56 border border-gray-300 p-2 rounded ml-2 sm:ml-4"
                         style={{
                             height: '6vh',
+                            background: 'rgba(245, 246, 250, 1)',
                         }}
                     >
                         <option value="Month">Month</option>
@@ -70,23 +174,19 @@ const TotalSales = () => {
                     </div>
                 </div>
             </div>
-            <div className="relative w-full h-48 sm:h-64 md:h-80">
+            <div className="relative w-ful h-48 sm:h-64 md:h-80">
                 <Line data={salesData} options={{ responsive: true, maintainAspectRatio: false }} />
             </div>
         </div>
     );
 };
 
-const DominantDashboard = () => {
-    const breakdown = {
-        dailyBreakdown: { online: 2, takeaway: 4, dinein: 1, total: 7 },
-        monthlyBreakdown: { online: 40, takeaway: 50, dinein: 10, total: 100 },
-        weeklyBreakdown: { online: 10, takeaway: 15, dinein: 2, total: 27 },
-    };
 
+const DominantDashboard = () => {
+    const breakdown = useLoaderData();
     return (
         <div className="w-full h-full border py-4 px-2 sm:px-4 flex flex-col gap-4">
-            <ScrollArea className="h-[45rem] w-full overflow-visible z-20" type="scroll">
+            <ScrollArea className="h-[70rem] w-full overflow-visible z-20" type="scroll">
                 <div className="flex gap-4">
                     <p className="text-2xl sm:text-3xl font-bold">Dashboard</p>
                 </div>
@@ -112,6 +212,19 @@ const DominantDashboard = () => {
 };
 
 export default DominantDashboard;
+
+export const DashboardDominantLoader = async () => {
+    try {
+        const response = await getDashboardCard({ date: new Date() });
+        if (response.status === 200) {
+            console.log("API Response:", response.data);
+            return response.data.totalOrder;
+        }
+    } catch (error) {
+        console.error("Failed to fetch sales summary:", error);
+    }
+    return null;
+};
 
 const orderOptions = [
     {

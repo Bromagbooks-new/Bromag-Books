@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
-import { Link } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import AnalyticsCard from "@/components/ordermanagement/AnalyticsCard";
 import Online from "@/assets/images/billing-management/Online.svg";
 import OnlineActivated from "@/assets/images/billing-management/OnlineActivated.svg";
@@ -10,67 +10,82 @@ import Dinein from "@/assets/images/billing-management/Dinein.svg";
 import DineinActivated from "@/assets/images/billing-management/DineinActivated.svg";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import AnalyticsCardDashboard from "@/components/dashboardmanagement/AnalyticCardDashboard";
+import { getDashboardCard, getSalesSummary } from "@/config/routeApi/owner";
 
 const TotalSales = () => {
+    const [sortOption, setSortOption] = useState("Month");
+    const [salesSummary, setSalesSummary] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getSalesSummary();
+                console.log("asa", response.data)
+                if (response.status === 200) {
+                    setSalesSummary(response.data);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+    // Dynamically set data based on selected sort option
     const salesData = {
-        labels: Array(30).fill(0).map((_, i) => i + 1),
+        labels: Array.from({ length: salesSummary?.graphData?.[sortOption.toLowerCase()]?.length || 30 }, (_, i) => i + 1),
         datasets: [
             {
                 label: "Sales",
-                data: [22, 34, 67, 3, 5, 78, 56, 89, 24,],
+                data: salesSummary?.graphData?.[sortOption.toLowerCase()] || [],
                 fill: true,
                 backgroundColor: "rgba(0, 255, 0, 0.1)",
                 borderColor: "#16A34A",
                 pointBackgroundColor: "#16A34A",
-                tension: 0.4
-            }
-        ]
+                tension: 0.4,
+            },
+        ],
     };
 
     return (
-        <div className="w-full border py-4 px-2 sm:px-4 flex flex-col gap-4 bg-white rounded-2xl">
+        <div className="w-full mt-4 border py-4 px-2 sm:px-4 flex flex-col gap-2 bg-white rounded-2xl">
             <h2 className="text-2xl sm:text-3xl font-bold">Total Sales</h2>
             <div className="flex flex-col sm:flex-row gap-5 mb-4">
                 <div className="w-full sm:w-auto">
                     <label className="block text-sm font-medium mb-1 ml-2 sm:ml-4 text-slate-500">Select Product</label>
                     <select
                         className="w-full sm:w-56 border border-gray-300 p-2 rounded ml-2 sm:ml-4"
-                        style={{
-                            height: '6vh',
-                            background: 'rgba(245, 246, 250, 1)',
-                        }}
+                        style={{ height: '6vh', background: 'rgba(245, 246, 250, 1)' }}
                     >
                         <option value="All Products">All Products</option>
                         <option value="Product A">Product A</option>
-                        <option value="Product B">Product C</option>
+                        <option value="Product B">Product B</option>
                     </select>
                 </div>
-                <div className="w-full sm:w-auto mt-4 sm:mt-0">
+                <div className="w-full sm:w-auto sm:mt-0">
                     <label className="block text-sm font-medium mb-1 ml-2 sm:ml-4 text-slate-500">Sort by</label>
                     <select
+                        value={sortOption}
+                        onChange={(e) => setSortOption(e.target.value)}
                         className="w-full sm:w-56 border border-gray-300 p-2 rounded ml-2 sm:ml-4"
-                        style={{
-                            height: '6vh',
-                        }}
+                        style={{ height: '6vh' }}
                     >
                         <option value="Month">Month</option>
                         <option value="Day">Day</option>
                         <option value="Week">Week</option>
                     </select>
                 </div>
-
                 <div className="flex justify-between sm:justify-start sm:gap-4 w-full sm:w-auto">
                     <div className="flex flex-col items-center sm:items-start">
                         <span className="block text-sm font-medium mb-1 text-slate-500">Avg. Sales</span>
-                        <span className="text-5xl font-bold text-slate-500">0000</span>
+                        <span className="text-5xl font-bold text-slate-500">{salesSummary?.totalSales?.today || 0}</span>
                     </div>
                     <div className="flex flex-col items-center sm:items-start">
                         <span className="block text-sm font-medium mb-1 text-slate-500">Total Avg. Sales</span>
-                        <span className="text-5xl font-bold text-slate-500">0000</span>
+                        <span className="text-5xl font-bold text-slate-500">{salesSummary?.totalSales?.lastMonth || 0}</span>
                     </div>
                 </div>
             </div>
-            <div className="relative w-full h-64 sm:h-80">
+            <div className="relative w-full h-64 sm:h-80 bg-[#E9FFF4]">
                 <Line data={salesData} options={{ responsive: true, maintainAspectRatio: false }} />
             </div>
         </div>
@@ -78,12 +93,8 @@ const TotalSales = () => {
 };
 
 const DashboardMain = () => {
-    const breakdown = {
-        dailyBreakdown: { online: 2, takeaway: 4, dinein: 1, total: 7 },
-        monthlyBreakdown: { online: 40, takeaway: 50, dinein: 10, total: 100 },
-        weeklyBreakdown: { online: 10, takeaway: 15, dinein: 2, total: 27 },
-    };
-
+    const salesSummary = useLoaderData();
+    console.log("summa", salesSummary)
     return (
         <div className="w-full h-full border py-4 px-2 sm:px-4 flex flex-col gap-4">
             <ScrollArea className="h-[45rem] w-full overflow-visible z-20" type="scroll">
@@ -100,7 +111,7 @@ const DashboardMain = () => {
                                 icon={item.icon}
                                 activatedIcon={item.activatedIcon}
                                 activatedClass={item.activatedClass}
-                                breakdown={breakdown}
+                                breakdown={salesSummary || {}}
                             />
                         </Link>
                     ))}
@@ -112,6 +123,19 @@ const DashboardMain = () => {
 };
 
 export default DashboardMain;
+
+export const DashboardSaleLoader = async () => {
+    try {
+        const response = await getDashboardCard({ date: new Date() });
+        if (response.status === 200) {
+            console.log("API Response:", response.data);
+            return response.data.totalSales;
+        }
+    } catch (error) {
+        console.error("Failed to fetch sales summary:", error);
+    }
+    return null;
+};
 
 const orderOptions = [
     {
@@ -145,5 +169,5 @@ const orderOptions = [
         activatedIcon: DineinActivated,
         url: "/dashboard/inventory",
         activatedClass: "bg-[#CAC9FF] border-2 border-[#5A57D0]",
-    }
+    },
 ];

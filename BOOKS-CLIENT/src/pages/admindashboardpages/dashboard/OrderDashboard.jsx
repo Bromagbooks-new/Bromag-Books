@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Pie } from "react-chartjs-2";
 import { Link, useLoaderData } from "react-router-dom";
 import AnalyticsCard from "@/components/ordermanagement/AnalyticsCard";
@@ -11,68 +11,28 @@ import DineinActivated from "@/assets/images/billing-management/DineinActivated.
 import NewOrderCharts from "@/components/ordermanagement/NewOrderCharts";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import AnalyticsCardDashboard from "@/components/dashboardmanagement/AnalyticCardDashboard";
-import { GetDashboardAnalytics } from "@/config/routeApi/owner";
+import { GetDashboardAnalytics, getDashboardCard, getOrderSummary } from "@/config/routeApi/owner";
 
-// const TotalSales = () => {
-//     const salesData = {
-//         labels: ["Online", "Takeaway", "Dine-in"],
-//         datasets: [
-//             {
-//                 label: "Sales Breakdown",
-//                 data: [30, 50, 20], // Example data, replace with your actual data
-//                 backgroundColor: ["#16A34A", "#FFCE56", "#FF6384"],
-//                 hoverBackgroundColor: ["#2F9E44", "#F8B400", "#F76794"]
-//             }
-//         ]
-//     };
 
-//     return (
-//         <div className="w-full border py-4 px-2 sm:px-4 flex flex-col gap-4 bg-white rounded-2xl">
-//             <h2 className="text-2xl sm:text-3xl font-bold">Total Sales</h2>
-//             <div className="flex flex-col sm:flex-row gap-5 mb-4">
-//                 <div className="w-full sm:w-auto">
-//                     <label className="block text-sm font-medium mb-1 ml-4 text-slate-500">Select Product</label>
-//                     <select className="w-full border border-gray-300 p-2 rounded ml-4" style={{ height: '6vh', width: '14vw', background: 'rgba(245, 246, 250, 1)' }}>
-//                         <option value="All Products">All Products</option>
-//                         <option value="Product A">Product A</option>
-//                         <option value="Product B">Product B</option>
-//                         {/* Add more products as needed */}
-//                     </select>
-//                 </div>
-//                 <div className="w-full sm:w-auto">
-//                     <label className="block text-sm font-medium mb-1 ml-4 text-slate-500">Sort by</label>
-//                     <select className="w-full border border-gray-300 p-2 rounded ml-4" style={{ height: '6vh', width: '14vw' }}>
-//                         <option value="Month">Month</option>
-//                         <option value="Day">Day</option>
-//                         <option value="Week">Week</option>
-//                     </select>
-//                 </div>
-//                 <div className="flex justify-between sm:justify-start sm:gap-4 w-full sm:w-auto">
-//                     <div className="flex flex-col items-center sm:items-start">
-//                         <span className="block text-sm font-medium mb-1 text-slate-500">Avg. Sales</span>
-//                         <span className="text-5xl font-bold text-slate-500">0000</span>
-//                     </div>
-//                     <div className="flex flex-col items-center sm:items-start">
-//                         <span className="block text-sm font-medium mb-1 text-slate-500">Total Avg. Sales</span>
-//                         <span className="text-5xl font-bold text-slate-500">0000</span>
-//                     </div>
-//                 </div>
-//             </div>
-//             <div className="relative w-full h-64 sm:h-80">
-//                 <Pie data={salesData} options={{ responsive: true, maintainAspectRatio: false }} />
-//             </div>
-//         </div>
-//     );
-// };
 
 const OrderDashboard = () => {
-    const breakdown = useLoaderData()
-    // const breakdown = {
-    //     dailyBreakdown: { online: 2, takeaway: 4, dinein: 1, total: 7 },
-    //     monthlyBreakdown: { online: 40, takeaway: 50, dinein: 10, total: 100 },
-    //     weeklyBreakdown: { online: 10, takeaway: 15, dinein: 2, total: 27 },
-    // };
+    // const breakdown = useLoaderData()
+    const [breakdown, setBreakdown] = useState(null);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await getDashboardCard({ date: new Date() });
+                console.log("asa", response.data)
+                if (response.status === 200) {
+                    setBreakdown(response?.data?.totalOrder);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        };
 
+        fetchData();
+    }, []);
     return (
         <div className="w-full h-full border py-4 px-2 sm:px-4 flex flex-col gap-4">
             <ScrollArea className="h-[45rem] w-full overflow-visible z-20" type="scroll">
@@ -89,7 +49,7 @@ const OrderDashboard = () => {
                                 icon={item.icon}
                                 activatedIcon={item.activatedIcon}
                                 activatedClass={item.activatedClass}
-                                breakdown={breakdown}
+                                breakdown={breakdown || {}}
                             />
                         </Link>
                     ))}
@@ -105,7 +65,7 @@ export default OrderDashboard;
 export const DashboardOrderLoader = async () => {
 
     try {
-        const response = await GetDashboardAnalytics({ date: new Date() });
+        const response = await getOrderSummary({ date: new Date() });
         console.log('response1:', response)
 
         if (response.status === 200) {

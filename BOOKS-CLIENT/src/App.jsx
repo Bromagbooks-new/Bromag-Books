@@ -164,10 +164,10 @@ import NonVegOrderManagement from "./pages/admindashboardpages/dominanatmanageme
 import VegOrderManagement from "./pages/admindashboardpages/dominanatmanagement/TotalVegOrders";
 import RepeatOrderManagement from "./pages/admindashboardpages/dominanatmanagement/RepeatOrder";
 import Upgrade from "./pages/Upgrade";
-import DominantDashboard from "./pages/admindashboardpages/dashboard/DominantDashboard";
+import DominantDashboard, { DashboardDominantLoader } from "./pages/admindashboardpages/dashboard/DominantDashboard";
 import OrderDashboard, { DashboardOrderLoader } from "./pages/admindashboardpages/dashboard/OrderDashboard";
 import InventoryDashboard from "./pages/admindashboardpages/dashboard/InventoryDashboard";
-import DashboardMain from "./pages/admindashboardpages/dashboard/DashboardMain";
+import DashboardMain, { DashboardSaleLoader } from "./pages/admindashboardpages/dashboard/DashboardMain";
 import InventoryManagement from "./pages/admindashboardpages/inventorymanagement/InventoryManagement";
 import TotalInventoryManagement from "./pages/admindashboardpages/inventorymanagement/TotalInventoryItem";
 import AvailaibleInventoryManagement from "./pages/admindashboardpages/inventorymanagement/AvailaibleInventory";
@@ -296,12 +296,12 @@ const router = createBrowserRouter([
           {
             index: true,
             element: <DashboardMain />,
-            // loader: newOrderChartsLoader,
+            loader: DashboardSaleLoader,
           },
           {
             path: 'sale',
             element: <DashboardMain />,
-            // loader: newOrderChartsLoader,
+            loader: DashboardSaleLoader,
           },
           {
             path: 'order',
@@ -310,7 +310,8 @@ const router = createBrowserRouter([
           },
           {
             path: 'dominant',
-            element: <DominantDashboard />
+            element: <DominantDashboard />,
+            loader: DashboardDominantLoader
           },
           {
             path: 'inventory',

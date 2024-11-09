@@ -633,6 +633,19 @@ const getOrderSummary = async (data) => {
     console.error(error);
   }
 }
+
+const getInventorySummary = async () => {
+  // console.log('data2:', data)
+  try {
+    console.log("dashboard inventory");
+    const response = await restaurantOwnerAxiosInstance.get("getInventorySummary");
+    return response;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+
 const OnlineOrderDataOrderManagement = async () => {
   try {
     const response = await restaurantOwnerAxiosInstance.get("getOnlineOrderData");
@@ -1540,5 +1553,6 @@ export {
   getSalesSummary,
   getOrderSummary,
   getVegNonVegSummary,
+  getInventorySummary,
   getDashboardCard
 };

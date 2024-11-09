@@ -166,7 +166,7 @@ import RepeatOrderManagement from "./pages/admindashboardpages/dominanatmanageme
 import Upgrade from "./pages/Upgrade";
 import DominantDashboard, { DashboardDominantLoader } from "./pages/admindashboardpages/dashboard/DominantDashboard";
 import OrderDashboard, { DashboardOrderLoader } from "./pages/admindashboardpages/dashboard/OrderDashboard";
-import InventoryDashboard from "./pages/admindashboardpages/dashboard/InventoryDashboard";
+import InventoryDashboard, { DashboardInventoryLoader } from "./pages/admindashboardpages/dashboard/InventoryDashboard";
 import DashboardMain, { DashboardSaleLoader } from "./pages/admindashboardpages/dashboard/DashboardMain";
 import InventoryManagement from "./pages/admindashboardpages/inventorymanagement/InventoryManagement";
 import TotalInventoryManagement from "./pages/admindashboardpages/inventorymanagement/TotalInventoryItem";
@@ -316,7 +316,7 @@ const router = createBrowserRouter([
           {
             path: 'inventory',
             element: <InventoryDashboard />,
-            loader: newOrderChartsLoader
+            loader: DashboardInventoryLoader
           },
 
           {
@@ -518,7 +518,7 @@ const router = createBrowserRouter([
           {
             path: "inventory-management",
             element: <InventoryManagement />,
-            // loader: billingManagementLoader,
+            loader: billingManagementLoader,
             children: [
               // {
               //   index: true, // Default child route
@@ -710,6 +710,7 @@ const router = createBrowserRouter([
               {
                 index: true,
                 element: <StockManagement />,
+                loader: billingManagementLoader,
               },
               {
                 path: 'add-vendor',

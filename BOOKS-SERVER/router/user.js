@@ -306,9 +306,15 @@ userRouter.post(
   interceptor.adminAuth,
   dashboard.getOrderSummary
 );
+userRouter.get(
+  "/getInventorySummary",
+  interceptor.adminAuth,
+  dashboard.getInventorySummary
+);
 
 
 
+//bill
 userRouter.post(
   "/generateKOT",
   interceptor.adminAuth,

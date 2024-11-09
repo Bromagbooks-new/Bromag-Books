@@ -248,7 +248,7 @@ const EditStockForm = ({ categories }) => {
                 {/* Submit and Cancel Buttons */}
                 <div className="flex justify-center gap-3 mt-4">
                     <Button className="bg-[#486072]">Save Changes</Button>
-                    <Link to="/dashboard/vendor-management">
+                    <Link to="/dashboard/stock-management/total-stock/stock-detail">
                         <Button
                             type="button"
                             className="bg-transparent border-1 border-[#486072] text-[#486072]"

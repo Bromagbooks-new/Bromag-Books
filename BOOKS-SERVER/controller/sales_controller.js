@@ -27,6 +27,7 @@ exports.getOnlineData = async (req, res) => {
   try {
     const restaurantId = req.restaurant;
     const targetDate = req.query.date ? req.query.date : moment().format('YYYY-MM-DD');
+    const { page, limit, skip } = req.pagination;
 
     // Calculate the start and end of the specified day
     const startOfDay = moment(targetDate).startOf('day').toDate();
@@ -35,17 +36,26 @@ exports.getOnlineData = async (req, res) => {
     console.log("Start of Day:", startOfDay, "End of Day:", endOfDay);
     console.log("Restaurant ID:", restaurantId);
 
+
+
     if (restaurantId) {
-      // Fetch bill data for the specified restaurant with online or dine-in mode for the specific day
+      const totalDocuments = await bill_model.countDocuments({
+        restrauntId: restaurantId,
+        aggregator: { $in: ['zomato', 'swiggy', 'bromag', 'magicpin', 'others'] },
+        date: { $gte: startOfDay, $lt: endOfDay }
+      });
+
+      // Fetch bill data with pagination
       const billData = await bill_model.find({
         restrauntId: restaurantId,
         aggregator: { $in: ['zomato', 'swiggy', 'bromag', 'magicpin', 'others'] },
         date: { $gte: startOfDay, $lt: endOfDay }
-      }).sort({ date: -1 });
+      })
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(limit);
+      console.log("Bill Data:", billData);
 
-      console.log("Bill Data:", billData); // Log the data fetched
-
-      // Format the bill data to include only the required fields
       const formattedBillData = billData.map(bill => ({
         billDate: bill.date,
         time: bill.date.toISOString().split('T')[1].split('.')[0],
@@ -55,8 +65,16 @@ exports.getOnlineData = async (req, res) => {
         aggregator: bill.aggregator,
       }));
 
-
-      return res.status(200).json({ success: true, OnlineOrderData: formattedBillData });
+      res.status(200).json({
+        success: true,
+        OnlineOrderData: formattedBillData,
+        pagination: {
+          totalDocuments,
+          currentPage: page,
+          totalPages: Math.ceil(totalDocuments / limit),
+          limit
+        }
+      });
     } else {
       return res.status(401).json({ success: false, message: "Session expired!" });
     }
@@ -69,17 +87,23 @@ exports.getOnlineData = async (req, res) => {
 exports.getHighestBillingAmountPerHour = async (req, res) => {
   try {
     const restaurantId = req.restaurant;
+    const { page, limit, skip } = req.pagination;
+
     if (!restaurantId) {
       return res.status(400).json({ success: false, message: "Restaurant ID is required." });
     }
 
-
     const now = new Date();
     const istDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
 
+    const startDate = moment.tz(istDate, "Asia/Kolkata").startOf('day').toDate();
+    const endDate = moment.tz(istDate, "Asia/Kolkata").endOf('day').toDate();
 
-    const startDate = moment1.tz(istDate, "Asia/Kolkata").startOf('day').toDate();
-    const endDate = moment1.tz(istDate, "Asia/Kolkata").endOf('day').toDate();
+    const totalDocuments = await bill_model.countDocuments({
+      restrauntId: restaurantId,
+      date: { $gte: startDate, $lte: endDate },
+      status: 'COMPLETED'
+    });
 
     const highestBillingData = await bill_model.aggregate([
       {
@@ -113,21 +137,35 @@ exports.getHighestBillingAmountPerHour = async (req, res) => {
           modeOfPayment: "$highestBilling.paymentMode",
           modeOfOrder: "$highestBilling.mode"
         }
-      }
+      },
+      { $skip: skip },
+      { $limit: limit }
     ]);
-    console.log("highest", highestBillingData)
-    res.status(200).json({ success: true, HighestBillingAmountData: highestBillingData });
+
+    console.log("Highest Billing Data:", highestBillingData);
+
+    return res.status(200).json({
+      success: true,
+      HighestBillingAmountData: highestBillingData,
+      pagination: {
+        totalDocuments,
+        currentPage: page,
+        totalPages: Math.ceil(totalDocuments / limit),
+        limit
+      }
+    });
   } catch (error) {
     console.error("Error fetching highest billing amount data:", error);
     res.status(500).json({ success: false, message: "Failed to load highest billing amount data." });
   }
 };
 
+
 exports.getHourlySalesData = async (req, res) => {
   try {
     const restaurantId = req.restaurant;
     const targetDate = req.query.date ? req.query.date : moment().format('YYYY-MM-DD');
-
+    const { page, limit, skip } = req.pagination;
     // Calculate the start and end of the last hour
     const endOfLastHour = moment().subtract(1, 'hours').endOf('hour').toDate();
     const startOfLastHour = moment(endOfLastHour).subtract(1, 'hours').startOf('hour').toDate();
@@ -136,15 +174,20 @@ exports.getHourlySalesData = async (req, res) => {
     console.log("Restaurant ID:", restaurantId);
 
     if (restaurantId) {
-      // Fetch bill data for the specified restaurant for the last hour
+      const totalDocuments = await bill_model.countDocuments({
+        restrauntId: restaurantId,
+        date: { $gte: startOfLastHour, $lt: endOfLastHour }
+      });
       const billData = await bill_model.find({
         restrauntId: restaurantId,
         date: { $gte: startOfLastHour, $lt: endOfLastHour }
-      }).sort({ date: -1 });
+      })
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(limit);
 
-      console.log("Hourly Sales Bill Data:", billData); // Log the data fetched
+      console.log("Hourly Sales Bill Data:", billData);
 
-      // Format the bill data to include only the required fields
       const formattedBillData = billData.map(bill => ({
         billDate: bill.date,
         time: bill.date.toISOString().split('T')[1].split('.')[0],
@@ -154,9 +197,17 @@ exports.getHourlySalesData = async (req, res) => {
         mode: bill.mode
       }));
 
-      return res.status(200).json({ success: true, HourlySalesData: formattedBillData });
+      return res.status(200).json({
+        success: true,
+        HourlySalesData: formattedBillData,
+        pagination: {
+          totalDocuments,
+          currentPage: page,
+          totalPages: Math.ceil(totalDocuments / limit),
+          limit
+        }
+      });
     } else {
-
       return res.status(401).json({ success: false, message: "Session expired!" });
     }
   } catch (error) {
@@ -169,6 +220,7 @@ exports.getTakeAwayForAdmin = async (req, res) => {
   try {
     const restaurantId = req.restaurant;
     const targetDate = req.query.date ? req.query.date : moment().format('YYYY-MM-DD');
+    const { page, limit, skip } = req.pagination;
 
     const startOfDay = moment(targetDate).startOf('day').toDate();
     const endOfDay = moment(targetDate).endOf('day').toDate();
@@ -177,27 +229,47 @@ exports.getTakeAwayForAdmin = async (req, res) => {
     console.log("Restaurant ID:", restaurantId);
 
     if (restaurantId) {
+
+      const totalDocuments = await bill_model.countDocuments({
+        restrauntId: restaurantId,
+        mode: "takeaway",
+        date: { $gte: startOfDay, $lt: endOfDay }
+      });
+
+
       const billData = await bill_model.find({
         restrauntId: restaurantId,
         mode: "takeaway",
         date: { $gte: startOfDay, $lt: endOfDay }
-      }).sort({ date: -1 });
+      })
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(limit);
 
       console.log("TakeAway Bill Data:", billData);
+
       // Format the bill data to include only the required fields
       const formattedBillData = billData.map(bill => ({
         billDate: bill.date,
-        time: bill.date.toISOString().split('T')[1].split('.')[0],
+        time: bill.date.toISOString().split('T')[1].split('.')[0],  // Extract time from date
         billId: bill.billNo,
         billAmount: bill.total,
         modeOfPayment: bill.paymentMode,
-        mode: bill.mode,
+        mode: bill.mode
       }));
 
-
-      return res.status(200).json({ success: true, TakeAwayOrderData: formattedBillData });
+      // Return the formatted data along with pagination info
+      return res.status(200).json({
+        success: true,
+        TakeAwayOrderData: formattedBillData,
+        pagination: {
+          totalDocuments,
+          currentPage: page,
+          totalPages: Math.ceil(totalDocuments / limit),
+          limit
+        }
+      });
     } else {
-
       return res.status(401).json({ success: false, message: "Session expired!" });
     }
   } catch (error) {
@@ -207,10 +279,12 @@ exports.getTakeAwayForAdmin = async (req, res) => {
 };
 
 
+
 exports.getDineInForAdmin = async (req, res) => {
   try {
     const restaurantId = req.restaurant;
     const targetDate = req.query.date ? req.query.date : moment().format('YYYY-MM-DD');
+    const { page, limit, skip } = req.pagination;
 
     // Calculate the start and end of the specified day
     const startOfDay = moment(targetDate).startOf('day').toDate();
@@ -220,14 +294,24 @@ exports.getDineInForAdmin = async (req, res) => {
     console.log("Restaurant ID:", restaurantId);
 
     if (restaurantId) {
-      // Fetch bill data for dine-in mode for the specified restaurant and day
+      // Get the total count of documents for pagination metadata
+      const totalDocuments = await bill_model.countDocuments({
+        restrauntId: restaurantId,
+        mode: "dinein",
+        date: { $gte: startOfDay, $lt: endOfDay }
+      });
+
+      // Fetch the dine-in bill data with pagination applied
       const billData = await bill_model.find({
         restrauntId: restaurantId,
         mode: "dinein",
         date: { $gte: startOfDay, $lt: endOfDay }
-      }).sort({ date: -1 });
+      })
+        .sort({ date: -1 })
+        .skip(skip)
+        .limit(limit);
 
-      console.log("DineIn Bill Data:", billData); // Log the data fetched
+      console.log("DineIn Bill Data:", billData);
 
       // Format the bill data to include only the required fields
       const formattedBillData = billData.map(bill => ({
@@ -236,13 +320,21 @@ exports.getDineInForAdmin = async (req, res) => {
         billId: bill.billNo,
         billAmount: bill.total,
         modeOfPayment: bill.paymentMode,
-        table: bill.tableNo,
+        table: bill.tableNo
       }));
 
-
-      return res.status(200).json({ success: true, DineInOrderData: formattedBillData });
+      // Return the formatted data along with pagination info
+      return res.status(200).json({
+        success: true,
+        DineInOrderData: formattedBillData,
+        pagination: {
+          totalDocuments,
+          currentPage: page,
+          totalPages: Math.ceil(totalDocuments / limit),
+          limit
+        }
+      });
     } else {
-
       return res.status(401).json({ success: false, message: "Session expired!" });
     }
   } catch (error) {
@@ -251,6 +343,7 @@ exports.getDineInForAdmin = async (req, res) => {
   }
 };
 
+
 /**
  * This function retrieves the total sales data for a specific restaurant.
  * It returns a JSON response containing the sales data sorted by date in descending order.
@@ -258,19 +351,26 @@ exports.getDineInForAdmin = async (req, res) => {
 exports.getTotalSalesData = async (req, res) => {
   try {
     const restaurantId = req.restaurant;
+    const { page, limit, skip } = req.pagination;
     const now = new Date();
     const istDate = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" }));
 
-
     const startDate = moment.tz(istDate, "Asia/Kolkata").startOf('day').toDate();
     const endDate = moment.tz(istDate, "Asia/Kolkata").endOf('day').toDate();
+
     if (restaurantId) {
+      const totalDocuments = await bill_model.countDocuments({
+        restrauntId: restaurantId,
+        date: { $gte: startDate, $lte: endDate },
+        status: 'COMPLETED'
+      });
+
       const salesData = await bill_model.aggregate([
         {
           $match: {
             restrauntId: restaurantId,
-            date: { $gte: startDate, $lte: endDate }, // Include the entire day
-            status: 'COMPLETED' // Only include completed sales
+            date: { $gte: startDate, $lte: endDate },
+            status: 'COMPLETED'
           }
         },
         {
@@ -285,10 +385,11 @@ exports.getTotalSalesData = async (req, res) => {
             customerEmail: 1,
             customerPhone: 1
           }
-        }
+        },
+        { $skip: skip },
+        { $limit: limit }
       ]);
 
-      // Format response data to match the table structure
       const formattedData = salesData.map((sale) => ({
         billDate: sale.date,
         time: sale.date.toISOString().split('T')[1].split('.')[0],
@@ -298,7 +399,16 @@ exports.getTotalSalesData = async (req, res) => {
         modeOfOrder: sale.mode
       }));
 
-      res.status(200).json({ success: true, SalesData: formattedData });
+      res.status(200).json({
+        success: true,
+        SalesData: formattedData,
+        pagination: {
+          totalDocuments,
+          currentPage: page,
+          totalPages: Math.ceil(totalDocuments / limit),
+          limit
+        }
+      });
     } else {
       return res.status(401).json({ success: false, message: "Session expired!" });
     }

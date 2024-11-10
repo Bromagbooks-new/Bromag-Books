@@ -492,31 +492,37 @@ userRouter.post(
 userRouter.get(
   "/getTakeAwayForAdmin",
   interceptor.adminAuth,
+  paginationMiddleware(),
   salesController.getTakeAwayForAdmin
 ); //sales management
 userRouter.get(
   "/getDineInForAdmin",
   interceptor.adminAuth,
+  paginationMiddleware(),
   salesController.getDineInForAdmin
 );
 userRouter.get(
   "/getOnlineData",
   interceptor.adminAuth,
+  paginationMiddleware(),
   salesController.getOnlineData
 );
 userRouter.get(
   "/getHighestBillingAmountPerHour",
   interceptor.adminAuth,
+  paginationMiddleware(),
   salesController.getHighestBillingAmountPerHour
 );
 userRouter.get(
   "/getHourlySalesData",
   interceptor.adminAuth,
+  paginationMiddleware(),
   salesController.getHourlySalesData
 );
 userRouter.get(
   "/getTotalSalesData",
   interceptor.adminAuth,
+  paginationMiddleware(),
   salesController.getTotalSalesData
 );
 userRouter.get(

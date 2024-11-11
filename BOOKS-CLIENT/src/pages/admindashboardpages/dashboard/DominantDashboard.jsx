@@ -218,7 +218,7 @@ export const DashboardDominantLoader = async () => {
         const response = await getDashboardCard({ date: new Date() });
         if (response.status === 200) {
             console.log("API Response:", response.data);
-            return response.data.totalOrder;
+            return response.data?.totalDominant;
         }
     } catch (error) {
         console.error("Failed to fetch sales summary:", error);

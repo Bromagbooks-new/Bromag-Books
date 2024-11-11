@@ -4,48 +4,166 @@ const moment = require('moment');
 const Inventory = require('../model/inventory_model')
 
 
+async function calculateTotalSales(startDate, endDate, restrauntId) {
+    const orders = await Bill.aggregate([
+        {
+            $match: {
+                restrauntId: restrauntId,
+                status: "COMPLETED",
+                date: { $gte: startDate.toDate(), $lt: endDate.toDate() }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                total: { $sum: "$total" }
+            }
+        }
+    ]);
+    return orders[0]?.total || 0;
+}
+async function calculateTotalInventory(startDate, endDate, restrauntId) {
+    const inventory = await Inventory.aggregate([
+        {
+            $match: {
+                restrauntId: restrauntId,
+                date: { $gte: startDate.toDate(), $lt: endDate.toDate() }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                totalAvailableQuantity: { $sum: "$availableQuantity" },
+            },
+        },
+        {
+            $project: {
+                _id: 0,
+                totalAvailableQuantity: 1,
+            },
+        },
+    ]);
+
+    return inventory[0]?.totalAvailableQuantity || 0;
+};
+
+
+async function getTotalVegNonVegCount(restrauntId, startDate, endDate) {
+    const items = await Bill.aggregate([
+        {
+            $match: {
+                restrauntId: restrauntId,
+                date: { $gte: startDate.toDate(), $lt: endDate.toDate() }
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                totalItems: { $sum: 1 }
+            }
+        }
+    ]);
+    return items[0]?.totalItems || 0;
+}
+
 exports.getDashboardCard = async (req, res) => {
     try {
         const restrauntId = req.restaurant;
         const { date } = req.body;
         console.log('date:', date);
 
-        // Get start of day, last week, and last month
+        // Define date ranges
         const today = moment().startOf('day');
-        const startOfLastWeek = moment().subtract(1, 'week').startOf('day');
-        const startOfLastMonth = moment().subtract(1, 'month').startOf('day');
+        const yesterday = moment().subtract(1, 'day').startOf('day');
+        const startOfThisWeek = moment().startOf('week');
+        const startOfLastWeek = moment().subtract(1, 'week').startOf('week');
+        const startOfThisMonth = moment().startOf('month');
+        const startOfLastMonth = moment().subtract(1, 'month').startOf('month');
 
-        // Get total sales for today, last week, and last month
-        const todaySales = await calculateTotalSales(today, restrauntId);
-        const lastWeekSales = await calculateTotalSales(startOfLastWeek, restrauntId);
-        const lastMonthSales = await calculateTotalSales(startOfLastMonth, restrauntId);
+        // Total Sales calculations
+        const todaySales = await calculateTotalSales(today, moment(), restrauntId);
+        const yesterdaySales = await calculateTotalSales(yesterday, today, restrauntId);
+        const thisWeekSales = await calculateTotalSales(startOfThisWeek, moment(), restrauntId);
+        const lastWeekSales = await calculateTotalSales(startOfLastWeek, startOfThisWeek, restrauntId);
+        const thisMonthSales = await calculateTotalSales(startOfThisMonth, moment(), restrauntId);
+        const lastMonthSales = await calculateTotalSales(startOfLastMonth, startOfThisMonth, restrauntId);
+
+        // Percentage changes for sales
+        const todaySalesChange = ((todaySales - yesterdaySales) / (yesterdaySales || 1)) * 100;
+        const weekSalesChange = ((thisWeekSales - lastWeekSales) / (lastWeekSales || 1)) * 100;
+        const monthSalesChange = ((thisMonthSales - lastMonthSales) / (lastMonthSales || 1)) * 100;
+
         const totalSales = {
-            today: todaySales,
-            lastWeek: lastWeekSales,
-            lastMonth: lastMonthSales
+            today: parseFloat(todaySales.toFixed(2)),
+            yesterday: parseFloat(yesterdaySales.toFixed(2)),
+            week: parseFloat(thisWeekSales.toFixed(2)),
+            month: parseFloat(thisMonthSales.toFixed(2)),
+            todayChangePercentage: parseFloat(todaySalesChange.toFixed(2)),
+            weekChangePercentage: parseFloat(weekSalesChange.toFixed(2)),
+            monthChangePercentage: parseFloat(monthSalesChange.toFixed(2))
         };
 
-        // Fetch the stats for day, week, and month
-        const dailyStats = await Bill.getStats(restrauntId, date, "day");
-        const weeklyStats = await Bill.getStats(restrauntId, date, "week");
-        const monthlyStats = await Bill.getStats(restrauntId, date, "month");
+        // Orders calculations
+        const todayOrders = (await Bill.getStats(restrauntId, today, "day")).totalBills;
+        const yesterdayOrders = (await Bill.getStats(restrauntId, yesterday, "day")).totalBills;
+        const thisWeekOrders = (await Bill.getStats(restrauntId, startOfThisWeek, "week")).totalBills;
+        const lastWeekOrders = (await Bill.getStats(restrauntId, startOfLastWeek, "week")).totalBills;
+        const thisMonthOrders = (await Bill.getStats(restrauntId, startOfThisMonth, "month")).totalBills;
+        const lastMonthOrders = (await Bill.getStats(restrauntId, startOfLastMonth, "month")).totalBills;
 
-        // Calculate total sales and total orders for today, last week, and last month
+        const todayOrderChange = ((todayOrders - yesterdayOrders) / (yesterdayOrders || 1)) * 100;
+        const weekOrderChange = ((thisWeekOrders - lastWeekOrders) / (lastWeekOrders || 1)) * 100;
+        const monthOrderChange = ((thisMonthOrders - lastMonthOrders) / (lastMonthOrders || 1)) * 100;
+
         const totalOrder = {
-            today: dailyStats.totalBills,
-            lastWeek: weeklyStats.totalBills,
-            lastMonth: monthlyStats.totalBills
+            today: parseFloat(todayOrders.toFixed(2)),
+            week: parseFloat(thisWeekOrders.toFixed(2)),
+            month: parseFloat(thisMonthOrders.toFixed(2)),
+            todayChangePercentage: parseFloat(todayOrderChange.toFixed(2)),
+            weekChangePercentage: parseFloat(weekOrderChange.toFixed(2)),
+            monthChangePercentage: parseFloat(monthOrderChange.toFixed(2))
         };
 
-        // Calculate inventory totals for today, last week, and last month
-        const todayInventory = await calculateTotalInventory(today, restrauntId);
-        const lastWeekInventory = await calculateTotalInventory(startOfLastWeek, restrauntId);
-        const lastMonthInventory = await calculateTotalInventory(startOfLastMonth, restrauntId);
+        // Inventory calculations
+        const todayInventory = await calculateTotalInventory(today, moment(), restrauntId);
+        const yesterdayInventory = await calculateTotalInventory(yesterday, today, restrauntId);
+        const thisWeekInventory = await calculateTotalInventory(startOfThisWeek, moment(), restrauntId);
+        const lastWeekInventory = await calculateTotalInventory(startOfLastWeek, startOfThisWeek, restrauntId);
+        const thisMonthInventory = await calculateTotalInventory(startOfThisMonth, moment(), restrauntId);
+        const lastMonthInventory = await calculateTotalInventory(startOfLastMonth, startOfThisMonth, restrauntId);
+
+        const todayInventoryChange = ((todayInventory - yesterdayInventory) / (yesterdayInventory || 1)) * 100;
+        const weekInventoryChange = ((thisWeekInventory - lastWeekInventory) / (lastWeekInventory || 1)) * 100;
+        const monthInventoryChange = ((thisMonthInventory - lastMonthInventory) / (lastMonthInventory || 1)) * 100;
 
         const totalInventory = {
-            today: todayInventory,
-            lastWeek: lastWeekInventory,
-            lastMonth: lastMonthInventory
+            today: parseFloat(todayInventory.toFixed(2)),
+            week: parseFloat(thisWeekInventory.toFixed(2)),
+            month: parseFloat(thisMonthInventory.toFixed(2)),
+            todayChangePercentage: parseFloat(todayInventoryChange.toFixed(2)),
+            weekChangePercentage: parseFloat(weekInventoryChange.toFixed(2)),
+            monthChangePercentage: parseFloat(monthInventoryChange.toFixed(2))
+        };
+
+        // Dominant item counts
+        const totalItemsToday = await getTotalVegNonVegCount(restrauntId, today, moment());
+        const totalItemsYesterday = await getTotalVegNonVegCount(restrauntId, yesterday, today);
+        const totalItemsThisWeek = await getTotalVegNonVegCount(restrauntId, startOfThisWeek, moment());
+        const totalItemsLastWeek = await getTotalVegNonVegCount(restrauntId, startOfLastWeek, startOfThisWeek);
+        const totalItemsThisMonth = await getTotalVegNonVegCount(restrauntId, startOfThisMonth, moment());
+        const totalItemsLastMonth = await getTotalVegNonVegCount(restrauntId, startOfLastMonth, startOfThisMonth);
+
+        const todayDominantChange = ((totalItemsToday - totalItemsYesterday) / (totalItemsYesterday || 1)) * 100;
+        const weekDominantChange = ((totalItemsThisWeek - totalItemsLastWeek) / (totalItemsLastWeek || 1)) * 100;
+        const monthDominantChange = ((totalItemsThisMonth - totalItemsLastMonth) / (totalItemsLastMonth || 1)) * 100;
+
+        const totalDominant = {
+            today: parseFloat(totalItemsToday.toFixed(2)),
+            week: parseFloat(totalItemsThisWeek.toFixed(2)),
+            month: parseFloat(totalItemsThisMonth.toFixed(2)),
+            todayChangePercentage: parseFloat(todayDominantChange.toFixed(2)),
+            weekChangePercentage: parseFloat(weekDominantChange.toFixed(2)),
+            monthChangePercentage: parseFloat(monthDominantChange.toFixed(2))
         };
 
         res.json({
@@ -53,7 +171,8 @@ exports.getDashboardCard = async (req, res) => {
             message: "Dashboard Summary Fetched Successfully",
             totalOrder,
             totalSales,
-            totalInventory
+            totalInventory,
+            totalDominant
         });
     } catch (error) {
         console.error('Error fetching dashboard sales data:', error);
@@ -301,48 +420,6 @@ exports.getInventorySummary = async (req, res) => {
         res.status(500).json({ message: "Failed to retrieve inventory summary data" });
     }
 };
-const calculateTotalInventory = async (startDate, restrauntId) => {
-    console.log('Start Date677:', startDate);
-    console.log('Current Date990:', new Date());
-    const startDateUTC = startDate.utc().toDate();
-    const inventoryData = await Inventory.aggregate([
-        {
-            $match: {
-                restaruntId: restrauntId,  // Filter by restaurant ID
-                billDate: { $gte: startDateUTC, $lt: new Date() },  // Filter by date range
-            },
-        },
-        {
-            $group: {
-                _id: null,  // Group by null to aggregate everything into one result
-                totalAvailableQuantity: { $sum: "$availableQuantity" },  // Sum up available quantities
-            },
-        },
-        {
-            $project: {
-                _id: 0,
-                totalAvailableQuantity: 1,  // Return only total available quantity
-            },
-        },
-    ]);
-
-    // If no inventory data is found, return totalAvailableQuantity as 0
-    const totalInventory = inventoryData.length > 0 ? inventoryData[0].totalAvailableQuantity : 0;
-
-    return totalInventory;  // Return only the total available quantity
-};
-
-
-
-
-async function calculateTotalSales(startDate, restrauntId) {
-    const orders = await Bill.aggregate([
-        { $match: { restrauntId: restrauntId, status: "COMPLETED", date: { $gte: startDate.toDate() } } },
-        { $group: { _id: null, total: { $sum: "$total" } } }
-    ]);
-    return orders[0]?.total || 0;
-}
-
 
 async function getGraphData(timePeriod, restrauntId) {
     let startDate;

@@ -81,7 +81,7 @@ const TotalSales = () => {
                     </div>
                     <div className="flex flex-col items-center sm:items-start">
                         <span className="block text-sm font-medium mb-1 text-slate-500">Total Avg. Sales</span>
-                        <span className="text-5xl font-bold text-slate-500">{salesSummary?.totalSales?.lastMonth || 0}</span>
+                        <span className="text-5xl font-bold text-slate-500">{salesSummary?.totalSales?.month || 0}</span>
                     </div>
                 </div>
             </div>

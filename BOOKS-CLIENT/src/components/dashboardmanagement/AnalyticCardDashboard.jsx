@@ -8,7 +8,8 @@ import {
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import trend from "@/assets/images/trend.svg";
+import trendUp from "@/assets/images/trend.svg";
+import trendDown from "@/assets/images/trend-down.svg";
 
 const AnalyticsCardDashboard = ({
     title,
@@ -21,14 +22,25 @@ const AnalyticsCardDashboard = ({
 }) => {
     const [selectedFilter, setSelectedFilter] = useState("today");
 
-
     const stats = selectedFilter === 'today'
         ? breakdown.today
         : selectedFilter === 'monthly'
-            ? breakdown.lastMonth
-            : breakdown.lastWeek;
+            ? breakdown.month
+            : breakdown.week;
 
-    const data = id === "sales" ? `₹${stats}` : stats
+    const percentageChange = selectedFilter === 'today'
+        ? breakdown.todayChangePercentage
+        : selectedFilter === 'monthly'
+            ? breakdown.monthChangePercentage
+            : breakdown.weekChangePercentage;
+
+    const isPositiveChange = percentageChange >= 0;
+    const trendImage = isPositiveChange ? trendUp : trendDown;
+    const trendColor = isPositiveChange ? "text-green-500" : "text-red-500";
+    const trendText = isPositiveChange ? "Up" : "Down";
+    const filterText = selectedFilter === "today" ? "from yesterday" : selectedFilter === "weekly" ? "from last week" : "from last month";
+
+    const data = id === "sales" ? `₹${stats}` : stats;
 
     return (
         <NavLink
@@ -65,10 +77,10 @@ const AnalyticsCardDashboard = ({
                         </p>
                         <img src={isActive ? activatedIcon : icon} className="w-14 h-14" />
                     </div>
-                    <div className="flex gap-1">
-                        <img src={trend} className="w-5 h-5" />
-                        <span className="text-green-500">1.3%</span>
-                        <span>Up from past Week</span>
+                    <div className="flex gap-1 items-center">
+                        <img src={trendImage} className="w-5 h-5" alt="trend" />
+                        <span className={trendColor}>{Math.abs(percentageChange)}%</span>
+                        <span>{trendText} {filterText}</span>
                     </div>
                 </>
             )}

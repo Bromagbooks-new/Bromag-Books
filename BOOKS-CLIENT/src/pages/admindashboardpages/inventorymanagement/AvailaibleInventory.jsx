@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { getAvailaibleInventory } from "@/config/routeApi/owner";
 
 const AvailaibleInventoryManagement = () => {
     const [AvailaibleInventoryData, setAvailaibleInventoryData] = useState([]);
@@ -16,61 +17,19 @@ const AvailaibleInventoryManagement = () => {
     const [isDateSearchClicked, setIsDateSearchClicked] = useState(false);
 
     useEffect(() => {
-        // Dummy data for non-veg orders
-        const dummyAvailaibleInventoryData = [
-            {
-                _id: "1",
-                itemImage: "image_url",
-                itemName: "Chicken",
-                totalQuantity: 3,
-                availableQuantity: 3,
-                billDate: "14 July 2024",
-                billNo: "9999999999",
-                vendor: "SRS Enterprises",
-            },
-            {
-                _id: "2",
-                itemImage: "image_url",
-                itemName: "Chicken",
-                totalQuantity: 3,
-                availableQuantity: 3,
-                billDate: "14 July 2024",
-                billNo: "9999999999",
-                vendor: "SRS Enterprises",
-            },
-            {
-                _id: "3",
-                itemImage: "image_url",
-                itemName: "Chicken",
-                totalQuantity: 3,
-                availableQuantity: 3,
-                billDate: "14 July 2024",
-                billNo: "9999999999",
-                vendor: "SRS Enterprises",
-            },
-            {
-                _id: "4",
-                itemImage: "image_url",
-                itemName: "Chicken",
-                totalQuantity: 3,
-                availableQuantity: 3,
-                billDate: "14 July 2024",
-                billNo: "9999999999",
-                vendor: "SRS Enterprises",
-            },
-            {
-                _id: "5",
-                itemImage: "image_url",
-                itemName: "Chicken",
-                totalQuantity: 3,
-                availableQuantity: 3,
-                billDate: "14 July 2024",
-                billNo: "9999999999",
-                vendor: "SRS Enterprises",
-            },
-        ];
 
-        setAvailaibleInventoryData(dummyAvailaibleInventoryData);
+        const fetchData = async () => {
+            try {
+                const response = await getAvailaibleInventory();
+                console.log("total avialaible", response.data);
+                if (response.status === 200) {
+                    setAvailaibleInventoryData(response.data?.itemData);
+                }
+            } catch (error) {
+                console.log("error fetching total inventory", error)
+            }
+        }
+        fetchData();
     }, []);
 
     useEffect(() => {
@@ -82,7 +41,7 @@ const AvailaibleInventoryManagement = () => {
 
     // Filter the AvailaibleInventoryData based on the search query and date range
     const filteredAvailaibleInventoryData = AvailaibleInventoryData?.filter((item) => {
-        const matchesSearch = item.itemName
+        const matchesSearch = item?.name
             .toLowerCase()
             .includes(debouncedSearchQuery.toLowerCase());
 
@@ -99,7 +58,7 @@ const AvailaibleInventoryManagement = () => {
                     <h3>Available Items List</h3>
                 </div>
 
-                <div className="mt-4" style={{ background: "white", padding: "2rem", borderRadius: '2rem' }}>
+                <div className="mt-3" style={{ background: "white", padding: "2rem", borderRadius: '2rem' }}>
                     <div className="search-div flex justify-normal items-center">
                         <div className="search-input-group flex items-center">
                             <IoSearchSharp className="search-icon mr-2" />
@@ -142,7 +101,7 @@ const AvailaibleInventoryManagement = () => {
                         </div>
                     </div>
 
-                    <div className="pagination-div mt-4 flex justify-between items-center">
+                    <div className="pagination-div mt-3 flex justify-between items-center">
                         <p>
                             Showing <strong>{filteredAvailaibleInventoryData.length}</strong> from <strong>{AvailaibleInventoryData.length}</strong> results
                         </p>
@@ -153,7 +112,7 @@ const AvailaibleInventoryManagement = () => {
                         </div>
                     </div>
 
-                    <div className="table-div mt-4">
+                    <div className="table-div">
                         <Table striped bordered hover className="table">
                             <thead>
                                 <tr>
@@ -164,23 +123,23 @@ const AvailaibleInventoryManagement = () => {
                                     <th>Available Quantity</th>
                                     <th>Bill Date</th>
                                     <th>Bill No</th>
-                                    <th>Vendor</th>
+                                    {/* <th>Vendor</th> */}
                                     <th>More Details</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredAvailaibleInventoryData.map((item, i) => (
-                                    <tr key={item._id} className={item.availableQuantity === 0 ? 'bg-red-100' : ''}>
+                                    <tr key={item.itemId} className={item.availableQuantity === 0 ? 'bg-red-100' : ''}>
                                         <td>{i + 1}</td>
                                         <td>
-                                            <img src={item.itemImage} alt={item.itemName} className="w-10 h-10" />
+                                            <img src={item.image} alt={item.name} className="w-10 h-10" />
                                         </td>
-                                        <td>{item.itemName}</td>
+                                        <td>{item.name}</td>
                                         <td>{item.totalQuantity}</td>
                                         <td>{item.availableQuantity}</td>
                                         <td>{item.billDate}</td>
-                                        <td>{item.billNo}</td>
-                                        <td>{item.vendor}</td>
+                                        <td>{item.billNumber}</td>
+                                        {/* <td>{item.vendor}</td> */}
                                         <td>
                                             <button className="p-2 bg-[#486072] text-white rounded" style={{ backgroundColor: "#486072" }}>More Options</button>
                                         </td>

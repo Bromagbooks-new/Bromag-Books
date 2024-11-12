@@ -13,6 +13,7 @@ const tableController = require("../controller/table_controller");
 const orderController = require("../controller/order.management.controller")
 const dominantController = require("../controller/dominant_controller")
 const dashboard = require("../controller/dashboard_controller")
+const inventory = require("../controller/inventory_controller")
 //middleware
 const interceptor = require("../middleware/interceptor");
 
@@ -310,6 +311,22 @@ userRouter.get(
   "/getInventorySummary",
   interceptor.adminAuth,
   dashboard.getInventorySummary
+);
+
+//inventory management routes
+
+userRouter.get(
+  "/getTotalInventory",
+  interceptor.adminAuth,
+  paginationMiddleware(),
+  inventory.getTotalInventory
+);
+
+userRouter.get(
+  "/getAvailaibleInventory",
+  interceptor.adminAuth,
+  paginationMiddleware(),
+  inventory.getAvailaibleInventory
 );
 
 

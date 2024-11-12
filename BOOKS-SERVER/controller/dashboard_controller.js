@@ -46,8 +46,6 @@ async function calculateTotalInventory(startDate, endDate, restrauntId) {
 
     return inventory[0]?.totalAvailableQuantity || 0;
 };
-
-
 async function getTotalVegNonVegCount(restrauntId, startDate, endDate) {
     const items = await Bill.aggregate([
         {
@@ -201,7 +199,6 @@ exports.getSalesSummary = async (req, res) => {
     }
 };
 
-
 exports.getOrderSummary = async (req, res) => {
     try {
         const isRestraunt = req.restaurant;
@@ -238,9 +235,6 @@ exports.getOrderSummary = async (req, res) => {
         });
     }
 };
-
-
-
 
 exports.getVegNonVegSummary = async (req, res) => {
     try {

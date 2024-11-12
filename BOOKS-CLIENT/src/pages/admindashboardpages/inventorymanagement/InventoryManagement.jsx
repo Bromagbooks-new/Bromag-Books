@@ -32,8 +32,8 @@ const InventoryManagement = () => {
         labels: ['Available Inventory Items', 'Total Inventory Items'],
         datasets: [
             {
-                data: [40, 60], // Sample percentage values
-                backgroundColor: ['#FFD700', '#32CD32'], // Yellow for Available Inventory, Green for Total Inventory
+                data: [40, 60],
+                backgroundColor: ['#FFD700', '#32CD32'],
                 borderColor: ['#FFD700', '#32CD32'],
                 borderWidth: 1
             }
@@ -45,7 +45,7 @@ const InventoryManagement = () => {
         responsive: true,
         plugins: {
             legend: {
-                display: false // Hide the default legend to create a custom one
+                display: false
             },
             tooltip: {
                 callbacks: {

@@ -707,6 +707,25 @@ const getRepeatOrderData = async () => {
   }
 };
 
+
+const getTotalInventory = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getTotalInventory");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getAvailaibleInventory = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getAvailaibleInventory");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const GenerateKOT = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
@@ -1554,5 +1573,7 @@ export {
   getOrderSummary,
   getVegNonVegSummary,
   getInventorySummary,
-  getDashboardCard
+  getDashboardCard,
+  getTotalInventory,
+  getAvailaibleInventory
 };

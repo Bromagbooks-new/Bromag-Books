@@ -57,7 +57,7 @@ const InventoryDashboard = () => {
                                 icon={item.icon}
                                 activatedIcon={item.activatedIcon}
                                 activatedClass={item.activatedClass}
-                                breakdown={breakdown}
+                                breakdown={breakdown?.[item.apiId]}
                             />
                         </Link>
                     ))}
@@ -80,7 +80,7 @@ export const DashboardInventoryLoader = async () => {
         const response = await getDashboardCard({ date: new Date() });
         if (response.status === 200) {
             console.log("API Response:", response.data);
-            return response.data.totalInventory;
+            return response.data;
         }
     } catch (error) {
         console.error("Failed to fetch sales summary:", error);
@@ -95,6 +95,7 @@ const orderOptions = [
         activatedIcon: OnlineActivated,
         url: "/dashboard/sale",
         activatedClass: "bg-[#FFE588] border-2 border-[#CF9710]",
+        apiId: "totalSales"
     },
     {
         id: "orders",
@@ -103,6 +104,7 @@ const orderOptions = [
         activatedIcon: TakeawayActivated,
         url: "/dashboard/order",
         activatedClass: "bg-[#FFD6B1] border-2 border-[#DD6031]",
+        apiId: "totalOrder"
     },
     {
         id: "dominant",
@@ -111,6 +113,7 @@ const orderOptions = [
         activatedIcon: DineinActivated,
         url: "/dashboard/dominant",
         activatedClass: "bg-[#CAC9FF] border-2 border-[#5A57D0]",
+        apiId: "totalDominant"
     },
     {
         id: "inventory",
@@ -119,5 +122,6 @@ const orderOptions = [
         activatedIcon: DineinActivated,
         url: "/dashboard/inventory",
         activatedClass: "bg-[#CAC9FF] border-2 border-[#5A57D0]",
-    }
+        apiId: "totalInventory"
+    },
 ];

@@ -726,6 +726,24 @@ const getAvailaibleInventory = async () => {
   }
 };
 
+const getPieChartDataInventory = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getPieChartDataInventory");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getCardInventoryHomePage = async () => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.get("getCardInventoryHomePage");
+    return response;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const GenerateKOT = async (data) => {
   try {
     const response = await restaurantOwnerAxiosInstance.post("generateKOT", data);
@@ -780,6 +798,17 @@ const AddMenuItem = async (data) => {
     console.error(error);
   }
 }
+
+const EditMenuItem = async (menuItemId, data) => {
+  try {
+    const response = await restaurantOwnerAxiosInstance.put(`editMenuItem/${menuItemId}`, data);
+    return response;
+  } catch (error) {
+    console.error("Error editing menu item:", error);
+    throw error;
+  }
+};
+
 
 const DeleteMenuItem = async (menuItemId) => {
   try {
@@ -1562,6 +1591,7 @@ export {
   AddCuisine,
   GetAllCuisines,
   AddMenuItem,
+  EditMenuItem,
   DeleteMenuItem,
   GetAllMenuItems,
   UpdateMenuItemAvailableStatus,
@@ -1575,5 +1605,7 @@ export {
   getInventorySummary,
   getDashboardCard,
   getTotalInventory,
-  getAvailaibleInventory
+  getAvailaibleInventory,
+  getPieChartDataInventory,
+  getCardInventoryHomePage
 };

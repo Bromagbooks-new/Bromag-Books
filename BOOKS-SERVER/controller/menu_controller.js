@@ -12,7 +12,7 @@ const Cuisine = require("../model/cuisine_model"); // Replace with the correct p
 const restaurant_menu_model = require("../model/restaurant_menu_model");
 
 const MenuItem = require('../model/menu_item_model'); // Replace with the correct path to your model
-
+const Inventory = require('../model/inventory_model')
 const mongoose = require("mongoose");
 const path = require("path");
 
@@ -148,9 +148,8 @@ exports.getAllCuisines = async (req, res) => {
 
 exports.addMenuItem = async (req, res) => {
   try {
-
     const restaurant = req.restaurant;
-
+    console.log("restaurannnnnnnnnnnnt->", restaurant)
     const { data } = req.body;
 
     const {
@@ -180,14 +179,16 @@ exports.addMenuItem = async (req, res) => {
     const dirPath = path.join("uploads", "menu", "itemImages");
     const fileName = `${restaurant}/${file.filename}`;
     const imagePath = path.join(dirPath, fileName);
-    // const imagePath = `menu/itemImages/${isRestaurant}/${file.filename}`;
 
     await helpers.uploadFileLocally(file, imagePath);
-
     helpers.getFileUrlLocally(imagePath);
     const relativeImagePath = `/${imagePath.replace(/\\/g, "/")}`;
-
     helpers.deleteFileLocally(file.path);
+
+    // Find the maximum DiscountPrice from portions
+    const maxPrice = aggregators[0]?.portions.reduce((max, portion) => {
+      return portion.discountPrice > max ? portion.discountPrice : max;
+    }, 0);
 
     // Create a new MenuItem document
     const newMenuItem = new MenuItem({
@@ -202,12 +203,32 @@ exports.addMenuItem = async (req, res) => {
       restaruntId: restaurant
     });
 
-    // Save the menu item to the database
     await newMenuItem.save();
+
+    // const createdAtDate = newMenuItem.createdAt;
+    // const updatedAtDate = newMenuItem.updatedAt
+    // Add item to inventory
+    const newInventoryItem = new Inventory({
+      itemName: name,
+      itemImage: relativeImagePath,
+      itemPrice: maxPrice,
+      itemType,
+      totalQuantity: quantity,
+      soldOut: 0,
+      leftOut: quantity,
+      priceValue: maxPrice * quantity,
+      // createdAt: createdAtDate,
+      // updatedAt: updatedAtDate,
+      // size: "Medium",
+      restaurantId: restaurant
+    });
+
+    // Save the inventory item to the database
+    await newInventoryItem.save();
 
     return res.status(201).json({
       status: "MENU_ITEM_CREATED",
-      message: "Menu Item Created Successfully",
+      message: "Menu Item Created Successfully and added to Inventory",
       data: newMenuItem
     });
   } catch (error) {
@@ -215,6 +236,71 @@ exports.addMenuItem = async (req, res) => {
     return res.status(500).json({
       message: "Internal Server Error",
       status: "FAILED"
+    });
+  }
+};
+
+
+
+
+exports.editMenuItem = async (req, res) => {
+  try {
+    const restaurant = req.restaurant;
+    const { data } = req.body;
+    const {
+      name,
+      cuisine,
+      subCuisine,
+      itemType,
+      quantity,
+      aggregators,
+      description,
+    } = JSON.parse(data);
+
+    const menuItemId = req.params.menuItemId;
+
+    const menuItem = await MenuItem.findOne({ _id: menuItemId, restaurantId: restaurant });
+    if (!menuItem) {
+      return res.status(404).json({
+        status: "MENU_ITEM_NOT_FOUND",
+        message: "Menu Item not found",
+      });
+    }
+
+    let relativeImagePath = menuItem.image;
+    if (req.file) {
+      const file = req.file;
+      const dirPath = path.join("uploads", "menu", "itemImages");
+      const fileName = `${restaurant}/${file.filename}`;
+      const imagePath = path.join(dirPath, fileName);
+
+      await helpers.uploadFileLocally(file, imagePath);
+      helpers.getFileUrlLocally(imagePath);
+      relativeImagePath = `/${imagePath.replace(/\\/g, "/")}`;
+      helpers.deleteFileLocally(file.path);
+    }
+
+    menuItem.name = name || menuItem.name;
+    menuItem.cuisine = cuisine || menuItem.cuisine;
+    menuItem.subCuisine = subCuisine || menuItem.subCuisine;
+    menuItem.itemType = itemType || menuItem.itemType;
+    menuItem.quantity = quantity || menuItem.quantity;
+    menuItem.aggregators = aggregators || menuItem.aggregators;
+    menuItem.description = description || menuItem.description;
+    menuItem.image = relativeImagePath;
+
+    await menuItem.save();
+
+    return res.status(200).json({
+      status: "MENU_ITEM_UPDATED",
+      message: "Menu Item updated successfully",
+      data: menuItem,
+    });
+  } catch (error) {
+    console.error("Failed to update menu item", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      status: "FAILED",
     });
   }
 };

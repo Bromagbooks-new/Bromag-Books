@@ -40,7 +40,7 @@ const MenuDisplay = () => {
       // console.log('id:', id)
       const { data } = await UpdateMenuItemAvailableStatus({ id, availableStatus })
       // console.log('data:', data)
-      if(data?.success) {
+      if (data?.success) {
         toastSuccess(data?.message);
         getMenuData();
       }
@@ -64,7 +64,7 @@ const MenuDisplay = () => {
   };
 
   if (loading) {
-    return <div>Loading...</div>; // You can replace this with a more sophisticated loading indicator
+    return <div>Loading...</div>;
   }
 
   return (

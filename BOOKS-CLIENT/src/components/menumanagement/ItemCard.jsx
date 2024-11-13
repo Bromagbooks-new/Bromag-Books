@@ -10,10 +10,11 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { useState } from "react";
-import { formatImageUrl } from "@/helpers/helpers";
+import { formatImageUrl, toastSuccess } from "@/helpers/helpers";
 import { Button } from "../ui/button";
 import { PencilLine, Trash } from "lucide-react";
 import { DeleteMenuItem } from "@/config/routeApi/owner";
+import { useNavigate } from "react-router-dom";
 
 const ItemCard = memo(({
   img,
@@ -25,7 +26,7 @@ const ItemCard = memo(({
   updateMenuItemAvailableStatus
 }) => {
   // console.log('availableStatus:', availableStatus);
-
+  const navigate = useNavigate();
   // console.log('itemId:', itemId)
   const [selectedFilter, setSelectedFilter] = useState(portions[0].type);
   const [isAvailable, setIsAvailable] = useState(availableStatus);
@@ -48,9 +49,11 @@ const ItemCard = memo(({
       console.log("Attempting to delete menu item...");
 
       const response = await DeleteMenuItem(menuItemId);
-      window.location.reload(); // temporary used ->change this use useeffect for changes
+
       if (response && response.status === 200) {
         console.log("Menu item deleted successfully");
+        toastSuccess("Menu item deleted successfully")
+        window.location.reload();
       } else {
         console.log("Failed to delete menu item");
       }
@@ -58,6 +61,9 @@ const ItemCard = memo(({
       console.log("Error while deleting menu item:", error);
     }
   }
+  const handleEditClick = () => {
+    navigate(`/dashboard/menu-management/update-menu-item/${itemId}`);
+  };
 
 
   return (
@@ -97,7 +103,7 @@ const ItemCard = memo(({
               <div className={`absolute bottom-[6px] left-[3px] w-[19px] h-[19px] bg-white rounded-full shadow transform transition ${availableStatus ? "translate-x-[18px]" : "translate-x-[3px]"}`}></div>
             </div>
           </div>
-          <Button variant="icon" className="px-3 h-8 bg-landing-secondary hover:bg-landing-primary">
+          <Button onClick={handleEditClick} variant="icon" className="px-3 h-8 bg-landing-secondary hover:bg-landing-primary">
             <PencilLine className="w-4 h-4" />
           </Button>
           <Button onClick={() => handleDeleteItem(itemId)} variant="icon" className="px-3 h-8 bg-red-500 hover:bg-landing-primary">

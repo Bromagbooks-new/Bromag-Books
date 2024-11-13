@@ -168,7 +168,7 @@ import DominantDashboard, { DashboardDominantLoader } from "./pages/admindashboa
 import OrderDashboard, { DashboardOrderLoader } from "./pages/admindashboardpages/dashboard/OrderDashboard";
 import InventoryDashboard, { DashboardInventoryLoader } from "./pages/admindashboardpages/dashboard/InventoryDashboard";
 import DashboardMain, { DashboardSaleLoader } from "./pages/admindashboardpages/dashboard/DashboardMain";
-import InventoryManagement from "./pages/admindashboardpages/inventorymanagement/InventoryManagement";
+import InventoryManagement, { CardInventoryHomePageLoader } from "./pages/admindashboardpages/inventorymanagement/InventoryManagement";
 import TotalInventoryManagement from "./pages/admindashboardpages/inventorymanagement/TotalInventoryItem";
 import AvailaibleInventoryManagement from "./pages/admindashboardpages/inventorymanagement/AvailaibleInventory";
 import AddVendorForm from "./components/stockmanagement/AddVendorForm";
@@ -518,7 +518,7 @@ const router = createBrowserRouter([
           {
             path: "inventory-management",
             element: <InventoryManagement />,
-            loader: billingManagementLoader,
+            loader: CardInventoryHomePageLoader,
             children: [
               // {
               //   index: true, // Default child route

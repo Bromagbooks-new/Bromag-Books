@@ -119,33 +119,44 @@ const TotalInventoryManagement = () => {
                                     <th>S.No</th>
                                     <th>Item Image</th>
                                     <th>Item Name</th>
+                                    <th>Item Price</th>
+                                    <th>Item Type</th>
                                     <th>Total Quantity</th>
-                                    <th>Available Quantity</th>
-                                    <th>Bill Date</th>
-                                    <th>Bill No</th>
-                                    {/* <th>Vendor</th> */}
-                                    <th>More Details</th>
+                                    <th>Left Out</th>
+                                    <th>Created At</th>
+                                    <th>Price Value</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {filteredTotalInventoryData.map((item, i) => (
-                                    <tr key={item.itemId} className={item.availableQuantity === 0 ? 'bg-red-100' : ''}>
-                                        <td>{i + 1}</td>
-                                        <td>
-                                            <img src={item.image} alt={item.name} className="w-10 h-10" />
-                                        </td>
-                                        <td>{item.name}</td>
-                                        <td>{item.totalQuantity}</td>
-                                        <td>{item.availableQuantity}</td>
-                                        <td>{item.billDate}</td>
-                                        <td>{item.billNumber}</td>
-                                        {/* <td>{item.vendor}</td> */}
-                                        <td>
-                                            <button className="p-2 bg-[#486072] text-white rounded" style={{ backgroundColor: "#486072" }}>More Options</button>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {filteredTotalInventoryData.map((item, i) => {
+                                    // Format createdAt to "MM/DD/YYYY, hh:mm AM/PM" format
+                                    const formattedDate = new Date(item.createdAt).toLocaleString("en-US", {
+                                        year: 'numeric',
+                                        month: '2-digit',
+                                        day: '2-digit',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                    });
+
+                                    return (
+                                        <tr key={item.itemId} className={item.availableQuantity === 0 ? 'bg-red-100' : ''}>
+                                            <td>{i + 1}</td>
+                                            <td>
+                                                <img src={item.image} alt={item.name} className="w-10 h-10" />
+                                            </td>
+                                            <td>{item.name}</td>
+                                            <td>{item.price}</td>
+                                            <td>{item.type}</td>
+                                            <td>{item.totalQuantity}</td>
+                                            <td>{item.leftOut}</td>
+                                            <td>{formattedDate}</td>
+                                            <td>{item.priceValue}</td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
+
                         </Table>
                     </div>
                 </div>

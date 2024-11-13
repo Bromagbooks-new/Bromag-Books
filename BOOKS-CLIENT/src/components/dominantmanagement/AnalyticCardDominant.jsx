@@ -1,42 +1,55 @@
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectItem,
+    SelectContent,
+} from "@/components/ui/select";
+import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import { cn } from "@/lib/utils";
-import trend from "@/assets/images/trend.svg";
+import trendUp from "@/assets/images/trend.svg";
+import trendDown from "@/assets/images/trend-down.svg";
 
-const AnalyticsCardDominant = ({
+const AnalyticsCardDashboard = ({
     title,
     id,
     icon,
     activatedIcon,
     activatedClass,
     url,
-    breakdown // Breakdown should now have veg, nonVeg, and total
+    breakdown
 }) => {
-    // Determine the values based on the id of the card
-    const vegBreakdown = breakdown.veg; // Monthly veg orders
-    const nonVegBreakdown = breakdown.nonVeg; // Monthly non-veg orders
-    const totalBreakdown = breakdown.total; // Monthly total orders
+    const [selectedFilter, setSelectedFilter] = useState("today");
+    //console.log("breakdown result", breakdown)
+    const stats = selectedFilter === 'today'
+        ? breakdown.leftOut.today
+        : selectedFilter === 'monthly'
+            ? breakdown.leftOut.month
+            : breakdown.leftOut.week;
 
-    // Determine if this card is related to veg, non-veg, or repeat orders
-    const isVegCard = id.includes('total-order-veg');
-    const isNonVegCard = id.includes('total-order-nonveg');
-    const isRepeatOrderCard = id.includes('repear-order');
+    const percentageChange = selectedFilter === 'today'
+        ? breakdown.leftOut.todayChangePercentage
+        : selectedFilter === 'monthly'
+            ? breakdown.leftOut.monthChangePercentage
+            : breakdown.leftOut.weekChangePercentage;
 
-    // Select the breakdown value to display based on the card type
-    let selectedBreakdown;
-    if (isVegCard) {
-        selectedBreakdown = vegBreakdown;
-    } else if (isNonVegCard) {
-        selectedBreakdown = nonVegBreakdown;
-    } else if (isRepeatOrderCard) {
-        selectedBreakdown = totalBreakdown; // Assuming repeat orders are total orders
-    }
+    const isPositiveChange = percentageChange >= 0;
+    const trendImage = isPositiveChange ? trendUp : trendDown;
+    const trendColor = isPositiveChange ? "text-green-500" : "text-red-500";
+    const trendText = isPositiveChange ? "Up" : "Down";
+    const filterText = selectedFilter === "today" ? "from yesterday" : selectedFilter === "weekly" ? "from last week" : "from last month";
+
+    // Format the data to display (for `leftOut` or `totalQuantity`)
+    const data = id === "leftOut" ? `${stats}` : stats;
 
     return (
         <NavLink
             to={url}
             className={({ isActive }) =>
                 cn(
-                    `rounded-2xl w-[20rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${isActive && activatedClass}`
+                    `rounded-2xl w-[20rem] p-2 px-3 flex flex-col gap-1 border-3 bg-white shadow-md ${isActive && activatedClass
+                    }`
                 )
             }
         >
@@ -44,6 +57,16 @@ const AnalyticsCardDominant = ({
                 <>
                     <div className="flex justify-between items-center">
                         <p className="font-semibold">{title}</p>
+                        <Select value={selectedFilter} onValueChange={setSelectedFilter}>
+                            <SelectTrigger className="w-auto gap-1 bg-transparent border-0 focus:ring-0">
+                                <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="today">Today</SelectItem>
+                                <SelectItem value="monthly">Monthly</SelectItem>
+                                <SelectItem value="weekly">Weekly</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="flex justify-between items-center">
                         <p
@@ -51,14 +74,14 @@ const AnalyticsCardDominant = ({
                                 "text-black": isActive,
                             })}
                         >
-                            {selectedBreakdown}
+                            {data}
                         </p>
                         <img src={isActive ? activatedIcon : icon} className="w-14 h-14" />
                     </div>
-                    <div className="flex gap-1">
-                        <img src={trend} className="w-5 h-5" />
-                        <span className="text-green-500">1.3%</span>
-                        <span>Up from past Week</span>
+                    <div className="flex gap-1 items-center">
+                        <img src={trendImage} className="w-5 h-5" alt="trend" />
+                        <span className={trendColor}>{Math.abs(percentageChange)}%</span>
+                        <span>{trendText} {filterText}</span>
                     </div>
                 </>
             )}
@@ -66,4 +89,4 @@ const AnalyticsCardDominant = ({
     );
 };
 
-export default AnalyticsCardDominant;
+export default AnalyticsCardDashboard;

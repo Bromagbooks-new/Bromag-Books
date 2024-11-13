@@ -329,6 +329,17 @@ userRouter.get(
   inventory.getAvailaibleInventory
 );
 
+userRouter.get(
+  "/getPieChartDataInventory",
+  interceptor.adminAuth,
+  inventory.getPieChartDataInventory
+);
+
+userRouter.get(
+  "/getCardInventoryHomePage",
+  interceptor.adminAuth,
+  inventory.getCardInventoryHomePage
+);
 
 
 //bill
@@ -373,6 +384,14 @@ userRouter.post(
   interceptor.adminAuth,
   menuController.addMenuItem
 );
+
+userRouter.put(
+  "/editMenuItem/:menuItemId",
+  upload.ImageUploader.single("ItemImage"),
+  interceptor.adminAuth,
+  menuController.editMenuItem
+);
+
 
 userRouter.delete(
   "/deleteMenuItem/:menuItemId",

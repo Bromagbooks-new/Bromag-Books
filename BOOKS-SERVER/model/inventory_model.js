@@ -1,11 +1,19 @@
 const mongoose = require("mongoose");
 
 const InventorySchema = new mongoose.Schema({
+    itemName: {
+        type: String,
+        required: true,
+    },
     itemImage: {
         type: String,
         required: true,
     },
-    itemName: {
+    itemPrice: {
+        type: Number,
+        required: true,
+    },
+    itemType: {
         type: String,
         required: true,
     },
@@ -13,27 +21,32 @@ const InventorySchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
-    availableQuantity: {
+    soldOut: {
         type: Number,
         required: true,
     },
-    billDate: {
-        type: Date,
+    leftOut: {
+        type: Number,
         required: true,
     },
-    billNo: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    itemType: {
-        type: String,
+    priceValue: {
+        type: Number,
         required: true,
     },
-    restaruntId: {
+    // date: {
+    //     type: Date,
+    //     default: Date.now,
+    // },
+    size: {
         type: String,
-        required: true
+        required: false,
+    },
+    restaurantId: {
+        type: String,
+        required: true,
     }
+}, {
+    timestamps: true
 });
 
 const Inventory = mongoose.model("Inventory", InventorySchema);

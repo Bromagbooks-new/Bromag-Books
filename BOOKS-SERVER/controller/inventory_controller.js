@@ -285,7 +285,7 @@ async function calculateTotalInventory(startDate, endDate, restaurantId) {
             {
                 $match: {
                     restaurantId: restaurantId,
-                    createdAt: { $gte: startDate.toDate(), $lte: endDate },
+                    createdAt: { $gte: startDate.toDate(), $lte: endDate.toDate() },
                 },
             },
             {

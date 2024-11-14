@@ -62,7 +62,7 @@ const WhoWeAre = () => {
             </div>
 
             <div className="relative h-0">
-                <img className="absolute bottom-[-20rem] left-0 md:right-[15%] md:bottom-[10%] z-0 w-[15rem] md:w-[25rem]" src={group212} alt="decorative" />
+                <img className="absolute bottom-[-5rem] left-0 md:right-[15%] md:bottom-[10%] z-0 w-[15rem] md:w-[25rem]" src={group212} alt="decorative" />
             </div>
         </div>
     );

@@ -35,7 +35,7 @@ const WhoWeAre = () => {
                 <Navbar />
             </div>
             <div className="relative h-0">
-                <img className="absolute top-[-5rem] right-0 md:top-8 md:right-8 z-10 w-[10rem] md:w-[30rem] opacity-70" src={subtract} alt="decorative" />
+                <img className="absolute top-[-5rem] right-0 md:top-8 md:right-8 z-10 w-[15rem] md:w-[30rem] opacity-70" src={subtract} alt="decorative" />
             </div>
 
             <div className="text-center mb-12 px-4">

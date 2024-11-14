@@ -24,12 +24,14 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
   // console.log(bill);
 
   const [sentToKot, setSentToKot] = useState(false);
-
+  const [kotUniqueId, setKotUniqueId] = useState()
   const [instructions, setInstructions] = useState([]);
+  const [isViewBillOpen, setIsViewBillOpen] = useState(false);
+
   const handleKOT = async () => {
     try {
-      // console.log("HEree");
-      console.log("billitem in bills", billItems);
+
+      // console.log("billitem in bills", billItems);
       const modifiedBillItems = billItems.map((item) => ({
         ...item,
         itemId: item._id,
@@ -41,21 +43,24 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
         items: modifiedBillItems,
         instructions,
       });
-      console.log("generateKot updatebill", response.data)
+      console.log("generateKot updatebill", response)
       if (response.status === 201) {
         const bill = response.data.bill;
         const kotResponse = await GenerateKOT({ billData: bill });
-        if (kotResponse.status === 201) {
+        console.log("kotresp", kotResponse)
+        if (kotResponse.status === 201 || kotResponse.status == 200) {
           console.log("generate kot", kotResponse.data);
+          setKotUniqueId(kotResponse.data.kotNo)
           toastSuccess(
-            `Sent to Kitchen Successfully!! ${kotResponse.data.KOT.kotNo}`
+            `Sent to Kitchen Successfully!! ${kotResponse.data.kotNo}`
           );
           setSentToKot(true);
+          setIsViewBillOpen(false);
         }
-        toastError("Something's Wrong, Please Try Again Later!!");
+        toastError("Something's Wrong1, Please Try Again Later!!");
       }
 
-      toastError("Something's Wrong, Please Try Again Later!!");
+      toastError("Something's Wrong2, Please Try Again Later!!");
     } catch (error) {
       console.error(error);
       toastError("Internal Server Error");
@@ -385,18 +390,20 @@ const Bill = ({ bill, billItems, addItem, subtractItem }) => {
               <Button
                 type="button"
                 className="text-center px-4 h-8 flex justify-center items-center rounded-3xl border-2 bg-white text-black"
+                onClick={() => setIsViewBillOpen(true)}
               >
                 KOT
               </Button>
             </DialogTrigger>
-            <ViewKOT
+            {isViewBillOpen && <ViewKOT
               bill={bill}
               billItems={billItems}
               instructions={instructions}
               paymentMode={paymentMode}
               sentToKot={sentToKot}
               handleKOT={handleKOT}
-            />
+              kotUniqueId={kotUniqueId}
+            />}
           </Dialog>
           <Button
             onClick={handleHoldBill}

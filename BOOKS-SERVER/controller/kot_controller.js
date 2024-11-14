@@ -11,30 +11,54 @@ exports.generateKOT = async (req, res) => {
     console.log("kotNo", isRestaurant, req.body);
 
     const { billData } = req.body;
-    const { items, restrauntName, billNo } = billData;
+    const { items, restrauntName, billNo, status } = billData;
     console.log("kotNo2", isRestaurant, items);
+
+    // Generate a new KOT number
     const kotNo = await kot_model.generateKOTNo(isRestaurant, restrauntName, billNo);
-    // console.log("object", kotNo);
 
-    const newKOT = new kot_model({ ...billData, kotNo, billId: billData._id });
-    console.log("newkot", newKOT);
-    await newKOT.save();
+    let existingKOT = await kot_model.findOne({ billId: billData._id, status: "HOLD" });
 
-    const promises = items.map(async (item) => {
-      return await menu_item_model.findOneAndUpdate(
-        { _id: item._id },
-        { $inc: { quantity: -item.quantity }, itemType: item?.itemType }
-      );
-    });
+    if (existingKOT) {
+      // Append the new kotNo and new items to the existing KOT document
+      existingKOT.kotNoList.push(kotNo); // Add new kotNo to the kotNo array
+      existingKOT.items.push(...items); // Add new items to the items array
+      await existingKOT.save();
+      console.log("Updated KOT with new kotNo and items:", existingKOT);
 
-    const updates = await Promise.all(promises);
-    console.log("UPDATESSS", updates);
+      res.status(200).json({
+        status: "KOT_UPDATED",
+        message: "New KOT number and items added to existing KOT document",
+        KOT: existingKOT,
+        kotNo: kotNo
+      });
+    } else {
+      // If no "HOLD" KOT document exists, create a new one with the initial kotNo and items
+      const newKOT = new kot_model({
+        ...billData,
+        kotNo: [kotNo],
+        billId: billData._id,
+      });
+      console.log("newKOT", newKOT);
+      await newKOT.save();
 
-    res.status(201).json({
-      status: "KOT_GENERATED",
-      message: "KOT Generated Successfully",
-      KOT: newKOT,
-    });
+      const promises = items.map(async (item) => {
+        return await menu_item_model.findOneAndUpdate(
+          { _id: item._id },
+          { $inc: { quantity: -item.quantity }, itemType: item?.itemType }
+        );
+      });
+
+      const updates = await Promise.all(promises);
+      console.log("UPDATESSS", updates);
+
+      res.status(201).json({
+        status: "KOT_GENERATED",
+        message: "KOT generated successfully",
+        KOT: newKOT,
+        kotNo: kotNo
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).json({ status: "FAILED", message: "Internal Server Error" });

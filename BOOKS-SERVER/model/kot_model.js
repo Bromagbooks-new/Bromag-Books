@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 const { menuSchema } = require("./menu_model");
-// console.log(menuSchema);
 
 const kotSchema = mongoose.Schema({
   restrauntId: {
@@ -10,12 +9,12 @@ const kotSchema = mongoose.Schema({
   },
   billNo: {
     type: String,
-
     required: true
   },
-  kotNo: {
-    type: String,
-    required: true
+  kotNoList: {
+    type: [String],
+    required: true,
+    default: []
   },
   billId: {
     type: mongoose.ObjectId,
@@ -80,7 +79,7 @@ kotSchema.statics.generateKOTNo = async function (
   // console.log(restaurantName);
   // const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
 
-  // Find the last order for this restaurant from today
+  // Find the last KOT document for this restaurant
   const lastUniqueKotId = await this.findOne({
     restrauntId: restrauntId,
     // date: { $gte: new Date(dateString) },
@@ -93,18 +92,15 @@ kotSchema.statics.generateKOTNo = async function (
   // console.log('lastUniqueKotId:', lastUniqueKotId)
   // console.log(lastUniqueKotId);
   let count = 1;
-  if (lastUniqueKotId && lastUniqueKotId.kotNo) {
-    // Extract the count from the last bill ID
-    const lastKotId = lastUniqueKotId.kotNo;
-    const lastCount = lastKotId?.split("#")[0]
-      ? parseInt(lastKotId?.substring(3), 10)
-      : 1;
+  if (lastUniqueKotId && lastUniqueKotId.kotNoList && lastUniqueKotId.kotNoList.length > 0) {
+    const lastKotId = lastUniqueKotId.kotNoList.slice(-1)[0]; // Get the last KOT number in the list
+    const lastCount = parseInt(lastKotId?.substring(3), 10) || 1;
     count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999 range
   }
 
-  // Format the bill ID
-  const billId = `${"KOT"}${count.toString().padStart(4, "0")}#${restaurantCode}`;
-  return billId;
+  // Format the new KOT number
+  const kotNo = `${"KOT"}${count.toString().padStart(4, "0")}#${restaurantCode}`;
+  return kotNo;
 };
 
 module.exports = mongoose.model("KOT", kotSchema);

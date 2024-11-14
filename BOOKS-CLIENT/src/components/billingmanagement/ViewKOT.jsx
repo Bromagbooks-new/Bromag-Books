@@ -50,10 +50,6 @@ const ViewKOT = memo(({ bill, billItems, handleKOT, instructions, paymentMode, h
             </div>
             <p className="text-2xl text-center font-semibold">KOT</p>
             <div className="w-1/3 flex gap-2 p-2 justify-end text-gray-600 ">
-              {/* <EyeIcon className="w-5 h- cursor-pointer" /> */}
-              {/* <DownloadIcon className="w-5 h-5 cursor-pointer" /> */}
-              {/* <Share2Icon className="w-5 h-5 cursor-pointer" /> */}
-              {/* <p className="">{kotUniqueId}</p> */}
             </div>
           </div>
           <div className="border-0 w-full">
@@ -70,9 +66,6 @@ const ViewKOT = memo(({ bill, billItems, handleKOT, instructions, paymentMode, h
               <div className="border-dashed relative border-1 w-[4.9rem] left-[-15px] flex items-center justify-center border-x-0 h-6 uppercase text-center">
                 Quantity
               </div>
-              {/* <div className="border-dashed relative w-[5rem] left-[-16px] border-1 border-l-0 h-6 uppercase flex items-center justify-center text-center">
-                Price
-              </div> */}
             </div>
 
             <div className="w-full grid grid-cols-6 text-[12px] text-color-1F303C font-normal">
@@ -90,40 +83,11 @@ const ViewKOT = memo(({ bill, billItems, handleKOT, instructions, paymentMode, h
                   <div className="border-dashed relative w-[4.9rem] left-[-15px] border-1 flex py-2 items-center justify-center border-x-0  text-center gap-2">
                     {item.quantity}
                   </div>
-                  {/* <div className="border-dashed relative w-[5rem] left-[-16px] border-1 border-l-0 py-2  flex items-center justify-center text-center">
-                    {(item.actualPrice - item.discountPrice) * item.quantity}
-                  </div> */}
                 </>
               ))}
             </div>
           </div>
         </div>
-
-        {/* <div className="flex justify-between px-3 uppercase text-xs">
-        <div className="flex flex-col gap-1">
-          <p>Gross Value</p>
-          <p>Discount</p>
-          <p>Net Value</p>
-          <p>Taxes</p>
-          <p>Round Off</p>
-        </div>
-        <div className="flex flex-col gap-1">
-          <p>{grossValue}</p>
-          <p>{discount}</p>
-          <p>{netValue}</p>
-          <p>{tax}</p>
-          <p>{roundOff}</p>
-        </div>
-      </div> */}
-        {/* <div className="flex justify-between px-3 uppercase text-sm font-bold border-dashed border-y border-gray-500">
-        <div className="flex flex-col gap-1 py-2">
-          <p>Total Amount</p>
-        </div>
-        <div className="flex flex-col gap-1 py-2">
-          <p>{totalValue}</p>
-        </div>
-      </div> */}
-
         <div className="text-sm px-3 border-dashed border-b pb-2 border-gray-500">
           <p className="uppercase">Instructions </p>
           <ul className="list-disc text-xs px-3">

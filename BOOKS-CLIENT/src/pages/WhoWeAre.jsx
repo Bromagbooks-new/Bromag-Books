@@ -5,6 +5,7 @@ import whatwedo from "@/assets/images/Bromag Dashboard Features/whatwedo.svg";
 import whatweserve from "@/assets/images/Bromag Dashboard Features/whatweserve.svg";
 import ourvision from "@/assets/images/Bromag Dashboard Features/ourvision.svg";
 import group212 from '@/assets/images/landing-images/Group 212.svg';
+import subtract from '@/assets/images/landing-images/Subtract.svg';
 
 const WhoWeAre = () => {
     const title = "WHO WE ARE";
@@ -29,34 +30,39 @@ const WhoWeAre = () => {
     ];
 
     return (
-        <div className="bg-gradient-to-b from-[#DCFCFF] to-[#1F303C] pb-8">
+        <div className="bg-gradient-to-b from-[#DCFCFF] to-[#1F303C] min-h-screen pb-8">
             <div className="mb-20">
                 <Navbar />
             </div>
-            <div className="text-center mb-12">
-                <h1 className="text-4xl font-bold mb-4">{title}</h1>
+            <div className="relative h-0">
+                <img className="absolute top-[-5rem] right-0 md:top-8 md:right-8 z-10 w-[10rem] md:w-[30rem] opacity-70" src={subtract} alt="decorative" />
+            </div>
+
+            <div className="text-center mb-12 px-4">
+                <h1 className="text-3xl md:text-4xl font-bold mb-4">{title}</h1>
                 <img
                     src={abrarImage}
                     alt="Founder and Director"
-                    className="w-36 h-auto rounded-lg mx-auto shadow-lg mb-4"
+                    className="w-28 h-auto rounded-lg mx-auto shadow-lg mb-4 md:w-36"
                 />
-                <p className="italic text-gray-600 text-lg">{subtitle}</p>
+                <p className="italic text-gray-600 text-base md:text-lg">{subtitle}</p>
             </div>
-            <div className="flex flex-wrap justify-center gap-4">
+
+            <div className="grid grid-cols-3 sm:grid-cols-2 lg:grid-cols-3 gap-4 justify-center items-start px-4 md:px-0">
                 {infoSections.map((section, index) => (
                     <div
                         key={index}
-                        className="w-32 bg-[#DAFAFD] rounded-lg shadow-lg p-2 text-center shadow-lg"
+                        className={`bg-[#DAFAFD] rounded-lg shadow-lg p-4 text-center ${index === 1 ? "mt-4" : ""} `}
                     >
-                        <h3 className="text-xs font-bold mb-1">{section.title}</h3>
-                        <img src={section.img} alt="" className="w-6 h-6 mx-auto mb-1" />
-                        <p className="text-gray-700 text-xs">{section.content}</p>
+                        <h3 className="text-[6px] md:text-[28px] font-bold mb-2">{section.title}</h3>
+                        <img src={section.img} alt="" className="w-8 h-8 mx-auto mb-2" />
+                        <p className="text-gray-700 text-[5px] md:text-[25px]">{section.content}</p>
                     </div>
                 ))}
             </div>
 
-            <div className="relative h-0 ">
-                <img className="relative z-0 w-[20rem] md:w-auto right-[16%] md:right-[21%] bottom-[13rem] md:bottom-[43rem]" src={group212} />
+            <div className="relative h-0">
+                <img className="absolute bottom-[-20rem] left-0 md:right-[15%] md:bottom-[10%] z-0 w-[15rem] md:w-[25rem]" src={group212} alt="decorative" />
             </div>
         </div>
     );

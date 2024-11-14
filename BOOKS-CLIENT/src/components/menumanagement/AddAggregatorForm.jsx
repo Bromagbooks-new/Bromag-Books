@@ -37,22 +37,19 @@ const AddAggregatorForm = () => {
       const response = await AddAggregator(data);
       // console.log(response);
 
-      if(response.status === 200) {
-        if(response.data.status === 'AGGREGATOR_ALLREADY_EXISTS') {
-          toastError("Aggregtor already exists");
-          return;
-        }
+      if (response.status === 200) {
+        toastError("Aggregtor already exists");
+        return;
       }
-      
-      if(response.status === 201) {
+
+      if (response.status === 201) {
         // console.log(response.data.message);
-        
         toastSuccess("Aggregator Added Successfully");
         navigate('/dashboard/menu-management/aggregators');
 
       }
 
-    } catch(error) {
+    } catch (error) {
       console.error(error);
       console.log(error);
 

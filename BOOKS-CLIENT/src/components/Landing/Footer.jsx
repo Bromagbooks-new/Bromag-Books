@@ -19,8 +19,8 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer
-      className="flex flex-col items-center pt-24 gap-12 bg-[#182732] font-roboto-condensed overflow-hidden"
-      style={{ background: "linear-gradient(90deg, #0D171E 0%, #0D171E 100%)" }}
+      className="flex flex-col items-center pt-24 gap-12 bg-[#16252F] font-roboto-condensed overflow-hidden"
+    // style={{ background: "linear-gradient(90deg, #0D171E 0%, #0D171E 100%)" }}
     >
       <div className="flex flex-col lg:flex-row md:pl-32 items-center justify-center gap-16 md:gap-32 w-full">
         <div className="flex flex-col md:flex-row items-center">
@@ -29,31 +29,6 @@ const Footer = () => {
             A platform that provides a comprehensive accounting system for
             businesses that are growing.
           </p>
-        </div>
-        <div className="flex flex-col gap-4 items-center md:items-start">
-          <p className="text-3xl text-white font-bold">Contact Us</p>
-          <ul className="text-gray-500 flex flex-col items-center md:items-start gap-2 text-xl">
-            <li className="flex gap-2">
-              <Phone />
-              <p>+91 9150289762</p>
-            </li>
-            <li className="flex gap-2">
-              <Mail />
-              <p>bromag0507@gmail.com</p>
-            </li>
-            <li className="flex gap-2">
-              <MapPin />
-              <p>Chennai, Tamil Nadu</p>
-            </li>
-          </ul>
-        </div>
-        <div className="flex flex-col items-center md:items-start gap-4">
-          <p className="text-3xl text-white font-bold">About Us</p>
-          <ul className="text-gray-500 flex flex-col items-center md:items-start gap-2 text-xl z-20">
-            <Link to="/who-we-are" className="flex gap-2">Who we are</Link>
-            <Link to="/privacy-policy" className="flex gap-2">Privacy Policy</Link>
-            <Link to="/term-and-condition" className="flex gap-2">Terms and Conditions</Link>
-          </ul>
         </div>
         <div className="z-10 flex md:block flex-col items-center md:items-start">
           <p className="text-3xl text-white font-bold">Connect Us</p>
@@ -93,6 +68,16 @@ const Footer = () => {
             </a>
           </div>
         </div>
+
+        <div className="flex flex-col items-center md:items-start gap-4">
+          <p className="text-3xl text-white font-bold">About Us</p>
+          <ul className="text-gray-500 flex flex-col items-center md:items-start gap-2 text-xl z-20">
+            <Link to="/who-we-are" className="flex gap-2">Who we are</Link>
+            <Link to="/privacy-policy" className="flex gap-2">Privacy Policy</Link>
+            <Link to="/term-and-condition" className="flex gap-2">Terms and Conditions</Link>
+          </ul>
+        </div>
+
       </div>
       <p className="text-gray-500 text-base">
         © All Rights Reserved Bromag India Private Limited

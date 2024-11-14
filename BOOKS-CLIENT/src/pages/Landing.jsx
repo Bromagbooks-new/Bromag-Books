@@ -22,6 +22,8 @@ import LandingFeatures from '@/components/Landing/LandingFeatures';
 import Upgrades from '@/components/Landing/Upgrades';
 import Footer from '@/components/Landing/Footer';
 import QueryForm from '@/components/Landing/QueryForm';
+import GrowthAcrossIndia from '@/components/Landing/DrivingGrowthAcrossIndia';
+import TestimonialSlider from '@/components/Landing/TestimonialSlider';
 
 const Landing = () => {
     return (
@@ -30,7 +32,9 @@ const Landing = () => {
             <Hero />
             <LandingFeatures />
             <Upgrades />
-            <QueryForm />
+            <GrowthAcrossIndia />
+            <TestimonialSlider />
+            {/* <QueryForm /> */}
             <Footer />
         </div>
     )

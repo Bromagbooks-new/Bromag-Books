@@ -44,7 +44,7 @@ const Features = () => {
     <Navbar />
     {/* <Hero img={heroImg} /> */}
     <LandingFeatures />
-    <BookADemo />
+    {/* <BookADemo /> */}
   </div>
 };
 

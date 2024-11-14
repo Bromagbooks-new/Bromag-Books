@@ -12,7 +12,7 @@ import subtract from '@/assets/images/landing-images/Subtract.svg';
 const Upgrades = () => {
   return (
     <>
-      <div className="-mt-[10rem] md:-mt-20 flex flex-col items-center bg-[#1F303C] font-roboto-condensed overflow-hidden ">
+      <div className="-mt-[10rem] md:-mt-20 flex flex-col items-center bg-[#16252F] font-roboto-condensed overflow-hidden ">
         <div className="relative h-0 ">
           <img className="relative z-10 w-[23rem] md:w-auto top-[1rem] left-[8%] md:left-[20%] opacity-50" src={subtract} />
         </div>
@@ -36,7 +36,7 @@ const Upgrades = () => {
           ))}
         </div>
         <div className="relative h-0 ">
-          <img className="relative z-0 w-[20rem]  md:w-auto right-[16%] md:right-[21%] bottom-[13rem] md:bottom-[43rem]" src={group212} />
+          <img className="relative z-0 w-[20rem]  md:w-auto right-[16%] md:right-[21%] bottom-[16rem] md:bottom-[43rem]" src={group212} />
         </div>
       </div>
     </>

@@ -24,13 +24,13 @@ exports.addAggregator = async (req, res) => {
 
     const existingAggregator = await aggregator_model.findOne({
       restrauntId: restraunt,
-      name,
+      name: { $regex: new RegExp(`^${name}$`, 'i') },
     });
 
     if (existingAggregator) {
-      console.log("HERE");
+      console.log("Aggregator already exists.");
       return res.status(200).json({
-        status: "AGGREGATOR_ALLREADY_EXISTS",
+        status: "AGGREGATOR_ALREADY_EXISTS",
         message: "Aggregator already exists",
       });
     }
@@ -46,15 +46,17 @@ exports.addAggregator = async (req, res) => {
 
     return res.status(201).json({
       status: "AGGREGATOR_CREATED",
-      message: "Aggregator Created",
+      message: "Aggregator Created Successfully",
     });
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Internal Server Error", status: "FAILED" });
+    console.error("Error in creating aggregator:", error);
+    return res.status(500).json({
+      message: "Internal Server Error",
+      status: "FAILED",
+    });
   }
 };
+
 
 exports.getAllAggregators = async (req, res) => {
   try {
@@ -78,11 +80,11 @@ exports.getAllAggregators = async (req, res) => {
 exports.addCuisine = async (req, res) => {
   try {
     const restaurant = req.restaurant;
-
     const { name, subCusines, description } = req.body;
 
+    // Use a case-insensitive search for cuisine name
     const existingCusine = await Cuisine.findOne({
-      name,
+      name: { $regex: new RegExp(`^${name}$`, 'i') },
       restaurantId: restaurant,
     });
 
@@ -165,8 +167,11 @@ exports.addMenuItem = async (req, res) => {
 
     console.log(data);
 
-    // Check if a menu item with the same name already exists
-    const existingMenuItem = await MenuItem.findOne({ name, restaurantId: restaurant });
+
+    const existingMenuItem = await MenuItem.findOne({
+      name: { $regex: new RegExp(`^${name}$`, 'i') },
+      restaurantId: restaurant
+    });
 
     if (existingMenuItem) {
       return res.status(200).json({
@@ -185,7 +190,7 @@ exports.addMenuItem = async (req, res) => {
     const relativeImagePath = `/${imagePath.replace(/\\/g, "/")}`;
     helpers.deleteFileLocally(file.path);
 
-    // Find the maximum DiscountPrice from portions
+    // Find the maximum discount price from portions
     const maxPrice = aggregators[0]?.portions.reduce((max, portion) => {
       return portion.discountPrice > max ? portion.discountPrice : max;
     }, 0);
@@ -205,8 +210,6 @@ exports.addMenuItem = async (req, res) => {
 
     await newMenuItem.save();
 
-    // const createdAtDate = newMenuItem.createdAt;
-    // const updatedAtDate = newMenuItem.updatedAt
     // Add item to inventory
     const newInventoryItem = new Inventory({
       itemName: name,

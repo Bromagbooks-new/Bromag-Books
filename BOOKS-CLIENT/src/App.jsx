@@ -183,6 +183,8 @@ import { orderManagementLoader } from "./pages/admindashboardpages/ordermanageme
 // import PrivacyPolicy from "./pages/PrivacyPolicy";
 import TermAndCondition from "./pages/TermAndCondition";
 import BarGraph from "./components/dominantmanagement/BarGraph";
+import GrowthAcrossIndia from "./components/Landing/DrivingGrowthAcrossIndia";
+import TestimonialSlider from "./components/Landing/TestimonialSlider";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -240,6 +242,14 @@ const router = createBrowserRouter([
             element: <BookADemo />
           }
         ],
+      },
+      {
+        path: "driving-growth-across-india",
+        element: <GrowthAcrossIndia />,
+      },
+      {
+        path: "words-from-our-community",
+        element: <TestimonialSlider />,
       },
       {
         path: "who-we-are",

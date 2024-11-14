@@ -65,21 +65,21 @@ const QueryForm = () => {
     try {
       const response = await storeUserQuery(data);
 
-      if(response.status == 200) {
-          // console.log(response.data.message);
-          form.reset();
+      if (response.status == 200) {
+        // console.log(response.data.message);
+        form.reset();
       }
 
-  } catch(error) {
+    } catch (error) {
       console.error(error);
 
-  }
+    }
   };
 
   return (
     <div
       className="w-screen h-[70rem] md:-mb-[32rem] bg-cover bg-center relative  bottom-[32rem] z-0 flex flex-col overflow-hidden items-center justify-center font-roboto pb-20 -mb-[32rem]"
-      style={{ backgroundImage: `url("${QueryFormBG}")` }}
+    //style={{ backgroundImage: `url("${QueryFormBG}")` }}
     >
       <div className="w-full h-full bg-gradient-to-b from-[#1F303C] to-transparent" />
       <div className="relative top-[2rem] md:bottom-[15rem] flex flex-col gap-1 md:gap-4">
@@ -161,14 +161,14 @@ const QueryForm = () => {
                     />
                     <div className="flex justify-center">
 
-                    <Button
-                      className="bg-landing-secondary w-24 md:w-48 h-12 md:h-16 text-lg md:text-xl z-30"
-                      type="submit"
-                      disabled={form.formState.isSubmitting || form.formState.isSubmitSuccessful}
+                      <Button
+                        className="bg-landing-secondary w-24 md:w-48 h-12 md:h-16 text-lg md:text-xl z-30"
+                        type="submit"
+                        disabled={form.formState.isSubmitting || form.formState.isSubmitSuccessful}
                       >
-                      {form.formState.isSubmitting ? "Submitting..." : form.formState.isSubmitSuccessful ? "Submited": "Submit" }
-                    </Button>
-                      </div>
+                        {form.formState.isSubmitting ? "Submitting..." : form.formState.isSubmitSuccessful ? "Submited" : "Submit"}
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </form>

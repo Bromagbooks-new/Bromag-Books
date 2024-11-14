@@ -68,6 +68,22 @@ const Navbar = () => {
           Upgrade
         </NavLink>
         <NavLink
+          className={({ isActive }) =>
+            isActive && "underline text-blue-600"
+          }
+          to="/driving-growth-across-india"
+        >
+          Driving Growth
+        </NavLink>
+        <NavLink
+          className={({ isActive }) =>
+            isActive && "underline text-blue-600"
+          }
+          to="/words-from-our-community"
+        >
+          Word From Our Community
+        </NavLink>
+        <NavLink
           className={({ isActive }) => isActive && "font-bold text-black"}
           to="/who-we-are"
         >
@@ -122,6 +138,22 @@ const Navbar = () => {
               to="/upgrade"
             >
               Upgrade
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                isActive && "underline text-blue-600"
+              }
+              to="/driving-growth-across-india"
+            >
+              Driving Growth
+            </NavLink>
+            <NavLink
+              className={({ isActive }) =>
+                isActive && "underline text-blue-600"
+              }
+              to="/words-from-our-community"
+            >
+              Word From Our Community
             </NavLink>
             <NavLink
               className={({ isActive }) =>

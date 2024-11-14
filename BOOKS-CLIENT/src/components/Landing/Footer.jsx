@@ -69,14 +69,14 @@ const Footer = () => {
           </div>
         </div>
 
-        <div className="flex flex-col items-center md:items-start gap-4">
+        {/* <div className="flex flex-col items-center md:items-start gap-4">
           <p className="text-3xl text-white font-bold">About Us</p>
           <ul className="text-gray-500 flex flex-col items-center md:items-start gap-2 text-xl z-20">
             <Link to="/who-we-are" className="flex gap-2">Who we are</Link>
             <Link to="/privacy-policy" className="flex gap-2">Privacy Policy</Link>
             <Link to="/term-and-condition" className="flex gap-2">Terms and Conditions</Link>
           </ul>
-        </div>
+        </div> */}
 
       </div>
       <p className="text-gray-500 text-base">

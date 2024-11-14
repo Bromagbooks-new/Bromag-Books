@@ -236,12 +236,12 @@ const router = createBrowserRouter([
       {
         path: "upgrade",
         element: <Upgrade />,
-        children: [
-          {
-            path: "book-a-demo",
-            element: <BookADemo />
-          }
-        ],
+        // children: [
+        //   {
+        //     path: "book-a-demo",
+        //     element: <BookADemo />
+        //   }
+        // ],
       },
       {
         path: "driving-growth-across-india",

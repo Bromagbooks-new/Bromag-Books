@@ -18,7 +18,7 @@ const Upgrade = () => {
             </div>
 
             <Upgrades />
-            <BookADemo />
+            {/* <BookADemo /> */}
         </div>
     );
 };

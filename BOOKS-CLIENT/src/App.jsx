@@ -185,6 +185,8 @@ import TermAndCondition from "./pages/TermAndCondition";
 import BarGraph from "./components/dominantmanagement/BarGraph";
 import GrowthAcrossIndia from "./components/Landing/DrivingGrowthAcrossIndia";
 import TestimonialSlider from "./components/Landing/TestimonialSlider";
+import DrivingGrowthPage from "./pages/DrivingGrowth";
+import WordFromCommunityPage from "./pages/WordFromCommunityPage";
 // import src from "react-select/dist/declarations/src";
 
 const router = createBrowserRouter([
@@ -245,11 +247,11 @@ const router = createBrowserRouter([
       },
       {
         path: "driving-growth-across-india",
-        element: <GrowthAcrossIndia />,
+        element: <DrivingGrowthPage />,
       },
       {
         path: "words-from-our-community",
-        element: <TestimonialSlider />,
+        element: <WordFromCommunityPage />,
       },
       {
         path: "who-we-are",

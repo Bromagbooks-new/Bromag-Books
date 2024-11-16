@@ -1,0 +1,8 @@
+<div>
+          {/* Desktop Logo */}
+          <img
+            src={logoDesktop}
+            className="hidden md:block w-20 h-20 md:w-36 md:h-36"
+            alt="Desktop Logo"
+          />
+        </div>

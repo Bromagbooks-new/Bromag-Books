@@ -69,7 +69,7 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className={({ isActive }) =>
-            isActive && "underline text-blue-600"
+            isActive && "underline text-black"
           }
           to="/driving-growth-across-india"
         >
@@ -77,14 +77,14 @@ const Navbar = () => {
         </NavLink>
         <NavLink
           className={({ isActive }) =>
-            isActive && "underline text-blue-600"
+            isActive && "underline text-black"
           }
           to="/words-from-our-community"
         >
           Word From Our Community
         </NavLink>
         <NavLink
-          className={({ isActive }) => isActive && "font-bold text-black"}
+          className={({ isActive }) => isActive && "font-bold  text-black"}
           to="/who-we-are"
         >
           Who We Are

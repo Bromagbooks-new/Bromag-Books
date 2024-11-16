@@ -101,29 +101,29 @@ const AddMenuItemForm = ({ aggregators, cuisines }) => {
     () => setSelectedCuisine(form.watch("cusine")),
     [form.watch("cusine")]
   );
-  
+
   const navigate = useNavigate();
   const onSubmit = async (data) => {
-    
+
     try {
       console.log(data);
-  
+
       const formData = new FormData();
       formData.set('data', JSON.stringify(data));
       formData.set('ItemImage', data.image);
 
       const response = await AddMenuItem(formData);
 
-      if(response.status === 200) {
-        toastSuccess("Item Already Exits");
+      if (response.status === 200) {
+        toastError("Item Already Exist");
       }
-      if(response.status === 201) {
+      if (response.status === 201) {
         toastSuccess("Item Added Successfully");
         navigate('/dashboard/menu-management');
       }
 
 
-    }catch(error) {
+    } catch (error) {
       console.log(error);
 
       toastError("Internal Server Error");

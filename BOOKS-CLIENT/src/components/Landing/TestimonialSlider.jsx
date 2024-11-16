@@ -4,7 +4,7 @@ import ellipse545 from '@/assets/images/Bromag Dashboard Features/coloreclipse.s
 
 const TestimonialSlider = () => {
     return (
-        <div className="flex flex-col items-center bg-[#16252F]  font-roboto-condensed pb-5 overflow-hidden relative">
+        <div className="flex flex-col items-center bg-[#1F303C]  font-roboto-condensed pb-5 overflow-hidden relative">
             {/* Background Ellipse */}
             <div className="absolute top-[5rem] right-[20rem] md:right-[5%]">
                 <img

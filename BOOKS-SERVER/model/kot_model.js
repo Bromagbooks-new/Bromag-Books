@@ -67,40 +67,29 @@ kotSchema.statics.generateKOTNo = async function (
   restaurantName,
   billNo
 ) {
-  // console.log('restaurantName:', restaurantName)
-  // console.log('billNo:', billNo)
-  // console.log("restaurant", restaurantName)
-  const restaurantCode = (restaurantName ? restaurantName.substring(0, 3).toUpperCase() : "DEF") + billNo;
-  // RAT0035 RAT
-  // console.log('restaurantCode:', restaurantCode)
-  // const today = new Date();
-  // const dateString = today.toISOString().split("T")[0]; // Get date in YYYY-MM-DD format
-  // console.log('dateString:', dateString)
-  // console.log(restaurantName);
-  // const restaurantCode = restaurantName.substring(0, 3).toUpperCase();
+  const restaurantCode = restaurantName
+    ? restaurantName.substring(0, 3).toUpperCase()
+    : "DEF";
 
   // Find the last KOT document for this restaurant
   const lastUniqueKotId = await this.findOne({
     restrauntId: restrauntId,
-    // date: { $gte: new Date(dateString) },
-    // $or: [
-    //   { orderStatus: 'Success' },
-    //   { orderMode: { $in: ['Swiggy', 'Zomato', 'Bromag', 'others'] } }
-    // ],
   }).sort({ date: -1 });
 
-  // console.log('lastUniqueKotId:', lastUniqueKotId)
-  // console.log(lastUniqueKotId);
-  let count = 1;
+  let count = 1; // Default count if no prior KOTs exist
   if (lastUniqueKotId && lastUniqueKotId.kotNoList && lastUniqueKotId.kotNoList.length > 0) {
     const lastKotId = lastUniqueKotId.kotNoList.slice(-1)[0]; // Get the last KOT number in the list
-    const lastCount = parseInt(lastKotId?.substring(3), 10) || 1;
-    count = (lastCount + 1) % 10000; // Ensure the count is within 0000 to 9999 range
+    const lastCount = parseInt(lastKotId?.slice(6), 10) || 1; // Extract numeric part after "KOT"
+    count = (lastCount + 1) % 10000; // Increment and ensure it's within the 4-digit range
   }
 
-  // Format the new KOT number
-  const kotNo = `${"KOT"}${count.toString().padStart(4, "0")}#${restaurantCode}`;
+  // Format the count to 4 digits with leading zeros
+  const formattedCount = count.toString().padStart(4, "0");
+
+  // Create the final KOT number
+  const kotNo = `${restaurantCode}KOT${formattedCount}`;
   return kotNo;
 };
+
 
 module.exports = mongoose.model("KOT", kotSchema);

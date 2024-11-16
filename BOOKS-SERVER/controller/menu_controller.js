@@ -169,9 +169,12 @@ exports.addMenuItem = async (req, res) => {
 
 
     const existingMenuItem = await MenuItem.findOne({
-      name: { $regex: new RegExp(`^${name}$`, 'i') },
-      restaurantId: restaurant
+      name: { $regex: `^${name.trim()}$`, $options: 'i' },
+      restaruntId: restaurant,
     });
+    // console.log("Existing menu item found:", existingMenuItem);
+
+
 
     if (existingMenuItem) {
       return res.status(200).json({
@@ -242,8 +245,6 @@ exports.addMenuItem = async (req, res) => {
     });
   }
 };
-
-
 
 
 exports.editMenuItem = async (req, res) => {

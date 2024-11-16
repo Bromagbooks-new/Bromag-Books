@@ -4,6 +4,7 @@ import PayrollManagement from "@/assets/images/landing-images/upgrades/PayrollMa
 import KDSManagement from "@/assets/images/landing-images/upgrades/KDSManagement.svg";
 import OnlineManagement from "@/assets/images/landing-images/upgrades/OnlineOrderManagement.svg";
 import IntegrationManagement from "@/assets/images/landing-images/upgrades/IntegrationManagement.svg";
+import circle from '@/assets/images/Bromag Dashboard Features/circle.svg';
 
 import ellipse545 from '@/assets/images/landing-images/Ellipse 545.svg'
 import ellipse544 from '@/assets/images/landing-images/Ellipse 544.svg'
@@ -12,17 +13,20 @@ import subtract from '@/assets/images/landing-images/Subtract.svg';
 const Upgrades = () => {
   return (
     <>
-      <div className="-mt-[10rem] md:-mt-20 flex flex-col items-center bg-[#16252F] font-roboto-condensed overflow-hidden ">
-        <div className="relative h-0 ">
-          <img className="relative z-10 w-[23rem] md:w-auto top-[1rem] left-[8%] md:left-[20%] opacity-50" src={subtract} />
-        </div>
-        <div className="relative h-0">
+      <div className="-mt-[10rem] md:-mt-20 flex flex-col items-center bg-[#1F303C] font-roboto-condensed overflow-hidden ">
+        {/* <div className="relative h-0 ">
+          <img className="relative z-10 w-[23rem] md:w-auto top-[1rem] left-[8%] md:left-[39%] opacity-50" src={subtract} />
+        </div> */}
+        {/* <div className="relative h-0">
           <img className="relative z-0 w-[9rem]  md:w-auto left-[70%] md:left-[100%] top-[10rem] md:top-10" src={ellipse545} />
+        </div> */}
+        <div className="relative h-0">
+          <img className="relative z-10 w-[13rem] md:w-auto right-[-5rem] md:right-[-25rem] top-32 md:top-10" src={circle} />
         </div>
         <div className="relative h-0">
-          <img className="relative z-10 w-[20rem] md:w-auto right-[11rem] md:right-[33rem] top-32 md:top-20" src={ellipse544} />
+          <img className="relative z-10 w-[13rem] md:w-auto right-[11rem] md:right-[45rem] top-32 md:top-20" src={ellipse544} />
         </div>
-        <p className="z-10 text-2xl md:text-5xl uppercase font-semibold mt-36  text-white py-10">
+        <p className="z-10 text-2xl md:text-5xl uppercase font-semibold mt-36 mb-5  text-white py-10">
           Our Upgrades
         </p>
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 px-4 -mt-4 mb-5">
@@ -35,9 +39,9 @@ const Upgrades = () => {
             />
           ))}
         </div>
-        <div className="relative h-0 ">
-          <img className="relative z-0 w-[20rem]  md:w-auto right-[16%] md:right-[21%] bottom-[16rem] md:bottom-[43rem]" src={group212} />
-        </div>
+        {/* <div className="relative h-0 ">
+          <img className="relative z-0 w-[20rem]  md:w-auto right-[16%] md:right-[39%] bottom-[16rem] md:bottom-[43rem]" src={group212} />
+        </div> */}
       </div>
     </>
   );

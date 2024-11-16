@@ -10,7 +10,7 @@ import ring from '@/assets/images/Bromag Dashboard Features/ring.svg';
 import ellipse542 from '@/assets/images/landing-images/Ellipse 542.svg'
 const GrowthAcrossIndia = () => {
     return (
-        <div className="bg-[#16252F] min-h-screen py-10 px-4 flex items-center justify-center">
+        <div className="bg-[#1F303C] min-h-screen  py-10 px-4 flex items-center justify-center">
             <div
                 className="bg-cover bg-center p-6 md:p-10 rounded-lg max-w-lg md:max-w-2xl mx-auto"
             >

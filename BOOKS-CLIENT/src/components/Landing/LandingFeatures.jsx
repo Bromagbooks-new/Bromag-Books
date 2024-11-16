@@ -11,6 +11,7 @@ import InventoryManagement from "@/assets/images/Bromag Dashboard Features/Inven
 import TableManagement from "@/assets/images/Bromag Dashboard Features/TableManagement.svg";
 import EmployeeManagement from "@/assets/images/Bromag Dashboard Features/EmployeeManagement.svg";
 import WalletManagement from "@/assets/images/Bromag Dashboard Features/WalletManagement.svg";
+import QrManagement from "@/assets/images/Bromag Dashboard Features/qrmanagement.svg";
 
 import subtract from '@/assets/images/landing-images/Subtract.svg';
 import ellipse542 from '@/assets/images/landing-images/Ellipse 542.svg'
@@ -19,19 +20,19 @@ import group212 from '@/assets/images/landing-images/Group 212.svg'
 
 const LandingFeatures = () => {
   return (
-    <div className=" flex flex-col items-center bg-[#16252F] font-roboto-condensedpb pb-[10rem] -mt-52 overflow-hidden">
+    <div className=" flex flex-col items-center bg-[#1F303C] font-roboto-condensedpb pb-[10rem] -mt-52 overflow-hidden">
       <div className="relative h-0 ">
-        <img className="relative z-10 w-[23rem] md:w-auto top-[1rem] left-[8%] md:left-[20%] opacity-50" src={subtract} />
+        <img className="relative z-10 w-[23rem] md:w-auto top-[1rem] left-[8%] md:left-[39%] opacity-50" src={subtract} />
       </div>
 
       <div className="relative h-0 ">
-        <img className="relative z-0 w-[18rem] md:w-auto  left-[50%] md:left-[70%] top-[5rem] md:top-[10rem]" src={ellipse542} />
+        <img className="relative z-0 w-[18rem] md:w-auto  left-[50%] md:left-[100%] top-[5rem] md:top-[10rem]" src={ellipse542} />
       </div>
       <div className="relative h-0 block md:hidden">
         <img className="relative z-0 w-[18rem] md:w-auto  left-[50%] md:left-[70%] top-[55rem] md:top-[10rem]" src={ellipse542} />
       </div>
       <div className="relative h-0 ">
-        <img className="relative z-0 w-[6rem] md:w-auto right-[12rem] top-[5rem] md:right-[42rem] md:top-[10rem]" src={ellipse543} />
+        <img className="relative z-0 w-[6rem] md:w-[15rem] right-[12rem] top-[5rem] md:right-[55rem] md:top-[5rem]" src={ellipse543} />
       </div>
       <p id="features" className="z-10 text-3xl md:text-5xl mt-[18rem] md:mt-[23rem] uppercase font-semibold text-white">
         OUR FEATURES
@@ -47,7 +48,7 @@ const LandingFeatures = () => {
         ))}
       </div>
       <div className="relative h-0 ">
-        <img className="relative z-0 w-[20rem]  md:w-auto right-[16%] md:right-[21%] bottom-[13rem] md:bottom-[43rem]" src={group212} />
+        <img className="relative z-0 w-[20rem]  md:w-auto right-[16%] md:right-[40%] bottom-[13rem] md:bottom-[43rem]" src={group212} />
       </div>
     </div>
   );
@@ -128,5 +129,10 @@ const landingFeatures = [
     imgSrc: CRMManagement,
     exploreUrl: "/coming-soon",
   },
-
+  {
+    id: 13,
+    title: "QR Management",
+    imgSrc: QrManagement,
+    exploreUrl: "/coming-soon",
+  },
 ];

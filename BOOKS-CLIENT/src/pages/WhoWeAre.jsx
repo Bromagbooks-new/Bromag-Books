@@ -1,34 +1,59 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "@/components/Landing/Navbar";
 import abrarImage from "@/assets/images/abrarImage.jpg";
 import whatwedo from "@/assets/images/Bromag Dashboard Features/whatwedo.svg";
 import whatweserve from "@/assets/images/Bromag Dashboard Features/whatweserve.svg";
 import ourvision from "@/assets/images/Bromag Dashboard Features/ourvision.svg";
-import group212 from '@/assets/images/landing-images/Group 212.svg';
-import subtract from '@/assets/images/landing-images/Subtract.svg';
+import group212 from "@/assets/images/landing-images/Group 212.svg";
+import subtract from "@/assets/images/landing-images/Subtract.svg";
+import WhoWeAreWeb from "@/components/Landing/WhoWeAreWeb";
 
 const WhoWeAre = () => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        // Check the screen width and set the state
+        const handleResize = () => {
+            setIsMobile(window.innerWidth < 768); // Mobile breakpoint at 768px
+        };
+
+        handleResize(); // Initial check
+        window.addEventListener("resize", handleResize);
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, []);
+
     const title = "WHO WE ARE";
-    const subtitle = "Founder and Director of BROMAG INDIA PRIVATE LIMITED, founded on March 10, 2023.";
+    const subtitle =
+        "Founder and Director of BROMAG INDIA PRIVATE LIMITED, founded on March 10, 2023.";
 
     const infoSections = [
         {
             title: "WHAT WE DO",
             img: whatwedo,
-            content: "We're dedicated to creating intuitive solutions that seamlessly connect customers, restaurant partners, and delivery riders. At Bromag, our mission is to provide tools to secure a well-paced, digital world."
+            content:
+                "We're dedicated to creating intuitive solutions that seamlessly connect customers, restaurant partners, and delivery riders. At Bromag, our mission is to provide tools to secure a well-paced, digital world.",
         },
         {
             title: "WHAT WE SERVE",
             img: whatweserve,
-            content: "At Bromag, we bring you a suite of AI-powered tools, including tailored products for restaurants, individual food photography, video production services, e-commerce on own domains, and POS billing software. Our delivery network ensures high standards with full-time employees operating Bromag's fleet."
+            content:
+                "At Bromag, we bring you a suite of AI-powered tools, including tailored products for restaurants, individual food photography, video production services, e-commerce on own domains, and POS billing software. Our delivery network ensures high standards with full-time employees operating Bromag's fleet.",
         },
         {
             title: "OUR VISION",
             img: ourvision,
-            content: "At Bromag, we envision a digital ecosystem, one that is smoothly integrated. Every step in your experience - from ordering to dining, payments to feedback - is user-friendly and reliable, enriching your engagement. We’re on a mission to simplify the way you experience dining."
-        }
+            content:
+                "At Bromag, we envision a digital ecosystem, one that is smoothly integrated. Every step in your experience - from ordering to dining, payments to feedback - is user-friendly and reliable, enriching your engagement. We’re on a mission to simplify the way you experience dining.",
+        },
     ];
 
+    if (!isMobile) {
+        // Render desktop-specific component
+        return <WhoWeAreWeb />;
+    }
+
+    // Render mobile-specific component
     return (
         <div className="bg-gradient-to-b from-[#DCFCFF] to-[#1F303C] min-h-screen pb-8">
             <div className="mb-20">
